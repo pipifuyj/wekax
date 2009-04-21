@@ -1,0 +1,24 @@
+/AffineMetric.java/1.2/Mon Mar  3 21:36:19 2003//
+/DataDependentStringMetric.java/1.1/Mon Feb 17 00:47:55 2003//
+/HashMapVector.java/1.1/Mon Feb 17 00:47:55 2003//
+/JaccardMetric.java/1.1/Mon Feb 17 00:47:55 2003//
+/LearnableStringMetric.java/1.1/Mon Feb 17 00:47:55 2003//
+/StringMetric.java/1.1/Mon Feb 17 00:47:55 2003//
+/StringReference.java/1.1/Mon Feb 17 00:47:55 2003//
+/TokenInfo.java/1.1/Mon Feb 17 00:47:55 2003//
+/TokenOccurrence.java/1.1/Mon Feb 17 00:47:55 2003//
+/VectorSpaceMetric.java/1.2/Mon Mar  3 20:53:16 2003//
+/Weight.java/1.1/Mon Feb 17 00:47:55 2003//
+/stopwords.txt/1.1/Mon Feb 17 00:47:55 2003//
+/InstanceMetric.java/1.2/Fri Oct  3 16:32:27 2003//
+/ClassifierInstanceMetric.java/1.5/Tue Dec 16 17:32:36 2003//
+/AffineProbMetric.java/1.6/Sat Aug  7 19:51:04 2004//
+/Porter.java/1.2/Sat Aug  7 19:51:04 2004//
+/TokenString.java/1.1/Wed May 26 00:41:04 2004//
+/KernelVSMetric.java/1.7/Fri Oct 22 00:08:06 2004//
+/LearnableTokenEDAffine.java/1.5/Fri Oct 22 00:08:06 2004//
+/NGramTokenizer.java/1.3/Fri Oct 22 00:08:06 2004//
+/Tokenizer.java/1.2/Fri Oct 22 00:08:06 2004//
+/WordTokenizer.java/1.4/Fri Oct 22 00:08:06 2004//
+/SumInstanceMetric.java/1.5/Tue Apr  4 19:33:32 2006//
+D

@@ -1,0 +1,20 @@
+/BinC45ModelSelection.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/BinC45Split.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/C45ModelSelection.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/C45PruneableClassifierTree.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/C45Split.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/ClassifierSplitModel.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/ClassifierTree.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/Distribution.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/EntropyBasedSplitCrit.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/EntropySplitCrit.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/GainRatioSplitCrit.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/InfoGainSplitCrit.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/J48.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/ModelSelection.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/NoSplit.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/PruneableClassifierTree.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/SplitCriterion.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/Stats.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/FAT.java/1.7/Fri Oct 22 11:53:03 2004//
+D

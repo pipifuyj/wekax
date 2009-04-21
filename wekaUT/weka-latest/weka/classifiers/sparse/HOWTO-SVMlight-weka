@@ -1,0 +1,21 @@
+1)  Create a 'sparse' directory in weka/classifiers and put SVMlight.java there.
+
+2)  Look at the directories for SVMlight binaries and temporary files which are 
+defined on lines 65 and 67 in SVMlight.java.  Change these to appropriate 
+directories in your local filesystem. 
+
+3)  Compile SVMlight.java (javac SVMlight.java).  Make sure you have ./, ../, and 
+../.. in your CLASSPATH (or compile using "javac -classpath "./;../;../..;../../..").
+If you are using Weka 3.4 or later, make Classifier the parent class instead of 
+DistributionClassifier. 
+
+4) Put svm_classify_std.c into the SVMlight directory; replace all occurrences of
+svm_classify with svm_classify_std in SVMlight's Makefile, and compile the 
+svm_classify_std binary by running make (the only difference between the two is 
+output that is a bit easier to parse from Java). 
+
+5)  If you are using the Weka Experimenter GUI, add weka.classifiers.sparse.SVMlight 
+as one of Classifier's and DistributionClassifier's in 
+weka/gui/GenericObjectEditor.props (just Classifier's for Weka 3.4 and later).
+
+

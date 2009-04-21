@@ -1,0 +1,5 @@
+java weka.clusterers.MPCKMeans \
+	-D data/iris.arff \
+	-C data/iris.constraints \
+	-N 3 \
+	-O iris.assignments

@@ -1,0 +1,19 @@
+
+                              < M A T L A B >
+                  Copyright 1984-2002 The MathWorks, Inc.
+                      Version 6.5.0.180913a Release 13
+                                Jun 18 2002
+
+  Using Toolbox Path Cache.  Type "help toolbox_path_cache" for more info.
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+ 
+>> >> >> >> ??? Undefined function or variable 'opt'.
+
+>> ??? Undefined function or variable 'A'.
+
+>> ??? Error using ==> save
+Variable 'AnumRows' not found.
+
+>> 

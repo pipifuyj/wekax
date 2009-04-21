@@ -1,0 +1,21 @@
+java weka.clusterers.MPCKMeans \
+	-D data/iris.arff \
+	-C data/iris.constraints \
+	-K 4 \
+	-S \
+	-T 4 \
+	-M weka.core.metrics.WeightedEuclidean \
+	-L weka.clusterers.metriclearners.WEuclideanLearner \
+	-G weka.clusterers.regularizers.Rayleigh \
+	-A weka.clusterers.assigners.SimpleAssigner \
+	-I weka.clusterers.initializers.WeightedFFNeighborhoodInit \
+	-N 3 \
+	-R 42 \
+	-l 0.01 \
+	-r 0.001 \
+	-m 1 \
+	-c 1 \
+	-I 20000 \
+	-B 20 \
+	-O iris.assignments \
+	-V

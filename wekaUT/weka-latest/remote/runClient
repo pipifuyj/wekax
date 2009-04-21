@@ -1,0 +1,3 @@
+#time java -Xmx1400m -classpath remoteEngine.jar:/u/sugato/weka/driver/:/u/ml/software/mysql/mm.mysql-2.0.4-bin.jar:/u/ml/packages/Jama-1.0.1.jar:/u/ml/software/rmn:/u/ml/software/jmatlink -Djava.security.policy=remote.policy -Djava.rmi.server.codebase=file:/u/sugato/weka/weka.jar weka.experiment.RemoteEngine
+
+java -classpath .:..:/:/u/ml/software/mysql/mysql-connector.jar:/u/ml/packages/jmage.jar:/u/ml/packages/Jama-1.0.1.jar:/u/ml/software/rmn:/u/ml/software/jmatlink -Djava.security.policy=remote.policy -Djava.rmi.server.codebase=file:/u/sugato/weka/remoteEngine.jar weka.experiment.RemoteEngine

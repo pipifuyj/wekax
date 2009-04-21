@@ -1,0 +1,70 @@
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Fri Nov 12 15:23:23 2004
+;; Emacs version 20.7.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring '("prevented" "MI" "Oscill" "Final pre" "Final precis" "Confusion" "precision" "Old ob" "Final pre" "convergenceCh" "calculateOb" "m_Objective +=" "m_Ob" "m_Objective =" "m_Objective " "off"))
+(setq regexp-search-ring nil)
+(setq register-alist (list '(88 . "") (desktop-list* 47 (let ((mk (make-marker))) (add-hook 'desktop-delay-hook (list 'lambda '() (list 'set-marker mk nil (get-buffer "*desktop*")))) mk))))
+
+;; Buffer section:
+(desktop-create-buffer 205
+  "/u/ml/data/bio/arffFromPhylo/scerevisiae-raw.arff"
+  "scerevisiae-raw.arff"
+  'fundamental-mode
+  '(nil)
+  1227
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/u/ml/data/bio/arffFromPhylo/hpj-raw.arff"
+  "hpj-raw.arff"
+  'fundamental-mode
+  '(nil)
+  1819
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/u/ml/data/bio/arffFromPhylo/ecoli_K12-raw.arff"
+  "ecoli_K12-raw.arff"
+  'fundamental-mode
+  '(nil)
+  1225
+  '(nil nil)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/u/ml/data/bio/arffFromPhylo/scerevisiae-expression.arff"
+  "scerevisiae-expression.arff"
+  'fundamental-mode
+  '(nil)
+  9926
+  '(4615 t)
+  nil
+  nil
+  nil)
+
+(desktop-create-buffer 205
+  "/u/sugato/weka/weka/gui/experiment/Experimenter.java"
+  "Experimenter.java"
+  'jde-mode
+  '(nil)
+  766
+  '(nil nil)
+  nil
+  nil
+  nil)
+

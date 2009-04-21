@@ -1,0 +1,26 @@
+/BVDecompose.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/CheckClassifier.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/CostMatrix.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/Evaluation.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/IterativeClassifier.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/Sourcable.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+/UpdateableClassifier.java/1.1.1.1/Wed Jan 22 07:48:28 2003//
+D/bayes////
+D/evaluation////
+D/functions////
+D/lazy////
+D/meta////
+D/misc////
+D/rules////
+D/sparse////
+D/trees////
+/SemiSupClassifier.java/1.1/Mon Mar 10 05:31:45 2003//
+/EnsembleClassifier.java/1.3/Wed Dec 10 09:17:47 2003//
+/SoftClassifier.java/1.1/Mon Dec 22 19:05:34 2003//
+/ActiveFeatureAcquirer.java/1.1/Mon Feb 16 21:51:15 2004//
+/ActiveLearner.java/1.3/Tue Feb 17 08:00:47 2004//
+/EnsembleEvaluation.java/1.4/Tue Feb 17 08:00:47 2004//
+/RegressionBVDecompose.java/1.1/Tue Feb 17 14:54:16 2004//
+/DistributionClassifier.java/1.5/Fri Oct 22 11:53:01 2004//
+/BudgetedLearner.java/1.1/Wed Jan  5 10:13:52 2005//
+/Classifier.java/1.2/Tue Apr  4 19:33:27 2006//

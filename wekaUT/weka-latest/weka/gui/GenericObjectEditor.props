@@ -1,0 +1,374 @@
+# Customises the list of options given by the GenericObjectEditor
+# for various superclasses.
+
+# Lists the ResultProducers I want to choose from
+weka.experiment.ResultProducer=\
+ weka.experiment.CrossValidationResultProducer,\
+ weka.experiment.LearningCurveCrossValidationResultProducer,\
+ weka.experiment.ActiveLearningCurveCVResultProducer,\
+ weka.experiment.ActiveFeatureAcquisitionCVResultProducer,\
+ weka.experiment.BudgetedLearningCurveResultProducer,\
+ weka.experiment.NoiseCurveCrossValidationResultProducer,\
+ weka.experiment.SemiSupCrossValidationResultProducer,\
+ weka.experiment.SemiSupLearningCurveCVResultProducer,\
+ weka.experiment.SemiSupIncompleteLabelCurveCVResultProducer,\
+ weka.experiment.SemiSupPointActiveCurveCVResultProducer,\
+ weka.experiment.SemiSupPairActiveCurveCVResultProducer,\
+ weka.experiment.LearningRateResultProducer,\
+ weka.experiment.RandomSplitResultProducer,\
+ weka.experiment.AveragingResultProducer,\
+ weka.experiment.DatabaseResultProducer,\
+ weka.experiment.DedupingPRCurveCVResultProducer,\
+ weka.experiment.DedupingPRCurveCVResultProducerSplit
+
+# Lists the ResultListeners I want to choose from
+weka.experiment.ResultListener=\
+ weka.experiment.DatabaseResultListener,\
+ weka.experiment.InstancesResultListener, \
+ weka.experiment.CSVResultListener
+
+# Lists the SplitEvaluators I want to choose from
+weka.experiment.SplitEvaluator=\
+ weka.experiment.ClassifierSplitEvaluator, \
+ weka.experiment.EnsembleClassifierSplitEvaluator, \
+ weka.experiment.SemiSupClustererSplitEvaluator, \
+ weka.experiment.FeatureCostSensitiveClassifierSplitEvaluator, \
+ weka.experiment.CostSensitiveClassifierSplitEvaluator, \
+ weka.experiment.RegressionSplitEvaluator, \
+ weka.experiment.DeduperSplitEvaluator
+
+# Lists the Classifiers I want to choose from
+weka.classifiers.Classifier=\
+ weka.classifiers.bayes.BayesNetK2,\
+ weka.classifiers.bayes.BayesNetB,\
+ weka.classifiers.bayes.NaiveBayes,\
+ weka.classifiers.bayes.NaiveBayesSimple,\
+ weka.classifiers.bayes.NaiveBayesUpdateable,\
+ weka.classifiers.bayes.SemiSupEM,\
+ weka.classifiers.functions.LeastMedSq,\
+ weka.classifiers.functions.LinearRegression,\
+ weka.classifiers.functions.Logistic,\
+ weka.classifiers.functions.neural.NeuralNetwork,\
+ weka.classifiers.functions.pace.PaceRegression,\
+ weka.classifiers.functions.SMO,\
+ weka.classifiers.functions.UnivariateLinearRegression,\
+ weka.classifiers.functions.VotedPerceptron,\
+ weka.classifiers.functions.Winnow,\
+ weka.classifiers.lazy.IB1,\
+ weka.classifiers.lazy.IBk,\
+ weka.classifiers.lazy.kstar.KStar,\
+ weka.classifiers.lazy.LBR,\
+ weka.classifiers.lazy.LWR,\
+ weka.classifiers.meta.ActiveDecorate,\
+ weka.classifiers.meta.AdaBoostM1,\
+ weka.classifiers.meta.AdditiveRegression,\
+ weka.classifiers.meta.AttributeSelectedClassifier,\
+ weka.classifiers.meta.Bagging, \
+ weka.classifiers.meta.Blue, \
+ weka.classifiers.meta.ClassificationViaRegression,\
+ weka.classifiers.meta.CostSensitiveClassifier,\
+ weka.classifiers.meta.Crate,\
+ weka.classifiers.meta.CVParameterSelection,\
+ weka.classifiers.meta.DEC,\
+ weka.classifiers.meta.Decorate,\
+ weka.classifiers.meta.DistributionMetaClassifier,\
+ weka.classifiers.meta.Fable,\
+ weka.classifiers.meta.FilteredClassifier,\
+ weka.classifiers.meta.GODA,\
+ weka.classifiers.meta.IteratedBagging,\
+ weka.classifiers.meta.LogitBoost,\
+ weka.classifiers.meta.MetaCost,\
+ weka.classifiers.meta.MultiBoostAB,\
+ weka.classifiers.meta.MultiClassClassifier,\
+ weka.classifiers.meta.MultiScheme,\
+ weka.classifiers.meta.OrdinalClassClassifier,\
+ weka.classifiers.meta.RacedIncrementalLogitBoost,\
+ weka.classifiers.meta.RegressionByDiscretization,\
+ weka.classifiers.meta.SemiSupDecorate,\
+ weka.classifiers.meta.Stacking,\
+ weka.classifiers.meta.StochasticGradientBoosting,\
+ weka.classifiers.meta.TestEnsembleClassifier,\
+ weka.classifiers.meta.ThresholdSelector,\
+ weka.classifiers.misc.HyperPipes,\
+ weka.classifiers.misc.VFI,\
+ weka.classifiers.trees.adtree.ADTree,\
+ weka.classifiers.trees.DecisionStump,\
+ weka.classifiers.trees.Id3,\
+ weka.classifiers.trees.j48.J48,\
+ weka.classifiers.trees.j48.FAT,\
+ weka.classifiers.trees.m5.M5P,\
+ weka.classifiers.trees.RandomForest,\
+ weka.classifiers.trees.RandomTree,\
+ weka.classifiers.trees.REPTree,\
+ weka.classifiers.trees.UserClassifier,\
+ weka.classifiers.rules.ConjunctiveRule,\
+ weka.classifiers.rules.DecisionTable,\
+ weka.classifiers.rules.OneR,\
+ weka.classifiers.rules.part.PART,\
+ weka.classifiers.rules.M5Rules,\
+ weka.classifiers.rules.Prism,\
+ weka.classifiers.meta.QBag,\
+ weka.classifiers.meta.QBoost,\
+ weka.classifiers.rules.Ridor,\
+ weka.classifiers.rules.JRip,\
+ weka.classifiers.rules.ZeroR,\
+ weka.classifiers.sparse.NaiveBayesSimpleSparse,\
+ weka.classifiers.sparse.IBkMetric, \
+ weka.classifiers.sparse.SVMlight, \
+ weka.classifiers.sparse.SVMcplex
+
+
+# Lists the DistributionClassifiers I want to choose from
+weka.classifiers.DistributionClassifier=\
+ weka.classifiers.bayes.BayesNetK2,\
+ weka.classifiers.bayes.BayesNetB,\
+ weka.classifiers.bayes.NaiveBayes,\
+ weka.classifiers.bayes.NaiveBayesSimple,\
+ weka.classifiers.bayes.NaiveBayesUpdateable,\
+ weka.classifiers.bayes.SemiSupEM,\
+ weka.classifiers.functions.Logistic,\
+ weka.classifiers.functions.neural.NeuralNetwork,\
+ weka.classifiers.functions.SMO,\
+ weka.classifiers.functions.VotedPerceptron,\
+ weka.classifiers.lazy.IBk,\
+ weka.classifiers.lazy.kstar.KStar,\
+ weka.classifiers.lazy.LBR,\
+ weka.classifiers.meta.AdaBoostM1,\
+ weka.classifiers.meta.AttributeSelectedClassifier,\
+ weka.classifiers.meta.Bagging, \
+ weka.classifiers.meta.ClassificationViaRegression,\
+ weka.classifiers.meta.DistributionMetaClassifier,\
+ weka.classifiers.meta.FilteredClassifier,\
+ weka.classifiers.meta.LogitBoost,\
+ weka.classifiers.meta.MultiBoostAB,\
+ weka.classifiers.meta.MultiClassClassifier,\
+ weka.classifiers.meta.OrdinalClassClassifier,\
+ weka.classifiers.meta.RacedIncrementalLogitBoost,\
+ weka.classifiers.meta.ThresholdSelector,\
+ weka.classifiers.misc.HyperPipes,\
+ weka.classifiers.misc.VFI,\
+ weka.classifiers.trees.adtree.ADTree,\
+ weka.classifiers.trees.DecisionStump,\
+ weka.classifiers.trees.Id3,\
+ weka.classifiers.trees.j48.J48,\
+ weka.classifiers.trees.RandomForest,\
+ weka.classifiers.trees.RandomTree,\
+ weka.classifiers.trees.REPTree,\
+ weka.classifiers.trees.UserClassifier,\
+ weka.classifiers.rules.ConjunctiveRule,\
+ weka.classifiers.rules.DecisionTable,\
+ weka.classifiers.rules.part.PART,\
+ weka.classifiers.rules.JRip,\
+ weka.classifiers.rules.ZeroR,\
+ weka.classifiers.sparse.NaiveBayesSimpleSparse,\
+ weka.classifiers.sparse.IBkMetric,\
+ weka.classifiers.sparse.SVMlight, \
+ weka.classifiers.sparse.SVMcplex
+
+# Lists the Filters I want to choose from
+weka.filters.Filter = \
+ weka.filters.supervised.attribute.AttributeSelection, \
+ weka.filters.supervised.attribute.ClassOrder, \
+ weka.filters.supervised.attribute.Discretize, \
+ weka.filters.supervised.attribute.NominalToBinary, \
+ weka.filters.supervised.instance.Resample, \
+ weka.filters.supervised.instance.SpreadSubsample, \
+ weka.filters.supervised.instance.StratifiedRemoveFolds, \
+ weka.filters.unsupervised.attribute.Add, \
+ weka.filters.unsupervised.attribute.AddCluster, \
+ weka.filters.unsupervised.attribute.AddExpression, \
+ weka.filters.unsupervised.attribute.AddNoise, \
+ weka.filters.unsupervised.attribute.Copy, \
+ weka.filters.unsupervised.attribute.Discretize, \
+ weka.filters.unsupervised.attribute.FirstOrder, \
+ weka.filters.unsupervised.attribute.MakeIndicator, \
+ weka.filters.unsupervised.attribute.MergeTwoValues, \
+ weka.filters.unsupervised.attribute.NominalToBinary, \
+ weka.filters.unsupervised.attribute.Normalize, \
+ weka.filters.unsupervised.attribute.NumericToBinary, \
+ weka.filters.unsupervised.attribute.NumericTransform, \
+ weka.filters.unsupervised.attribute.Obfuscate, \
+ weka.filters.unsupervised.attribute.PKIDiscretize, \
+ weka.filters.unsupervised.attribute.Remove, \
+ weka.filters.unsupervised.attribute.RemoveType, \
+ weka.filters.unsupervised.attribute.RemoveUseless, \
+ weka.filters.unsupervised.attribute.ReplaceMissingValues, \
+ weka.filters.unsupervised.attribute.Standardize, \
+ weka.filters.unsupervised.attribute.StringToNominal, \
+ weka.filters.unsupervised.attribute.StringToWordVector, \
+ weka.filters.unsupervised.attribute.SwapValues, \
+ weka.filters.unsupervised.attribute.TimeSeriesDelta, \
+ weka.filters.unsupervised.attribute.TimeSeriesTranslate, \
+ weka.filters.unsupervised.instance.NonSparseToSparse, \
+ weka.filters.unsupervised.instance.Randomize, \
+ weka.filters.unsupervised.instance.RemoveFolds, \
+ weka.filters.unsupervised.instance.RemoveMisclassified, \
+ weka.filters.unsupervised.instance.RemovePercentage, \
+ weka.filters.unsupervised.instance.RemoveRange, \
+ weka.filters.unsupervised.instance.RemoveWithValues, \
+ weka.filters.unsupervised.instance.Resample, \
+ weka.filters.unsupervised.instance.SparseToNonSparse
+
+# Lists the UnsupervisedFilters I want to choose from
+weka.filters.UnsupervisedFilter = \
+ weka.filters.unsupervised.attribute.Add, \
+ weka.filters.unsupervised.attribute.AddCluster, \
+ weka.filters.unsupervised.attribute.AddExpression, \
+ weka.filters.unsupervised.attribute.AddNoise, \
+ weka.filters.unsupervised.attribute.Copy, \
+ weka.filters.unsupervised.attribute.Discretize, \
+ weka.filters.unsupervised.attribute.FirstOrder, \
+ weka.filters.unsupervised.attribute.MakeIndicator, \
+ weka.filters.unsupervised.attribute.MergeTwoValues, \
+ weka.filters.unsupervised.attribute.NominalToBinary, \
+ weka.filters.unsupervised.attribute.Normalize, \
+ weka.filters.unsupervised.attribute.NumericToBinary, \
+ weka.filters.unsupervised.attribute.NumericTransform, \
+ weka.filters.unsupervised.attribute.Obfuscate, \
+ weka.filters.unsupervised.attribute.PKIDiscretize, \
+ weka.filters.unsupervised.attribute.Remove, \
+ weka.filters.unsupervised.attribute.RemoveType, \
+ weka.filters.unsupervised.attribute.RemoveUseless, \
+ weka.filters.unsupervised.attribute.ReplaceMissingValues, \
+ weka.filters.unsupervised.attribute.Standardize, \
+ weka.filters.unsupervised.attribute.StringToNominal, \
+ weka.filters.unsupervised.attribute.StringToWordVector, \
+ weka.filters.unsupervised.attribute.SwapValues, \
+ weka.filters.unsupervised.attribute.TimeSeriesDelta, \
+ weka.filters.unsupervised.attribute.TimeSeriesTranslate, \
+ weka.filters.unsupervised.instance.NonSparseToSparse, \
+ weka.filters.unsupervised.instance.Randomize, \
+ weka.filters.unsupervised.instance.RemoveFolds, \
+ weka.filters.unsupervised.instance.RemoveMisclassified, \
+ weka.filters.unsupervised.instance.RemovePercentage, \
+ weka.filters.unsupervised.instance.RemoveRange, \
+ weka.filters.unsupervised.instance.RemoveWithValues, \
+ weka.filters.unsupervised.instance.Resample, \
+ weka.filters.unsupervised.instance.SparseToNonSparse
+
+# Lists the Attribute Selection Evaluators I want to choose from
+weka.attributeSelection.ASEvaluation = \
+ weka.attributeSelection.CfsSubsetEval, \
+ weka.attributeSelection.ClassifierSubsetEval, \
+ weka.attributeSelection.WrapperSubsetEval, \
+ weka.attributeSelection.ConsistencySubsetEval, \
+ weka.attributeSelection.ReliefFAttributeEval, \
+ weka.attributeSelection.InfoGainAttributeEval, \
+ weka.attributeSelection.GainRatioAttributeEval, \
+ weka.attributeSelection.SymmetricalUncertAttributeEval, \
+ weka.attributeSelection.OneRAttributeEval, \
+ weka.attributeSelection.ChiSquaredAttributeEval, \
+ weka.attributeSelection.PrincipalComponents, \
+ weka.attributeSelection.SVMAttributeEval, \
+ weka.attributeSelection.MatlabPCA, \
+ weka.attributeSelection.MatlabICA, \
+ weka.attributeSelection.MatlabNMF
+
+# Lists the Attribute Selection Search methods I want to choose from
+weka.attributeSelection.ASSearch = \
+ weka.attributeSelection.BestFirst, \
+ weka.attributeSelection.ForwardSelection, \
+ weka.attributeSelection.RaceSearch, \
+ weka.attributeSelection.GeneticSearch, \
+ weka.attributeSelection.RandomSearch, \
+ weka.attributeSelection.ExhaustiveSearch, \
+ weka.attributeSelection.Ranker, \
+ weka.attributeSelection.RankSearch
+
+# Lists the Associators I want to choose from
+weka.associations.Associator=\
+ weka.associations.Apriori
+
+# Lists the Clusterers I want to choose from
+weka.clusterers.Clusterer=\
+ weka.clusterers.EM, \
+ weka.clusterers.SimpleKMeans, \
+ weka.clusterers.Cobweb, \
+ weka.clusterers.FarthestFirst, \
+ weka.clusterers.XMeans, \
+ weka.clusterers.SeededKMeans, \
+ weka.clusterers.PCKMeans, \
+ weka.clusterers.MPCKMeans, \
+ weka.clusterers.HAC
+
+# Lists the MPCKMeansAssigner I want to choose from
+weka.clusterers.assigners.MPCKMeansAssigner =\
+ weka.clusterers.assigners.SimpleAssigner, \
+ weka.clusterers.assigners.RandomAssigner, \
+ weka.clusterers.assigners.SortedAssigner, \
+ weka.clusterers.assigners.LPAssigner, \
+ weka.clusterers.assigners.RMNAssigner
+
+# Lists the MPCKMeansInitializers
+weka.clusterers.initializers.MPCKMeansInitializer =\
+ weka.clusterers.initializers.RandomPerturbInitializer, \
+ weka.clusterers.initializers.WeightedFFNeighborhoodInit
+
+# Lists the Loaders I want to choose from
+weka.core.converters.Loader =\
+ weka.core.converters.ArffLoader, \
+ weka.core.converters.CSVLoader, \
+ weka.core.converters.C45Loader, \
+ weka.core.converters.SerializedInstancesLoader
+
+# Lists the distance metrics I want to choose from
+weka.core.metrics.LearnableMetric =\
+ weka.core.metrics.WeightedEuclidean,\
+ weka.core.metrics.WeightedDotP, \
+ weka.core.metrics.WeightedMahalanobis, \
+ weka.core.metrics.KL, \
+ weka.core.metrics.BarHillelMetric, \
+ weka.core.metrics.BarHillelMetricMatlab, \
+ weka.core.metrics.XingMetric
+
+# Lists the clustering-related metric learners
+weka.clusterers.metriclearners.MPCKMeansMetricLearner = \
+ weka.clusterers.metriclearners.WEuclideanGDLearner, \
+ weka.clusterers.metriclearners.WEuclideanLearner, \
+ weka.clusterers.metriclearners.MahalanobisLearner, \
+ weka.clusterers.metriclearners.KLGDLearner, \
+ weka.clusterers.metriclearners.DotPGDLearner
+
+# Lists the regularizers
+weka.clusterers.regularizers.Regularizer = \
+ weka.clusterers.regularizers.L1, \
+ weka.clusterers.regularizers.Rayleigh
+
+# Lists the distance metric learners that we can choose
+weka.core.metrics.MetricLearner = \
+ weka.core.metrics.ClassifierMetricLearner,\
+ weka.core.metrics.AttrEvalMetricLearner,\
+ weka.core.metrics.GDMetricLearner,\
+ weka.core.metrics.MatlabMetricLearner
+
+# Lists the pairwise selectors that we can choose from
+weka.core.metrics.PairwiseSelector =\
+ weka.core.metrics.RandomPairwiseSelector,\
+ weka.core.metrics.HardPairwiseSelector
+
+# Lists the dedupers that we can choose from
+weka.deduping.Deduper = \
+ weka.deduping.BasicDeduper
+
+# Lists the instance metrics that we can choose from
+weka.deduping.metrics.InstanceMetric = \
+ weka.deduping.metrics.ClassifierInstanceMetric, \
+ weka.deduping.metrics.SumInstanceMetric
+
+# Lists the string metrics that we can choose from
+weka.deduping.metrics.StringMetric = \
+ weka.deduping.metrics.AffineMetric, \
+ weka.deduping.metrics.AffineProbMetric, \
+ weka.deduping.metrics.VectorSpaceMetric, \
+ weka.deduping.metrics.KernelVSMetric, \
+ weka.deduping.metrics.JaccardMetric, \
+ weka.deduping.metrics.AffineMacroProbMetric, \
+ weka.deduping.metrics.LearnableTokenEDAffine
+
+# Lists the tokenizers that we can choose from
+weka.deduping.metrics.Tokenizer = \
+ weka.deduping.metrics.WordTokenizer, \
+ weka.deduping.metrics.NGramTokenizer
+
+weka.deduping.PairwiseSelector = \
+ weka.deduping.PairwiseSelector

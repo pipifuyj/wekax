@@ -1,0 +1,36 @@
+From mbilenko@cs.utexas.edu Tue Mar 16 10:57:45 2004
+Date: Sat, 28 Feb 2004 00:11:22 -0600 (CST)
+From: Mikhail Bilenko <mbilenko@cs.utexas.edu>
+To: Sugato Basu <sugato@cs.utexas.edu>
+Subject: Re: Distributed experiments
+
+Sugato, here are the steps; the original email to Prem was incomplete:
+
+1.  Take remote.policy and remoteEngine.jar from /u/mbilenko/weka/remote
+2.  Modify paths in remote.policy; see /u/mbilenko/remote/remote.policy
+for example.
+3.  Take DatabaseUtils.props from /u/mbilenko, put in your home directory;
+modify so that it writes into your mySQL database.
+4.  Run "rmic weka.experiment.RemoteEngine" to generate stub and skeleton
+files in your weka tree.
+5.  Run the clients: use  /u/mbilenko/weka/remote/runClient script; modify
+for your own paths.
+
+Important things:
+
+- remember to repackage weka.jar and restart the clients when you make any
+changes to classes.
+- remember to write to the database.
+
+That should be about it, let me know if something doesn't work!
+
+-Misha
+
+On Fri, 27 Feb 2004, Sugato Basu wrote:
+
+>
+> Misha, you mentioned once that you had forwarded an email to Prem giving
+> details about running Weka experiments in distributed environment. Could
+> you forward that to me too? Thanks.
+>
+>

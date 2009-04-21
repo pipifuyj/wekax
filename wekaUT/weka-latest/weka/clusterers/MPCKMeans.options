@@ -1,0 +1,23 @@
+java weka.clusterers.MPCKMeans \
+	-D <data arff file, e.g., iris.arff> \
+	-C <constraints file, e.g., iris.constraints> \
+	-K <class index (unspecified => last attribute, -1 => no class attribute in data)> \
+	-S <seedable if specified>\
+	-T <trainable, e.g., 4 (1=NONE, 2=EXTERNAL, 4=INTERNAL)> \
+	-M <metric, e.g., weka.core.metrics.WeightedEuclidean (WeightedEuclidean/WeightedDotP/KL)> \
+	-L <metriclearner, e.g., weka.clusterers.metriclearners.WEuclideanLearner (WEuclideanLearner/DotPGDLearner/KLGDLearner)> \
+	-G <regularizer, e.g., weka.clusterers.regularizers.Rayleigh (Rayleigh/L1)> \
+	-A <assigner, e.g., weka.clusterers.assigners.SimpleAssigner (SimpleAssigner/RandomAssigner/SortedAssigner/LPAssigner/RMNAssigner)> \
+	-I <initializer, e.g., weka.clusterers.initializers.WeightedFFNeighborhoodInit (WeightedFFNeighborhoodInit/RandomPerturbInitializer)> \
+	-N <num clusters: by default, read from classes in datasets> \
+	-R <random number seed, e.g., 42> \
+	-l <logtermweight, e.g., 0.01> \
+	-r <regularizertermweiht, e.g.,  0.001> \
+	-m <weight of must-link weights, e.g., 1> \
+	-c <weight of cannot-link weights, e.g., 1> \
+	-I <maximum number of clustering iterations, e.g., 20000> \
+	-B <maximum number of blank iterations, e.g., 20> \
+	-O <file were final cluster assignments are output, e.g., iris.assignments> \
+	-V <take transitive closure of constraints if specified> \
+
+Note: Only -D option is required, all others are optional

@@ -1,0 +1,11 @@
+
+1) Adding a user:
+  GRANT ALL PRIVILEGES ON *.* TO 'username'@'' IDENTIFIED BY 'password' WITH GRANT OPTION;
+  FLUSH PRIVILEGES; 
+  
+2) Driver must be in classpath.  Right now we're using
+   mysql-connector-java-3.1.6; the .jar file is linked to
+   /u/ml/software/mysql/mysql-connector.jar
+
+3) In weka, the path is:
+   jdbc:mysql://enceladus.cs.utexas.edu:3306/hmrf?user=weka&password=runs

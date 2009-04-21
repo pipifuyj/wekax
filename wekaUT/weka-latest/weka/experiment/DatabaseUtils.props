@@ -1,0 +1,10 @@
+# The comma-separated list of jdbc drivers to use
+#jdbcDriver=RmiJdbc.RJDriver,jdbc.idbDriver
+#jdbcDriver=jdbc.idbDriver
+jdbcDriver=org.gjt.mm.mysql.Driver
+
+# The url to the experiment database
+#jdbcURL=jdbc:rmi://expserver/jdbc:idb=experiments.prp
+#jdbcURL=jdbc:idb=/home/user/Experiments/experiments.prp
+#jdbcURL=jdbc:idb=experiments.pr
+jdbcURL=jdbc:mysql://enceladus.cs.utexas.edu:3306/sugato

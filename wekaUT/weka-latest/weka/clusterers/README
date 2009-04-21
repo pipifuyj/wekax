@@ -1,0 +1,81 @@
+You can simply run the following command (D: datafile, C: constraints file, N: num clusters, O: output file, K: position of class attribute [-1 => last attribute])
+
+java -classpath ./weka.jar weka.clusterers.MPCKMeans -D ../../Data/iris.arff -C ../../Data/iris.const.ascii -N 3 -O iris.assignments -K 1
+
+
+Notes: 
+
+1. Be careful about the -K option, because for some arff files the 
+class attribute is at the front, while for the others it is at the end.  
+If -K is not specified, MPC-KMeans assumes that the *last* attribute is 
+the class variable.
+
+2. Add -V option if *no* transitive closure of constraints is desired. 
+
+------------------------------------------------------------------------------
+
+Description of all MPCKMeans options:
+
+java -classpath ./weka.jar weka.clusterers.MPCKMeans \
+	-D <data arff file, e.g., iris.arff> \
+	-C <constraints file, e.g., iris.constraints> \
+	-O <file were final cluster assignments are output, e.g., iris.assignments> \
+	-K <class index (unspecified => last attribute, -1 => no class attribute in data)> \
+	-X <not seedable if specified>\
+	-T <trainable, e.g., 4 (1=NONE, 2=EXTERNAL, 4=INTERNAL)> \
+	-M <metric, e.g., weka.core.metrics.WeightedEuclidean (WeightedEuclidean/WeightedDotP/KL)> \
+	-L <metriclearner, e.g., weka.clusterers.metriclearners.WEuclideanLearner (WEuclideanLearner/DotPGDLearner/KLGDLearner)> \
+	-G <regularizer, e.g., weka.clusterers.regularizers.Rayleigh (Rayleigh/L1)> \
+	-A <assigner, e.g., weka.clusterers.assigners.SimpleAssigner (SimpleAssigner/RandomAssigner/SortedAssigner/LPAssigner/RMNAssigner)> \
+	-I <initializer, e.g., weka.clusterers.initializers.WeightedFFNeighborhoodInit (WeightedFFNeighborhoodInit/RandomPerturbInitializer)> \
+	-U <use multiple metrics (one per class) if specified)
+	-N <num clusters: by default, read from classes in datasets> \
+	-R <random number seed, e.g., 42> \
+	-l <logtermweight, e.g., 0.01> \
+	-r <regularizertermweight, e.g.,  0.001> \
+	-m <weight of must-link weights, e.g., 1> \
+	-c <weight of cannot-link weights, e.g., 1> \
+	-i <maximum number of clustering iterations, e.g., 20000> \
+	-B <maximum number of blank iterations, e.g., 20> \
+	-V <don't take transitive closure of constraints if specified> \
+	-H <output file for dumping incoherence values in each iteration>
+
+Notes: 
+
+1. Only -D option is required, all others are optional. 
+
+------------------------------------------------------------------------------
+
+Sample run of MPCKMeans with all options:
+
+java -classpath ./weka.jar weka.clusterers.MPCKMeans \
+	-D ../../Data/iris.arff \
+	-C ../../Data/iris.const.ascii \
+	-O iris.assignments \
+	-K 1 \
+	-T 4 \
+	-M weka.core.metrics.WeightedEuclidean \
+	-L weka.clusterers.metriclearners.WEuclideanLearner \
+	-G weka.clusterers.regularizers.Rayleigh \
+	-A weka.clusterers.assigners.SimpleAssigner \
+	-I weka.clusterers.initializers.WeightedFFNeighborhoodInit \
+	-N 3 \
+	-R 42 \
+	-l 0.01 \
+	-r 0.001 \
+	-m 1 \
+	-c 1 \
+	-i 2000 \
+	-B 20 \
+	-H iris.incoherence \
+Notes: 
+
+1. Only change the -D, -C, -N, -O, -K options for different datasets,
+can leave everything else as specified in the options above. 
+
+2. If -V specified, *no* transitive closure is taken for the constraints.
+
+3. MPCK-Means is constrained by default. Use -X only if you want to turn 
+constraint satisfaction off during the E-step.
+
+4. No need to give -N option if -K is specified.

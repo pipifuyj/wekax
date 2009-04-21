@@ -1,0 +1,7 @@
+Iterations	1	Incoh	0.2214441332088391
+Iterations	2	Incoh	0.2214441332088391
+Iterations	3	Incoh	0.2214441332088391
+Iterations	4	Incoh	0.2214441332088391
+Iterations	5	Incoh	0.2214441332088391
+Iterations	6	Incoh	0.2214441332088391
+Iterations	7	Incoh	0.2214441332088391
