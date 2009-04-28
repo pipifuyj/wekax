@@ -1,0 +1,34 @@
+#!/usr/bin/php
+<?php
+$usage="Usage: analyseMPCKMeans result[ rclass]";
+($result=@file($argv[1],FILE_IGNORE_NEW_LINES))||exit(__line__."$usage\n");
+if(!$argv[2]){
+	$argv[2]=explode(".",$argv[1]);
+	$argv[2]="{$argv[2][0]}.mat.rclass";
+}
+($rclass=@file($argv[2],FILE_IGNORE_NEW_LINES))||exit(__line__."$usage\n");
+while(list($k,$v)=each($result)){
+	$v=split("\t",$v);
+	$result[$k]=$v[1];
+}
+$clusterings=array_unique($result);
+$clusteringN=count($clusterings);
+$classes=array_values(array_unique($rclass));
+$classN=count($classes);
+for($i=0;$i<$clusteringN;$i++){
+	$cid=$i;
+	$rs=array_keys($result,$cid);
+	$count=array();
+	while(list($k,$r)=each($rs)){
+		$count[$rclass[$r]]++;
+	}
+	echo $cid,"\t";
+	for($j=0;$j<$classN;$j++){
+		$class=$classes[$j];
+		if(!$count[$class])$count[$class]=0;
+//		echo $class,": ";
+		echo $count[$class],"\t";
+	}
+	echo "\n";
+}
+?>

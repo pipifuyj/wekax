@@ -1,0 +1,12 @@
+#!/usr/bin/php
+<?php
+$links=file($argv[1]);
+$rlabel=file($argv[2]);
+$flag=$argv[3]?true:false;
+while(list($k,$v)=each($links)){
+	$c=split("\t",$v);
+	if(($rlabel[$c[0]]==$rlabel[$c[1]])==$flag){
+		echo $v;
+	}
+}
+?>

@@ -1,0 +1,20 @@
+#!/usr/bin/php
+<?php
+$usage="Usage file";
+($file=file($argv[1]))||exit("$usage\n");
+$constraints=array();
+while(list($k,$v)=each($file)){
+	$v=split(" ",substr($v,0,strpos($v,"(")-1));
+	$n=count($v);
+	for($i=0;$i<$n;$i++){
+		for($j=$i+1;$j<$n;$j++){
+			$constraints[$v[$i]]=$v[$j];
+		}
+	}
+}
+while(list($k,$v)=each($constraints)){
+	if($k<$v)echo $k,"\t",$v;
+	else echo $v,"\t",$k;
+	echo "\t1\n";
+}
+?>

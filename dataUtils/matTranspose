@@ -1,0 +1,27 @@
+#!/usr/bin/php
+<?php
+ini_set("memory_limit","1000M");
+$file=$argv[1];
+$matrix=file($file,FILE_IGNORE_NEW_LINES);
+$option=array_shift($matrix);
+$option=preg_split("/\s+/",trim($option));
+
+if($option[2]){
+	$rows=array();
+	while(list($k,$v)=each($matrix)){
+		$v=preg_split("/\s+/",trim($v));
+		while(list($k1,$v1)=each($v)){
+			$v1--;
+			list($k2,$v2)=each($v);
+			$rows[$v1][$k]=$v2;
+		}
+	}
+	while(list($i,$row)=each($rows)){
+		while(list($j,$v)=each($row)){
+			echo $j," ";
+		}
+		echo "\n";
+	}
+}else{
+}
+?>

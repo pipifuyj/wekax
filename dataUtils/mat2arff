@@ -1,0 +1,48 @@
+#!/usr/bin/php
+<?php
+$file=$argv[1];
+$matrix=file($file,FILE_IGNORE_NEW_LINES);
+$clabel=@file("$file.clabel",FILE_IGNORE_NEW_LINES);
+$rclass=@file("$file.rclass",FILE_IGNORE_NEW_LINES);
+$option=array_shift($matrix);
+$option=preg_split("/\s+/",trim($option));
+printf("@relation %s\n\n",$file);
+if($clabel){
+	for($i=0;$i<$option[1];$i++){
+		printf("@attribute %s numeric\n",$clabel[$i]);
+	}
+}else{
+	for($i=0;$i<$option[1];$i++){
+		printf("@attribute col%d numeric\n",$i);
+	}
+}
+if($rclass)echo "@attribute class {",join(",",array_unique($rclass)),"}\n";
+echo "\n@data\n";
+
+if($option[2]){
+	while(list($k,$v)=each($matrix)){
+		$v=preg_split("/\s+/",trim($v));
+		$row=array();
+		while(list($k1,$v1)=each($v)){
+			$v1--;
+			list($k2,$v2)=each($v);
+			$row[$v1]=$v2;
+		}
+		echo "{";
+		ksort($row);
+		if(list($key,$value)=each($row))echo $key," ",$value;
+		while(list($key,$value)=each($row)){
+			echo ",",$key," ",$value;
+		}
+		if($rclass)echo ",{$option[1]} $rclass[$k]}\n";
+		else echo "}\n";
+	}
+}else{
+	while(list($k,$v)=each($matrix)){
+		$row=preg_split("/\s+/",trim($v));
+		echo join(",",$row);
+		if($rclass)echo ",",$rclass[$k];
+		echo "\n";
+	}
+}
+?>

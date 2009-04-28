@@ -1,0 +1,12 @@
+#!/usr/bin/php
+<?php
+$usage="Usage: rmline file pattern";
+($file=file($argv[1]))||exit("$usage\n");
+($pattern=$argv[2])||exit("$usage\n");
+while(list($k,$v)=each($file)){
+	$t=count(preg_split("/\s+/",trim($v)));
+	if($t>$pattern){
+		echo $v;
+	}
+}
+?>
