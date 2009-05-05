@@ -1,7 +1,19 @@
 #!/usr/bin/php
 <?php
+/**
+* filter(using rlabel) for links.
+* if one link's two targets share the same rlabel or not, it will filter through, depending on the flag is specified or not(default).
+* rlabel files: if the first line contains whites space, each line will be split by white space, then the last item will be the label.
+*/
 $links=file($argv[1]);
 $rlabel=file($argv[2]);
+if(count(preg_split("/\s+/",trim($rlabel[0])))){
+	while(list($k,$v)=each($rlabel)){
+		$v=preg_split("/\s+/",trim($v));
+		$v=array_pop($v);
+		$rlabel[$k]=$v;
+	}
+}
 $flag=$argv[3]?true:false;
 while(list($k,$v)=each($links)){
 	$c=split("\t",$v);

@@ -1,5 +1,9 @@
 #!/usr/bin/php
 <?php
+/**
+* transpose the matrix in a mat file(the format of mat file is defined in cluto)
+* the output's indexes of rows and columns start from zero.
+*/
 ini_set("memory_limit","1000M");
 $file=$argv[1];
 $matrix=file($file,FILE_IGNORE_NEW_LINES);

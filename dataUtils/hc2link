@@ -1,9 +1,13 @@
 #!/usr/bin/php
 <?php
+/**
+* retrieve links from hypercliques(the output of hybrid). the links can be used as constraints in MPCKMeans.
+*/
 $usage="Usage file";
-($file=file($argv[1]))||exit("$usage\n");
+($file=$argv[1])||exit("$usage\n");
+($f=fopen($file,"r"))||exit("Cann't open $file\n");
 $constraints=array();
-while(list($k,$v)=each($file)){
+while($v=fgets($f)){
 	$v=split(" ",substr($v,0,strpos($v,"(")-1));
 	$n=count($v);
 	for($i=0;$i<$n;$i++){
