@@ -1,15 +1,25 @@
 #!/usr/bin/php
 <?php
-$usage="Usage: analyseMPCKMeans result[ rclass]";
+$usage="Usage: sumline result[ rclass]";
 ($result=@file($argv[1],FILE_IGNORE_NEW_LINES))||exit(__line__."$usage\n");
 if(!$argv[2]){
 	$argv[2]=explode(".",$argv[1]);
 	$argv[2]="{$argv[2][0]}.mat.rclass";
 }
 ($rclass=@file($argv[2],FILE_IGNORE_NEW_LINES))||exit(__line__."$usage\n");
-while(list($k,$v)=each($result)){
-	$v=split("\t",$v);
-	$result[$k]=$v[1];
+if(count(preg_split("/\s+/",trim($result[0])))){
+	while(list($k,$v)=each($result)){
+		$v=preg_split("/\s+/",trim($v));
+		$v=array_pop($v);
+		$result[$k]=$v;
+	}
+}
+if(count(preg_split("/\s+/",trim($rclass[0])))){
+	while(list($k,$v)=each($rclass)){
+		$v=preg_split("/\s+/",trim($v));
+		$v=array_pop($v);
+		$rclass[$k]=$v;
+	}
 }
 $clusterings=array_unique($result);
 $clusteringN=count($clusterings);
@@ -22,11 +32,9 @@ for($i=0;$i<$clusteringN;$i++){
 	while(list($k,$r)=each($rs)){
 		$count[$rclass[$r]]++;
 	}
-	echo $cid,"\t";
 	for($j=0;$j<$classN;$j++){
 		$class=$classes[$j];
 		if(!$count[$class])$count[$class]=0;
-//		echo $class,": ";
 		echo $count[$class],"\t";
 	}
 	echo "\n";

@@ -1,0 +1,54 @@
+#!/usr/bin/php
+<?php
+/**
+* Usage: matEval file
+* the script evaluate the confusion (aquare) matrix of clustering result.
+*/
+$file=file($argv[1],FILE_IGNORE_NEW_LINES);
+$n=count($file);
+$m=array();//matrix
+$m1=array();//row
+$m2=array();//column
+$M=0;
+for($i=0;$i<$n;$i++){
+	$m[$i]=preg_split("/\s+/",trim($file[$i]));
+	for($j=0;$j<$n;$j++){
+		$m1[$i]+=$m[$i][$j];
+		$m2[$j]+=$m[$i][$j];
+		$M+=$m[$i][$j];
+	}
+}
+$p=array();
+$r=array();
+$f=array();
+$Percent=array();
+$Entropy=array();
+$Purity=array();
+for($i=0;$i<$n;$i++){
+	$Entropy[$i]=0;
+	$Purity[$i]=0;
+	$Percent[$i]=$m1[$i]/$M;
+	for($j=0;$j<$n;$j++){
+		if($m[$i][$j]){
+			$p[$i][$j]=$m[$i][$j]/$m1[$i];
+			$r[$i][$j]=$m[$i][$j]/$m2[$j];
+			$f[$i][$j]=(2*$p[$i][$j]*$r[$i][$j])/($p[$i][$j]+$r[$i][$j]);
+			$Entropy[$i]+=-$p[$i][$j]*log($p[$i][$j],2);
+			if($p[$i][$j]>$Purity[$i])$Purity[$i]=$p[$i][$j];
+		}else{
+			$p[$i][$j]=0;
+			$r[$i][$j]=0;
+			$f[$i][$j]="-";
+		}
+		printf("%.3f/%.3f/%.3f\t",$p[$i][$j],$r[$i][$j],$f[$i][$j]);
+	}
+	printf("%.3f\t%.3f\t%.3f\n",$Entropy[$i],$Purity[$i],$Percent[$i]);
+}
+$E=$P=0;
+for($i=0;$i<$n;$i++){
+	$E+=$Percent[$i]*$Entropy[$i];
+	$P+=$Percent[$i]*$Purity[$i];
+	printf("%17d\t",$m2[$i]);
+}
+printf("%.3f\t%.3f\t%d\n",$E,$P,$M);
+?>
