@@ -1,9 +1,10 @@
 #!/usr/bin/php
 <?php
 /**
-* Usage: matEval file
+* Usage: matEval file -o entropy|purity|fmeasure
 * the script evaluate the confusion (aquare) matrix of clustering result.
 */
+$stdout="";
 $file=file($argv[1],FILE_IGNORE_NEW_LINES);
 $n=count($file);
 $m=array();//matrix
@@ -24,6 +25,7 @@ $f=array();
 $Percent=array();
 $Entropy=array();
 $Purity=array();
+$Fuck=array();
 for($i=0;$i<$n;$i++){
 	$Entropy[$i]=0;
 	$Purity[$i]=0;
@@ -35,20 +37,46 @@ for($i=0;$i<$n;$i++){
 			$f[$i][$j]=(2*$p[$i][$j]*$r[$i][$j])/($p[$i][$j]+$r[$i][$j]);
 			$Entropy[$i]+=-$p[$i][$j]*log($p[$i][$j],2);
 			if($p[$i][$j]>$Purity[$i])$Purity[$i]=$p[$i][$j];
+			if($f[$i][$j]>$Fuck[$j])$Fuck[$j]=$f[$i][$j];
 		}else{
 			$p[$i][$j]=0;
 			$r[$i][$j]=0;
 			$f[$i][$j]="-";
 		}
-		printf("%.3f/%.3f/%.3f\t",$p[$i][$j],$r[$i][$j],$f[$i][$j]);
+		$stdout.=sprintf("%.3f/%.3f/%.3f ",$p[$i][$j],$r[$i][$j],$f[$i][$j]);
 	}
-	printf("%.3f\t%.3f\t%.3f\n",$Entropy[$i],$Purity[$i],$Percent[$i]);
+	$stdout.=sprintf("%5d/%.3f/%.3f\n",$m1[$i],$Purity[$i],$Entropy[$i]);
 }
-$E=$P=0;
+$E=$P=$F=0;
 for($i=0;$i<$n;$i++){
 	$E+=$Percent[$i]*$Entropy[$i];
 	$P+=$Percent[$i]*$Purity[$i];
-	printf("%17d\t",$m2[$i]);
+	$F+=$m2[$i]/$M*$Fuck[$i];
+	$stdout.=sprintf("%11d/%.3f ",$m2[$i],$Fuck[$i]);
 }
-printf("%.3f\t%.3f\t%d\n",$E,$P,$M);
+$stdout.=sprintf("%.3f/%.3f/%.3f\n",$F,$P,$E);
+$opt=getopt("o:");
+switch($opt['o']){
+	case "entropy":
+	for($i=0;$i<$n;$i++){
+		printf("%.3f\n",$Entropy[$i]);
+	}
+	printf("%.3f\n",$E);
+	break;
+	case "purity":
+	for($i=0;$i<$n;$i++){
+		printf("%.3f\n",$Purity[$i]);
+	}
+	printf("%.3f\n",$P);
+	break;
+	case "fmeasure":
+	for($i=0;$i<$n;$i++){
+		printf("%.3f ",$Fuck[$i]);
+	}
+	printf("%.3f\n",$F);
+	break;
+	default:
+	echo $stdout;
+	break;
+}
 ?>
