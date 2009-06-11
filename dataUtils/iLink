@@ -1,0 +1,197 @@
+#!/usr/bin/php
+<?php
+class iLink{
+	public $item;
+	public $label;
+	public $link;
+	public function iLink(){
+		$this->label=array();
+		$this->link=array();
+		return "initialize iLink.";
+	}
+	public function err($string){
+		printf("%s\n",$string);
+	}
+	public function clearItems(){
+		$this->item=array();
+	}
+	public function clearLabels(){
+		$this->label=array();
+	}
+	public function clearLinks(){
+		$this->link=array();
+	}
+	public function countItems(){
+		return count($this->item);
+	}
+	public function countLabels($label=null){
+		if($label===null)	return count($this->label);
+		else return count($this->getLabels($label));
+	}
+	public function countLinks($link=1){
+		$count=0;
+		foreach($this->link as $a=>$os){
+			foreach($os as $b=>$l){
+				if($a<$b&&$l==$link)$count++;
+			}
+		}
+		return $count;
+	}
+	public function setLabel($o,$label){
+		$this->label[$o]=$label;
+		return "setLabel $o be $label.";
+	}
+	public function setLink($a,$b,$link=1){
+		if($link)$this->link[$a][$b]=$this->link[$b][$a]=$link;
+		else{
+			unset($this->link[$a][$b]);
+			unset($this->link[$b][$a]);
+		}
+		return "setLink $a and $b be $link.";
+	}
+	public function getLabel($o){
+		return $this->label[$o];
+	}
+	public function getLink($a,$b){
+		return $this->link[$a][$b];
+	}
+	public function getLabels($label){
+		return array_keys($this->label,$label);
+	}
+	public function getLinks($o,$l=1){
+		return array_keys($this->link[$o],$l);
+	}
+	public function showItemLabels(){
+		foreach($this->item as $o){
+			$label=$this->getLabel($o);
+			printf("%d\t%s\n",$o,$label);
+		}
+	}
+	public function showFilteredLinks($flag=false){
+		$c=0;
+		foreach($this->link as $a=>$os){
+			foreach($os as $b=>$link){
+				if($a<$b){
+					$la=$this->getLabel($a);
+					$lb=$this->getLabel($b);
+					if((($la==$lb)==($link==1))==$flag){
+						$c++;
+						printf("%d\t%d\t%d\n",$a,$b,$link);
+					}
+				}
+			}
+		}
+		return "show $c $flag links.";
+	}
+	public function readItems($path){
+		$items=@file($path,FILE_IGNORE_NEW_LINES);
+		if(!$items)return $this->err("Can not access to $path");
+		$c=0;
+		foreach($items as $line)if($line){
+			$c++;
+			$line=preg_split("/\s+/",trim($line));
+			$item=array_shift($line);
+			$this->item[]=$item;
+		}
+		return "read $c items from $path.";
+	}
+	public function readLabels($path){
+		$labels=@file($path,FILE_IGNORE_NEW_LINES);
+		if(!$labels)return $this->err("Can not access to $path");
+		$count=count(preg_split("/\s+/",trim($labels[0])));
+		if($count==1){
+			$c=0;
+			foreach($labels as $o=>$label)if($label){
+				$c++;
+				$this->setLabel($o,$label);
+			}
+		}elseif($count>1){
+			$c=0;
+			foreach($labels as $line)if($line){
+				$c++;
+				$line=preg_split("/\s+/",trim($line));
+				$o=array_shift($line);
+				$label=array_pop($line);
+				$this->setLabel($o,$label);
+			}
+		}
+		return "read $c labels from $path.";
+	}
+	public function readLinks($path){
+		$f=@fopen($path,"r");
+		if(!$f)return $this->err("Can not access to $path");
+		$c=0;
+		while(fscanf($f,"%d\t%d\t%d\n",$a,$b,$link)==3){
+			$c++;
+			$this->setLink($a,$b,$link);
+		}
+		fclose($f);
+		return "read $c links from $path.";
+	}
+	public function writeLinks($path){
+		$f=@fopen($path,"w");
+		if(!$f)return $this->err("Can not write to $path");
+		$c=0;
+		foreach($this->link as $a=>$os){
+			foreach($os as $b=>$link){
+				if($a<$b){
+					$c++;
+					fprintf($f,"%d\t%d\t%d\n",$a,$b,$link);
+				}
+			}
+		}
+		return "write $c links to $path.";
+	}
+	public function withLabels(){
+		$n=$this->countLabels();
+		$keys=array_keys($this->label);
+		for($i=0;$i<$n;$i++)for($j=$i+1;$j<$n;$j++){
+			$a=$keys[$i];
+			$b=$keys[$j];
+			$link=$this->getLabel($a)==$this->getLabel($b)?1:-1;
+			$this->setLink($a,$b,$link);
+		}
+		for($i=0;$i<$n;$i++)for($j=$i+1;$j<$n;$j++){
+			$a=$keys[$i];
+			$b=$keys[$j];
+			$link=$this->getLink($a,$b);
+			$os=$this->getLinks($a,1);
+			foreach($os as $o)$this->setLink($o,$b,$link);
+			$os=$this->getLinks($b,1);
+			foreach($os as $o)$this->setLink($o,$a,$link);
+			if($link==1){
+				$os=$this->getLinks($a,-1);
+				foreach($os as $o)$this->setLink($o,$b,-1);
+				$os=$this->getLinks($b,-1);
+				foreach($os as $o)$this->setLink($o,$a,-1);
+			}
+		}
+		return "with $n labels.";
+	}
+	public function __call($method,$args){
+		$command="$method ".implode(" ",$args);
+		printf(`$command`);
+	}
+	public function help(){
+		return "You can input METHOD(with PARAMS) and shell command.";
+	}
+	public function main($argc,$argv){
+		$f=fopen("php://stdin","r");
+		printf("Welcome to iLink!\n>>>");
+		while($s=fgets($f)){
+			$a=preg_split("/\s+/",trim($s));
+			$method=array_shift($a);
+			printf("++++++++++++++++++++++++++++++\n");
+			printf("+ Method: %s\n",$method);
+			printf("+ Params: %s\n",implode(",",$a));
+			printf("++++++++++++++++++++++++++++++\n");
+			$return=call_user_method_array($method,$this,$a);
+			print_r($return);
+			printf("\n>>>");
+		}
+	}
+}
+ini_set("memory_limit","1000M");
+$iLink=new iLink();
+$iLink->main($argc,$argv);
+?>

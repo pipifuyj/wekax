@@ -21,12 +21,12 @@ if(count(preg_split("/\s+/",trim($rclass[0])))){
 		$rclass[$k]=$v;
 	}
 }
-$clusterings=array_unique($result);
+$clusterings=array_values(array_unique($result));
 $clusteringN=count($clusterings);
 $classes=array_values(array_unique($rclass));
 $classN=count($classes);
 for($i=0;$i<$clusteringN;$i++){
-	$cid=$i;
+	$cid=$clusterings[$i];
 	$rs=array_keys($result,$cid);
 	$count=array();
 	while(list($k,$r)=each($rs)){
