@@ -1,16 +1,22 @@
 #!/usr/bin/php
 <?php
 class iLink{
+	public $clique;
 	public $item;
 	public $label;
 	public $link;
 	public function iLink(){
+		$this->clique=array();
+		$this->item=array();
 		$this->label=array();
 		$this->link=array();
 		return "initialize iLink.";
 	}
 	public function err($string){
 		printf("%s\n",$string);
+	}
+	public function clearCliques(){
+		$this->clique=array();
 	}
 	public function clearItems(){
 		$this->item=array();
@@ -20,6 +26,9 @@ class iLink{
 	}
 	public function clearLinks(){
 		$this->link=array();
+	}
+	public function countCliques(){
+		return count($this->clique);
 	}
 	public function countItems(){
 		return count($this->item);
@@ -61,6 +70,30 @@ class iLink{
 	public function getLinks($o,$l=1){
 		return array_keys($this->link[$o],$l);
 	}
+	public function showCliques($N=100){
+		for($i=0;$i<$N;$i++){
+			$clique=$this->clique[$i];
+			$items=$clique[0];
+			$sup=$clique[1];
+			$conf=$clique[2];
+			printf("%s(%s %s)\n",implode(" ",$items),$sup,$conf);
+		}
+	}
+	public function showCliqueLabels($N=100){
+		$n=$this->countCliques();
+		$c=0;
+		$f=array();
+		for($i=0;$i<$n&&$c<$N;$i++){
+			$clique=$this->clique[$i];
+			$items=$clique[0];
+			foreach($items as $o)if(!$f[$o]){
+				$c++;
+				$f[$o]=true;
+				$label=$this->getLabel($o);
+				printf("%d\t%s\n",$o,$label);
+			}
+		}
+	}
 	public function showItemLabels(){
 		foreach($this->item as $o){
 			$label=$this->getLabel($o);
@@ -82,6 +115,23 @@ class iLink{
 			}
 		}
 		return "show $c $flag links.";
+	}
+	public function readCliques($path){
+		$cliques=@file($path,FILE_IGNORE_NEW_LINES);
+		if(!$cliques)return $this->err("Can not access to $path");
+		$c=0;
+		foreach($cliques as $line)if($line){
+			$c++;
+			preg_match("/^(.+)\((.+)\)/",$line,$line);
+			$items=preg_split("/\s+/",trim($line[1]));
+			$line=preg_split("/\s+/",trim($line[2]));
+			$sup=$line[0];
+			if($pos=strpos($sup,"%"))$sup=substr($sup,0,$pos)/100;
+			$conf=$line[1];
+			if($pos=strpos($conf,"%"))$conf=substr($conf,0,$pos)/100;
+			$this->clique[]=array($items,$sup,$conf);
+		}
+		return "read $c cliques from $path.";
 	}
 	public function readItems($path){
 		$items=@file($path,FILE_IGNORE_NEW_LINES);
@@ -141,6 +191,34 @@ class iLink{
 			}
 		}
 		return "write $c links to $path.";
+	}
+	public function sortCliques(){
+		$items=array();
+		$sup=array();
+		$conf=array();
+		foreach($this->clique as $clique){
+			$items[]=$clique[0];
+			$sup[]=$clique[1];
+			$conf[]=$clique[2];
+		}
+		array_multisort($conf,$sup,$items);
+		$n=$this->countCliques();
+		$this->clearCliques();
+		for($i=0;$i<$n;$i++){
+			$this->clique[]=array($items[$i],$sup[$i],$conf[$i]);
+		}
+		return "sort cliques.";
+	}
+	public function withCliques(){
+		$n=$this->countCliques();
+		foreach($this->clique as $clique){
+			$items=$clique[0];
+			$n=count($items);
+			for($i=0;$i<$n;$i++)for($j=$i+1;$j<$n;$j++){
+				$this->setLink($items[$i],$items[$j],1);
+			}
+		}
+		return "with $n cliques.";
 	}
 	public function withLabels(){
 		$n=$this->countLabels();
