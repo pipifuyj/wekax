@@ -93,6 +93,7 @@ class iLink{
 				printf("%d\t%s\n",$o,$label);
 			}
 		}
+		return "show $c clique labels.";
 	}
 	public function showItemLabels(){
 		foreach($this->item as $o){
@@ -209,6 +210,21 @@ class iLink{
 		}
 		return "sort cliques.";
 	}
+	public function generateRandomItems($N=100){
+		$min=0;
+		$max=$this->countLabels()-1;
+		$c=0;
+		$f=array();
+		while($c<$N){
+			$o=rand($min,$max);
+			if(!$f[$o]){
+				$c++;
+				$f[$o]=true;
+				$this->item[]=$o;
+			}
+		}
+		return "generate $c items.";
+	}
 	public function withCliques(){
 		$n=$this->countCliques();
 		foreach($this->clique as $clique){
@@ -249,6 +265,11 @@ class iLink{
 	public function __call($method,$args){
 		$command="$method ".implode(" ",$args);
 		printf(`$command`);
+	}
+	public function cd($path=""){
+		printf(`cd $path`);
+		chdir($path);
+		return $this->pwd();
 	}
 	public function help(){
 		return "You can input METHOD(with PARAMS) and shell command.";
