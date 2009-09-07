@@ -79,6 +79,47 @@ class iLink{
 			printf("%s(%s %s)\n",implode(" ",$items),$sup,$conf);
 		}
 	}
+	public function drawCliques($sup=0,$conf=0){
+		$image=imagecreate(1000,1000);
+		imagecolorallocate($image,0,0,0);
+		$color=imagecolorallocate($image,255,0,0);
+		if(!$sup||!$conf)foreach($this->clique as $clique){
+			if($clique[1]>$sup)$sup=$clique[1];
+			if($clique[2]>$conf)$conf=$clique[2];
+		}
+		foreach($this->clique as $clique){
+			$x=1000*$clique[1]/$sup;
+			$y=1000*$clique[2]/$conf;
+			imagesetpixel($image,$x,$y,$color);
+		}
+		$file="/tmp/$sup-$conf-iLink.png";
+		imagepng($image,$file);
+		return "draw cliques to $file. sup=$sup, conf=$conf.";
+	}
+	public function showFilteredCliques(){
+		$c=0;
+		foreach($this->clique as $clique){
+			$flag=false;
+			$items=$clique[0];
+			$n=count($items);
+			for($i=0;$i<$n;$i++){
+				for($j=$i+1;$j<$n;$j++){
+					$I=$this->getLabel($items[$i]);
+					$J=$this->getLabel($items[$j]);
+					if($I!=$J){
+						$flag=true;
+						break;
+					}
+				}
+				if($flag)break;
+			}
+			if($flag){
+				$c++;
+				printf("%s(%s %s)\n",implode(" ",$items),$clique[1],$clique[2]);
+			}
+		}
+		return "show $c filtered cliques.";
+	}
 	public function showCliqueLabels($N=100){
 		$n=$this->countCliques();
 		$c=0;
@@ -226,7 +267,7 @@ class iLink{
 		return "generate $c items.";
 	}
 	public function withCliques(){
-		$n=$this->countCliques();
+		$N=$this->countCliques();
 		foreach($this->clique as $clique){
 			$items=$clique[0];
 			$n=count($items);
@@ -234,7 +275,7 @@ class iLink{
 				$this->setLink($items[$i],$items[$j],1);
 			}
 		}
-		return "with $n cliques.";
+		return "with $N cliques.";
 	}
 	public function withLabels(){
 		$n=$this->countLabels();
