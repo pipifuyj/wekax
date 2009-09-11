@@ -79,24 +79,33 @@ class iLink{
 			printf("%s(%s %s)\n",implode(" ",$items),$sup,$conf);
 		}
 	}
-	public function drawCliques($sup=0,$conf=0){
-		$image=imagecreate(1000,1000);
+	public function drawCliques($sup=0,$conf=0,$scale=1000){
+		$image=imagecreate($scale,$scale);
 		imagecolorallocate($image,0,0,0);
-		$color=imagecolorallocate($image,255,0,0);
+		$red=imagecolorallocate($image,255,0,0);
+		$blue=imagecolorallocate($image,0,255,0);
 		if(!$sup||!$conf)foreach($this->clique as $clique){
 			if($clique[1]>$sup)$sup=$clique[1];
 			if($clique[2]>$conf)$conf=$clique[2];
 		}
 		foreach($this->clique as $clique){
-			$x=1000*$clique[1]/$sup;
-			$y=1000*$clique[2]/$conf;
-			imagesetpixel($image,$x,$y,$color);
+			$x=$scale*$clique[1]/$sup;
+			$y=$scale*$clique[2]/$conf;
+			$itemCount=count($clique[0]);
+			$label=array();
+			foreach($clique[0] as $item){
+				$label[$this->getLabel($item)]=true;
+			}
+			$labelCount=count($label);
+			imagefilledarc($image,$x,$y,$itemCount,$itemCount,0,360,$red,IMG_ARC_PIE);
+			imagefilledarc($image,$x,$y,$labelCount,$labelCount,0,360,$blue,IMG_ARC_PIE);
+			imagesetpixel($image,$x,$y,$red);
 		}
 		$file="/tmp/$sup-$conf-iLink.png";
 		imagepng($image,$file);
 		return "draw cliques to $file. sup=$sup, conf=$conf.";
 	}
-	public function showFilteredCliques(){
+	public function showFilteredCliques($stdout="/dev/stdout"){
 		$c=0;
 		foreach($this->clique as $clique){
 			$flag=false;
@@ -115,7 +124,8 @@ class iLink{
 			}
 			if($flag){
 				$c++;
-				printf("%s(%s %s)\n",implode(" ",$items),$clique[1],$clique[2]);
+				$s=sprintf("%s(%s %s)\n",implode(" ",$items),$clique[1],$clique[2]);
+				file_put_contents($stdout,$s,FILE_APPEND);
 			}
 		}
 		return "show $c filtered cliques.";
