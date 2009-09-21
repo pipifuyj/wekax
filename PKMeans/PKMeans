@@ -1,0 +1,48 @@
+#!/usr/bin/php
+<?php
+require("PKMeans.class.php");
+switch($argc){
+case 1:
+case 2:
+	print("Usage: PKMeans datafile number\n");
+	break;
+default:
+	$file=file($argv[1]);
+	list($k,$v)=each($file);
+	$v=trim($v);
+	$options=explode(" ",$v);
+	if($options[2]=="0")array_pop($options);
+	switch(count($options)){
+	case 1:
+	case 2:
+		$data=array();
+		while(list($k,$v)=each($file)){
+			$k--;
+			$v=trim($v);
+			$v=preg_split("/[ \t]+/",$v);
+			$data[$k]=$v;
+		}
+		break;
+	case 3:
+	default:
+		$data=array();
+		while(list($k,$v)=each($file)){
+			$k--;
+			$data[$k]=array_fill(0,$options[1],0);
+			$v=trim($v);
+			$v=preg_split("/[ \t]+/",$v);
+			while(list($kk,$v1)=each($v)){
+				$v1--;
+				list($kk,$v2)=each($v);
+				$data[$k][$v1]=$v2;
+			}
+		}
+		break;
+	}
+	$k=$argv[2];
+	$PKMeans=new PKMeans($data,$k);
+	$PKMeans->main();
+	print(implode("\n",$PKMeans->p));
+	print("\n");
+}
+?>
