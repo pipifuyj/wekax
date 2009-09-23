@@ -187,8 +187,19 @@ class iLink{
 			}
 		}
 		array_multisort($D,"SORT_DESC",$A,$B);
-		for($i=0,$ii=$N/2;$i<$ii;$i++){
-			printf("%d\t%s\n%d\t%s\n",$A[$i],$this->getLabel($A[$i]),$B[$i],$this->getLabel($B[$i]));
+		$flag=array();
+		$c=0;
+		for($i=0;$c<$N;$i++){
+			if(!$flag[$A[$i]]){
+				$flag[$A[$i]]=true;
+				$c++;
+				printf("%d\t%s\n",$A[$i],$this->getLabel($A[$i]));
+			}
+			if(!$flag[$B[$i]]){
+				$flag[$B[$i]]=true;
+				$c++;
+				printf("%d\t%s\n",$B[$i],$this->getLabel($B[$i]));
+			}
 		}
 	}
 	public function showItemLabels(){
