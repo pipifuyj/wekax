@@ -5,12 +5,32 @@ class iLink{
 	public $item;
 	public $label;
 	public $link;
+	public $data;
 	public function iLink(){
 		$this->clique=array();
 		$this->item=array();
 		$this->label=array();
 		$this->link=array();
+		$this->data=array();
 		return "initialize iLink.";
+	}
+	public function distance($d1,$d2){
+		$A=$B=$AB=0;
+		foreach($d1 as $i=>$v1)if(is_numeric($v1)){
+			$A+=$v1*$v1;
+			if(is_numeric($v2=$d2[$i])){
+				unset($d2[$i]);
+				$B+=$v2*$v2;
+				$AB+=$v1*$v2;
+			}
+		}
+		foreach($d2 as $i=>$v2)if(is_numeric($v2)){
+			$B+=$v2*$v2;
+		}
+		return 1-$AB/sqrt($A*$B);
+	}
+	public function getDistance($a,$b){
+		return $this->distance($this->data[$a],$this->data[$b]);
 	}
 	public function err($string){
 		printf("%s\n",$string);
@@ -26,6 +46,9 @@ class iLink{
 	}
 	public function clearLinks(){
 		$this->link=array();
+	}
+	public function clearData(){
+		$this->data=array();
 	}
 	public function countCliques(){
 		return count($this->clique);
@@ -146,6 +169,28 @@ class iLink{
 		}
 		return "show $c clique labels.";
 	}
+	
+	/**
+	* Print the labels of items in links ordered by items' distances.
+	* @param integer $N the number of labels
+	* @return string
+	*/
+	public function showLinkLabels($N){		
+		$A=array();
+		$B=array();
+		$D=array();
+		foreach($this->link as $a=>$os){
+			foreach($os as $b=>$link)if($a<$b){
+				$A[]=$a;
+				$B[]=$b;
+				$D[]=$this->getDistance($a,$b);
+			}
+		}
+		array_multisort($D,"SORT_DESC",$A,$B);
+		for($i=0,$ii=$N/2;$i<$ii;$i++){
+			printf("%d\t%s\n%d\t%s\n",$A[$i],$this->getLabel($A[$i]),$B[$i],$this->getLabel($B[$i]));
+		}
+	}
 	public function showItemLabels(){
 		foreach($this->item as $o){
 			$label=$this->getLabel($o);
@@ -229,6 +274,40 @@ class iLink{
 		}
 		fclose($f);
 		return "read $c links from $path.";
+	}
+	
+	/**
+	* Read data from arff formated file.
+	* @param $path
+	* @return string
+	*/
+	public function readData($path){
+		$f=@fopen($path,"r");
+		if(!$f)return $this->err("Can not access to $path");
+		while($s=fgets($f)){
+			$s=trim($s);
+			if($s=="@data"){
+				$c=0;
+				while($s=trim(fgets($f))){
+					if(substr($s,0,1)=="{"){
+						$s=preg_split("/\s*,\s*/",substr($s,1,-1));
+						foreach($s as $ss){
+							$ss=preg_split("/\s+/",$ss);
+							$this->data[$c][$ss[0]]=$ss[1];
+						}
+					}else{
+						$this->data[$c]=preg_split("/\s*,\s*/",$s);
+					}
+					$c++;
+				}
+				
+			}
+		}
+		printf("0:\n");
+		print_r($this->data[0]);
+		printf("%d:\n",$c-1);
+		print_r($this->data[$c-1]);
+		return "read $c data from $path";
 	}
 	public function writeLinks($path){
 		$f=@fopen($path,"w");
