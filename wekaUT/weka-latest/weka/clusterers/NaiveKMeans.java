@@ -6,7 +6,7 @@ import weka.core.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
-public class VMeans extends Clusterer implements OptionHandler{
+public class NaiveMeans extends Clusterer implements OptionHandler{
 	private Instances instances;
 	private ReplaceMissingValues replaceMissingValues;
 	private int K;
@@ -117,7 +117,7 @@ public class VMeans extends Clusterer implements OptionHandler{
 	
 	public static void main(String [] argv){
 		try{
-			System.out.println(ClusterEvaluation.evaluateClusterer(new VMeans(),argv));
+			System.out.println(ClusterEvaluation.evaluateClusterer(new NaiveMeans(),argv));
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 			e.printStackTrace();
