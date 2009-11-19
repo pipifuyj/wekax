@@ -62,7 +62,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	
 	public int clusterInstance(Instance instance) throws Exception{
 		double min=Integer.MAX_VALUE;
-		int assignment;
+		int assignment=0;
 		for(int i=0;i<K;i++){
 			double d=distance(instance,centroids.instance(i));
 			if(d<min){
