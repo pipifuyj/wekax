@@ -1,8 +1,8 @@
 # ** Change this to your wekaUT install directory **
-INSTALL_DIR = /u/ml/users/sugato/groupcode/wekaUT
+INSTALL_DIR = /home/chuanren/svn/wekax.googlecode.com/wekaUT
 
 # Java version to use
-JAVADIR = /lusr/java2
+JAVADIR = /home/system/lib/j2sdk1.4.2_19
 
 # Checkout name
 VERSION_TO_CHECKOUT = weka335
