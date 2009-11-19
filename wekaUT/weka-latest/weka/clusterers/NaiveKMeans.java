@@ -13,7 +13,7 @@ public class NaiveMeans extends Clusterer implements OptionHandler{
 	private Instances centroids;
 	private int [] assignments;
 	
-	public void buildClusterer(instances data) throw Exception{
+	public void buildClusterer(instances data) throws Exception{
 		replaceMissingValues=new ReplaceMissingValues();
 		replaceMissingValues.setInputFormat(data);
 		instances=Filter.useFilter(data,replaceMissingValues);
