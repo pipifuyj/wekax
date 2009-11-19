@@ -13,7 +13,7 @@ public class NaiveMeans extends Clusterer implements OptionHandler{
 	private Instances centroids;
 	private int [] assignments;
 	
-	public void buildClusterer(instances data) throws Exception{
+	public void buildClusterer(Instances data) throws Exception{
 		replaceMissingValues=new ReplaceMissingValues();
 		replaceMissingValues.setInputFormat(data);
 		instances=Filter.useFilter(data,replaceMissingValues);
@@ -61,7 +61,7 @@ public class NaiveMeans extends Clusterer implements OptionHandler{
 	}
 	
 	public int clusterInstance(Instance instance) throws Exception{
-		double min=Interger.MAX_VALUE;
+		double min=Integer.MAX_VALUE;
 		int assignment;
 		for(int i=0;i<K;i++){
 			double d=distance(instance,centroids.instance(i));
@@ -108,7 +108,7 @@ public class NaiveMeans extends Clusterer implements OptionHandler{
 		String [] options=new String[2];
 		int current=0;
 		options[current++]="-N";
-		options[current++]=K.toString();
+		options[current++]=Integer.toString(K);
 		while(current<options.length){
 			options[current++]="";
 		}
