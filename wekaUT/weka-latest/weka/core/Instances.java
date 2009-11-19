@@ -645,50 +645,41 @@ public class Instances implements Serializable {
    * a floating-point value. Returns 0 if the attribute is neither nominal nor 
    * numeric. If all values are missing it returns zero.
    *
-   * @param attIndex the attribute's index
+   * @param att(Index) the attribute('s index)
    * @return the mean or the mode
    */
+   public final double mean(int attIndex){
+   	   double found=0,result=0;
+   	   for(int i=0;i<numInstances();i++)if(!instance(i).isMissing(attIndex)){
+   	   	   found+=instance(i).weight();
+   	   	   result+=instance(i).weight()*instance(i).value(attIndex);
+   	   }
+   	   if(found!=0)result/=found;
+   	   return result;
+   }
+   public final double mean(Attribute att){
+   	   return mean(att.index());
+   }
+   public final double mode(int attIndex){
+   	   int [] counts=new int[attribute(attIndex).numValues()];
+   	   for(int i=0;i<numInstances();i++)if(!instance(i).isMissing(attIndex)){
+   	   	   counts[(int)instance(i).value(attIndex)]+=instance(i).weight();
+   	   }
+   	   return (double)Utils.maxIndex(counts);
+   }
+   public final double mode(Attribute att){
+   	   return mode(att.index());
+   }
   public final double meanOrMode(int attIndex) {
-
-    double result, found;
-    int [] counts;
-
     if (attribute(attIndex).isNumeric()) {
-      result = found = 0;
-      for (int j = 0; j < numInstances(); j++) {
-	if (!instance(j).isMissing(attIndex)) {
-	  found += instance(j).weight();
-	  result += instance(j).weight()*instance(j).value(attIndex);
-	}
-      }
-      if (Utils.eq(found, 0)) {
-	return 0;
-      } else {
-	return result / found;
-      }
+    	return mean(attIndex);
     } else if (attribute(attIndex).isNominal()) {
-      counts = new int[attribute(attIndex).numValues()];
-      for (int j = 0; j < numInstances(); j++) {
-	if (!instance(j).isMissing(attIndex)) {
-	  counts[(int) instance(j).value(attIndex)] += instance(j).weight();
-	}
-      }
-      return (double)Utils.maxIndex(counts);
+    	return mode(attIndex);
     } else {
       return 0;
     }
   }
-
-  /**
-   * Returns the mean (mode) for a numeric (nominal) attribute as a
-   * floating-point value.  Returns 0 if the attribute is neither
-   * nominal nor numeric.  If all values are missing it returns zero.
-   *
-   * @param att the attribute
-   * @return the mean or the mode 
-   */
   public final double meanOrMode(Attribute att) {
-
     return meanOrMode(att.index());
   }
 
