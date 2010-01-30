@@ -3,13 +3,15 @@ package weka.clusterers;
 import java.io.*;
 import java.util.*;
 import weka.core.*;
+import weka.core.metrics.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
 public class NaiveKMeans extends Clusterer implements OptionHandler{
 	private Instances instances;
+    private Metric metric=new Euclidean();
 	private ReplaceMissingValues replaceMissingValues;
-	private int K;
+	private int K=2;
 	private Instances centroids;
 	private int [] assignments;
 	
@@ -17,6 +19,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		replaceMissingValues=new ReplaceMissingValues();
 		replaceMissingValues.setInputFormat(data);
 		instances=Filter.useFilter(data,replaceMissingValues);
+        metric.buildMetric(data);
 		centroids=new Instances(instances,K);
 		assignments=new int[instances.numInstances()];
 		
@@ -64,26 +67,13 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		double min=Integer.MAX_VALUE;
 		int assignment=0;
 		for(int i=0;i<K;i++){
-			double d=distance(instance,centroids.instance(i));
+			double d=metric.distance(instance,centroids.instance(i));
 			if(d<min){
 				min=d;
 				assignment=i;
 			}
 		}
 		return assignment;
-	}
-	
-	private double distance(Instance a,Instance b){
-		double aa=0,bb=0,ab=0;
-		for(int i=0;i<instances.numAttributes();i++){
-			if(i==instances.classIndex())continue;
-			aa+=a.value(i)*a.value(i);
-			bb+=b.value(i)*b.value(i);
-			ab+=a.value(i)*b.value(i);
-		}
-		double cos=ab/Math.sqrt(aa*bb);
-		double acos=Math.acos(cos);
-		return acos;
 	}
 	
 	public int numberOfClusters() throws Exception{
@@ -93,6 +83,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	public Enumeration listOptions(){
 		Vector vector=new Vector(1);
 		vector.addElement(new Option("\tnumber of clusters.","N",1,"-N <num>"));
+        vector.addElement(new Option("\tmetric.\tdefault=weka.core.metrics.Euclidean","M",1,"-M <metric class>"));
 		return vector.elements();
 	}
 	
@@ -102,6 +93,10 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		if(string.length()!=0){
 			K=Integer.parseInt(string);
 		}
+        string=Utils.getOption('M',options);
+        if(string.length()!=0){
+            metric=(Metric)Utils.forName(Metric.class,string,options);
+        }
 	}
 	
 	public String [] getOptions(){
@@ -109,6 +104,8 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		int current=0;
 		options[current++]="-N";
 		options[current++]=Integer.toString(K);
+        options[current++]="-M";
+        options[current++]=metric.getClass().getName();
 		while(current<options.length){
 			options[current++]="";
 		}
