@@ -25,8 +25,10 @@ package weka.clusterers;
 import java.io.Serializable;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.FastVector;
 import weka.core.SerializedObject;
 import weka.core.Utils;
+import weka.core.metrics.*;
 
 
 /** 
@@ -113,6 +115,16 @@ public abstract class Clusterer implements Cloneable, Serializable {
       clusterers[i] = (Clusterer) so.getObject();
     }
     return clusterers;
+  }
+  
+  /**
+  Initializer need these methods, and these should be overwritten.
+  */
+  public Instances getInstances(){
+      return new Instances("Instances",new FastVector(),0);
+  }
+  public Metric fetchMetric(){
+      return new Euclidean();
   }
 }
 

@@ -603,6 +603,8 @@ public class ClusterEvaluation {
             System.out.println("Reading train file: "+trainFileName);
             train=new Instances(new BufferedReader(new FileReader(trainFileName)));
             System.out.println("Relation: "+train.relationName());
+            System.out.println("\tnumInstances: "+train.numInstances());
+            System.out.println("\tnumAttributes: "+train.numAttributes());
 	String classString = Utils.getOption('c',options);
 	if (classString.length() != 0) {
 	  if (classString.compareTo("last") == 0) {

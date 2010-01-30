@@ -6,6 +6,7 @@ import weka.core.*;
 import weka.core.metrics.*;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
+import weka.clusterers.initializers.*;
 
 public class NaiveKMeans extends Clusterer implements OptionHandler{
 	private Instances instances;
@@ -15,27 +16,17 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	private Instances centroids;
     private Instances [] instanceses;
 	private int [] assignments;
+    private Initializer initializer=new RandomInitializer();
 	
 	public void buildClusterer(Instances data) throws Exception{
 		replaceMissingValues=new ReplaceMissingValues();
 		replaceMissingValues.setInputFormat(data);
 		instances=Filter.useFilter(data,replaceMissingValues);
         metric.buildMetric(data);
-		centroids=new Instances(instances,K);
+        initializer.setClusterer(this);
+        centroids=initializer.initialize();
         instanceses=new Instances[K];
 		assignments=new int[instances.numInstances()];
-        System.out.println("Initializing centroids ...");
-		Random random=new Random();
-		boolean [] selected=new boolean[instances.numInstances()];
-		int index;
-		for(int i=0;i<K;i++){
-			do{
-				index=random.nextInt(instances.numInstances());
-			}while(selected[index]);
-			centroids.add(instances.instance(index));
-			selected[index]=true;
-		}
-        System.out.println("Done");
 		boolean done=false;
         int loop=0;
 		while(!done){
@@ -90,11 +81,20 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	public int numberOfClusters() throws Exception{
 		return K;
 	}
+    
+    public Instances getInstances(){
+        return instances;
+    }
+    
+    public Metric fetchMetric(){
+        return metric;
+    }
 	
 	public Enumeration listOptions(){
-		Vector vector=new Vector(1);
+		Vector vector=new Vector(3);
 		vector.addElement(new Option("\tnumber of clusters.","N",1,"-N <num>"));
         vector.addElement(new Option("\tmetric.\tdefault=weka.core.metrics.Euclidean","M",1,"-M <metric class>"));
+        vector.addElement(new Option("\tinitializer.\tdefault=weka.clusters.initializers.RandomInitializer","I",1,"-I <initializer class>"));
 		return vector.elements();
 	}
 	
@@ -108,18 +108,21 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
         if(string.length()!=0){
             metric=(Metric)Utils.forName(Metric.class,string,options);
         }
+        string=Utils.getOption('I',options);
+        if(string.length()!=0){
+            initializer=(Initializer)Utils.forName(Initializer.class,string,options);
+        }
 	}
 	
 	public String [] getOptions(){
-		String [] options=new String[2];
+		String [] options=new String[6];
 		int current=0;
 		options[current++]="-N";
 		options[current++]=Integer.toString(K);
         options[current++]="-M";
         options[current++]=metric.getClass().getName();
-		while(current<options.length){
-			options[current++]="";
-		}
+        options[current++]="-I";
+        options[current++]=initializer.getClass().getName();
 		return options;
 	}
 	
