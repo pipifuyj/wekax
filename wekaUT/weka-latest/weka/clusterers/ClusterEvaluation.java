@@ -312,12 +312,14 @@ public class ClusterEvaluation {
     int numClasses = inst.classAttribute().numValues();
     int [][] counts = new int [m_numClusters][numClasses];
     int [] clusterTotals = new int[m_numClusters];
+    int [] classTotals=new int[numClasses];
     double [] best = new double[m_numClusters+1];
     double [] current = new double[m_numClusters+1];
 
     for (int i = 0; i < inst.numInstances(); i++) {
       counts[(int)m_clusterAssignments[i]][(int)inst.instance(i).classValue()]++;
       clusterTotals[(int)m_clusterAssignments[i]]++;
+      classTotals[(int)inst.instance(i).classValue()]++;
     }
     
     best[m_numClusters] = Double.MAX_VALUE;
@@ -352,6 +354,42 @@ public class ClusterEvaluation {
 						       inst.numInstances() * 
 						       100.0), 8, 4))
 			       +" %\n");
+    
+    double [][] p=new double[m_numClusters][numClasses];
+    double [][] r=new double[m_numClusters][numClasses];
+    double [][] f=new double[m_numClusters][numClasses];
+    double [] p1=new double[m_numClusters];
+    double [] p2=new double[numClasses];
+    double [] Es=new double[m_numClusters];
+    double [] Ps=new double[m_numClusters];
+    double [] Fs=new double[numClasses];
+    double E=0,P=0,F=0,H1=0,H2=0,NMI;
+    for(int i=0;i<m_numClusters;i++){
+        p1[i]=(double)clusterTotals[i]/inst.numInstances();
+        for(int j=0;j<numClasses;j++){
+            if(counts[i][j]==0){
+                p[i][j]=r[i][j]=0;
+                f[i][j]=0;
+            }else{
+                p[i][j]=(double)counts[i][j]/clusterTotals[i];
+                r[i][j]=(double)counts[i][j]/classTotals[j];
+                f[i][j]=2*p[i][j]*r[i][j]/(p[i][j]+r[i][j]);
+                Es[i]+=-p[i][j]*Math.log(p[i][j])/Math.log(2);
+                if(p[i][j]>Ps[i])Ps[i]=p[i][j];
+                if(f[i][j]>Fs[j])Fs[j]=f[i][j];
+            }
+        }
+        E+=p1[i]*Es[i];
+        P+=p1[i]*Ps[i];
+        H1+=-p1[i]*Math.log(p1[i])/Math.log(2);
+    }
+    for(int j=0;j<numClasses;j++){
+        p2[j]=(double)classTotals[j]/inst.numInstances();
+        F+=p2[j]*Fs[j];
+        H2+=-p2[j]*Math.log(p2[j])/Math.log(2);
+    }
+    NMI=(H2-E)/Math.sqrt(H1*H2);
+    m_clusteringResults.append("E="+E+" P="+P+" F="+F+" H1="+H1+" H2="+H2+" NMI="+NMI+"\n");
 
     // copy the class assignments
     m_classToCluster = new int [m_numClusters];
@@ -560,10 +598,11 @@ public class ClusterEvaluation {
 			   + makeOptionString(clusterer));
     }
 
-    try {
-      if (trainFileName.length() != 0) {
-	train = new Instances(new BufferedReader(new FileReader(trainFileName)));
-
+    try{
+        if(trainFileName.length()!=0){
+            System.out.println("Reading train file: "+trainFileName);
+            train=new Instances(new BufferedReader(new FileReader(trainFileName)));
+            System.out.println("Relation: "+train.relationName());
 	String classString = Utils.getOption('c',options);
 	if (classString.length() != 0) {
 	  if (classString.compareTo("last") == 0) {
@@ -583,18 +622,17 @@ public class ClusterEvaluation {
 				+"evaluation");
 	  }
 	}
-
-	if (theClass != -1) {
-	  if (theClass < 1 
-	      || theClass > train.numAttributes()) {
-	    throw new Exception("Class is out of range!");
-	  }
-	  if (!train.attribute(theClass-1).isNominal()) {
-	    throw new Exception("Class must be nominal!");
-	  }
-	  train.setClassIndex(theClass-1);
-	}
-      }
+            if(theClass!=-1){
+                if(theClass<1||theClass>train.numAttributes()){
+                    throw new Exception("Class is out of range!");
+                }
+                if(!train.attribute(theClass-1).isNominal()){
+                    throw new Exception("Class must be nominal!");
+                }
+                System.out.println("Setting classIndex: "+(theClass-1));
+                train.setClassIndex(theClass-1);
+            }
+        }
 
       if (objectInputFileName.length() != 0) {
 	objectInputStream = new ObjectInputStream(new FileInputStream(objectInputFileName));

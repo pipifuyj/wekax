@@ -13,6 +13,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	private ReplaceMissingValues replaceMissingValues;
 	private int K=2;
 	private Instances centroids;
+    private Instances [] instanceses;
 	private int [] assignments;
 	
 	public void buildClusterer(Instances data) throws Exception{
@@ -21,8 +22,9 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		instances=Filter.useFilter(data,replaceMissingValues);
         metric.buildMetric(data);
 		centroids=new Instances(instances,K);
+        instanceses=new Instances[K];
 		assignments=new int[instances.numInstances()];
-		
+        System.out.println("Initializing centroids ...");
 		Random random=new Random();
 		boolean [] selected=new boolean[instances.numInstances()];
 		int index;
@@ -33,26 +35,26 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 			centroids.add(instances.instance(index));
 			selected[index]=true;
 		}
-		
+        System.out.println("Done");
 		boolean done=false;
+        int loop=0;
 		while(!done){
+            System.out.println("===***=== "+loop+" ===***===");
 			done=true;
+			for(int i=0;i<K;i++){
+				instanceses[i]=new Instances(instances,0);
+			}
 			for(int i=0;i<instances.numInstances();i++){
 				Instance instance=instances.instance(i);
 				int assignment=clusterInstance(instance);
+				instanceses[assignment].add(instance);
 				if(assignment!=assignments[i]){
 					done=false;
 					assignments[i]=assignment;
 				}
 			}
+            printClusters();
 			centroids=new Instances(instances,K);
-			Instances [] instanceses=new Instances[K];
-			for(int i=0;i<K;i++){
-				instanceses[i]=new Instances(instances,0);
-			}
-			for(int i=0;i<instances.numInstances();i++){
-				instanceses[assignments[i]].add(instances.instance(i));
-			}
 			for(int i=0;i<K;i++){
 				double [] vals=new double[instances.numAttributes()];
 				for(int j=0;j<instances.numAttributes();j++){
@@ -60,8 +62,17 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 				}
 				centroids.add(new Instance(1.0,vals));
 			}
+            loop++;
 		}
 	}
+    
+    public void printClusters(){
+        for(int i=0;i<K;i++){
+            System.out.println("Cluster "+i+":");
+            System.out.println("\tcentroid: "+centroids.instance(i));
+            System.out.println("\tconsists of "+instanceses[i].numInstances()+" instances");
+        }
+    }
 	
 	public int clusterInstance(Instance instance) throws Exception{
 		double min=Integer.MAX_VALUE;
