@@ -10,11 +10,13 @@ public class Transpose extends Filter{
     Instances data = null;
     Reader input = null;
     PrintWriter output = null;
+    boolean isSparse=false;
 
     try {
       String infileName = Utils.getOption('i', options);
       String outfileName = Utils.getOption('o', options); 
       String classIndex = Utils.getOption('c', options);
+      String sparse=Utils.getOption('s',options);
       if (infileName.length() != 0) {
 	input = new BufferedReader(new FileReader(infileName));
       } else {
@@ -36,6 +38,10 @@ public class Transpose extends Filter{
 	  data.setClassIndex(Integer.parseInt(classIndex) - 1);
 	}
       }
+      
+      if(sparse.length()!=0){
+          isSparse=true;
+      }
     } catch (Exception ex) {
       String genericOptions = "\nGeneral options:\n\n"
 	+ "-h\n"
@@ -50,13 +56,15 @@ public class Transpose extends Filter{
 	+ "-c <class index>\n"
 	+ "\tThe number of the attribute to use as the class.\n"
 	+ "\t\"first\" and \"last\" are also valid entries.\n"
-	+ "\tIf not supplied then no class is assigned.\n";
+	+ "\tIf not supplied then no class is assigned.\n"
+	+ "-s <is sparse>\n";
 
       throw new Exception('\n' + ex.getMessage()
 			  +genericOptions);
     }
     
     Instances instances=new Instances(data.relationName()+"Transposed",new FastVector(),0);
+    Instance instance;
     int index=0;
     
     while (data.readInstance(input)) {
@@ -67,7 +75,12 @@ public class Transpose extends Filter{
     output.println(instances.toString());
     
     for(int i=0,ii=data.numAttributes();i<ii;i++)if(data.attribute(i).isNumeric()){
-        output.println((new Instance(1,data.attributeToDoubleArray(i))).toString());
+        if(isSparse){
+            instance=new SparseInstance(1,data.attributeToDoubleArray(i));
+        }else{
+            instance=new Instance(1,data.attributeToDoubleArray(i));
+        }
+        output.println(instance.toString());
     }
     
     if (output != null) {
