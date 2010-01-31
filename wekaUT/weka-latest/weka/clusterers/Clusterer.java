@@ -126,6 +126,18 @@ public abstract class Clusterer implements Cloneable, Serializable {
   public Metric fetchMetric(){
       return new Euclidean();
   }
+  public Instances getCluster(int clusterId) throws Exception{
+      Instances instances=getInstances();
+      Instances cluster=new Instances(instances,0);
+      Instance instance;
+      for(int i=0,ii=instances.numInstances();i<ii;i++){
+          instance=instances.instance(i);
+          if(clusterId==clusterInstance(instances.instance(i))){
+              cluster.add(instance);
+          }
+      }
+      return cluster;
+  }
 }
 
 

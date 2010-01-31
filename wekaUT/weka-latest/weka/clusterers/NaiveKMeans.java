@@ -13,6 +13,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
     private Metric metric=new Euclidean();
 	private ReplaceMissingValues replaceMissingValues;
 	private int K=2;
+    private ArrayList [] clusters;
 	private Instances centroids;
     private Instances [] instanceses;
 	private int [] assignments;
@@ -26,6 +27,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
         initializer.setClusterer(this);
         centroids=initializer.initialize();
         instanceses=new Instances[K];
+        clusters=new ArrayList[K];
 		assignments=new int[instances.numInstances()];
 		boolean done=false;
         int loop=0;
@@ -34,28 +36,59 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 			done=true;
 			for(int i=0;i<K;i++){
 				instanceses[i]=new Instances(instances,0);
+                clusters[i]=new ArrayList();
 			}
 			for(int i=0;i<instances.numInstances();i++){
 				Instance instance=instances.instance(i);
 				int assignment=clusterInstance(instance);
 				instanceses[assignment].add(instance);
+                clusters[assignment].add(new Integer(i));
 				if(assignment!=assignments[i]){
 					done=false;
 					assignments[i]=assignment;
 				}
 			}
             printClusters();
-			centroids=new Instances(instances,K);
+			centroids=new Instances(instances,0);
 			for(int i=0;i<K;i++){
-				double [] vals=new double[instances.numAttributes()];
-				for(int j=0;j<instances.numAttributes();j++){
-					vals[j]=instanceses[i].mean(j);
-				}
-				centroids.add(new Instance(1.0,vals));
+				centroids.add(instanceses[i].mean());
 			}
             loop++;
 		}
+        evaluate();
 	}
+    
+    public void evaluate() throws Exception{
+        for(int i=0,I;i<K;i++){
+            System.out.println("Cluster "+i+":");
+            I=instanceses[i].numInstances();
+            double [] distances=new double[I];
+            double [] dis=new double[I];
+            int [] indexes=new int[I];
+            double distance;
+            for(int j=0;j<I;j++){
+                distance=metric.distance(centroids.instance(i),instanceses[i].instance(j));
+                distances[j]=distance;
+                dis[j]=distance;
+                indexes[j]=((Integer)(clusters[i].get(j))).intValue();
+            }
+            Arrays.sort(dis);
+            for(int j=0;j<I;j++){
+                if(distances[j]==dis[0]){
+                    System.out.println("\tcenter: "+indexes[j]);
+                    break;
+                }
+            }
+            for(int j=I-1,jj=I-21;j>jj;j--){
+                for(int k=0,kk=I;k<kk;k++){
+                    if(distances[k]==dis[j]){
+                        System.out.println("\tcircle: "+indexes[k]);
+                        break;
+                    }
+                }
+            }
+        }
+    }
     
     public void printClusters(){
         for(int i=0;i<K;i++){
@@ -77,6 +110,10 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		}
 		return assignment;
 	}
+    
+    public Instances getCluster(int clusterId){
+        return instanceses[clusterId];
+    }
 	
 	public int numberOfClusters() throws Exception{
 		return K;

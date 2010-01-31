@@ -188,11 +188,10 @@ public class ClusterEvaluation {
     double loglk = 0.0;
     double[] dist;
     double temp;
-    int cc = m_Clusterer.numberOfClusters();
-    m_numClusters = cc;
+    int m_numClusters = m_Clusterer.numberOfClusters();
     int numInstFieldWidth = (int)((Math.log(test.numInstances())/
 				   Math.log(10))+1);
-    double[] instanceStats = new double[cc];
+    double[] instanceStats = new double[m_numClusters];
     m_clusterAssignments = new double [test.numInstances()];
     Instances testCopy = test;
     boolean hasClass = (testCopy.classIndex() >= 0);
@@ -241,7 +240,7 @@ public class ClusterEvaluation {
 
     /* // count the actual number of used clusters
     int count = 0;
-    for (i = 0; i < cc; i++) {
+    for (i = 0; i < m_numClusters; i++) {
       if (instanceStats[i] > 0) {
 	count++;
       }
@@ -250,7 +249,7 @@ public class ClusterEvaluation {
       double [] tempStats = new double [count];
       double [] map = new double [m_clusterAssignments.length];
       count=0;
-      for (i=0;i<cc;i++) {
+      for (i=0;i<m_numClusters;i++) {
 	if (instanceStats[i] > 0) {
 	  tempStats[count] = instanceStats[i];
 	  map[i] = count;
@@ -258,7 +257,7 @@ public class ClusterEvaluation {
 	}
       }
       instanceStats = tempStats;
-      cc = instanceStats.length;
+      m_numClusters = instanceStats.length;
       for (i=0;i<m_clusterAssignments.length;i++) {
 	m_clusterAssignments[i] = map[(int)m_clusterAssignments[i]];
       }
@@ -269,8 +268,8 @@ public class ClusterEvaluation {
     
     m_clusteringResults.append(m_Clusterer.toString());
     m_clusteringResults.append("Clustered Instances\n\n");
-    int clustFieldWidth = (int)((Math.log(cc)/Math.log(10))+1);
-    for (i = 0; i < cc; i++) {
+    int clustFieldWidth = (int)((Math.log(m_numClusters)/Math.log(10))+1);
+    for (i = 0; i < m_numClusters; i++) {
       if (instanceStats[i] > 0) {
 	m_clusteringResults.append(Utils.doubleToString((double)i, 
 							clustFieldWidth, 0) 
@@ -845,8 +844,8 @@ public class ClusterEvaluation {
     double loglk = 0.0;
     double[] dist;
     double temp;
-    int cc = clusterer.numberOfClusters();
-    double[] instanceStats = new double[cc];
+    int m_numClusters = clusterer.numberOfClusters();
+    double[] instanceStats = new double[m_numClusters];
     int unclusteredInstances = 0;
 
     if (fileName.length() != 0) {
@@ -886,7 +885,7 @@ public class ClusterEvaluation {
       /*
       // count the actual number of used clusters
       int count = 0;
-      for (i = 0; i < cc; i++) {
+      for (i = 0; i < m_numClusters; i++) {
 	if (instanceStats[i] > 0) {
 	  count++;
 	}
@@ -894,22 +893,22 @@ public class ClusterEvaluation {
       if (count > 0) {
 	double [] tempStats = new double [count];
 	count=0;
-	for (i=0;i<cc;i++) {
+	for (i=0;i<m_numClusters;i++) {
 	  if (instanceStats[i] > 0) {
 	    tempStats[count++] = instanceStats[i];
 	}
 	}
 	instanceStats = tempStats;
-	cc = instanceStats.length;
+	m_numClusters = instanceStats.length;
 	} */
 
-      int clustFieldWidth = (int)((Math.log(cc)/Math.log(10))+1);
+      int clustFieldWidth = (int)((Math.log(m_numClusters)/Math.log(10))+1);
       int numInstFieldWidth = (int)((Math.log(i)/Math.log(10))+1);
       double sum = Utils.sum(instanceStats);
       loglk /= sum;
       text.append("Clustered Instances\n");
 
-      for (i = 0; i < cc; i++) {
+      for (i = 0; i < m_numClusters; i++) {
 	if (instanceStats[i] > 0) {
 	  text.append(Utils.doubleToString((double)i, 
 					   clustFieldWidth, 0) 

@@ -660,6 +660,13 @@ public class Instances implements Serializable {
    public final double mean(Attribute att){
    	   return mean(att.index());
    }
+   public final Instance mean(){
+       double [] vals=new double[numAttributes()];
+       for(int i=0,ii=numAttributes();i<ii;i++){
+           vals[i]=mean(i);
+       }
+       return new Instance(numInstances(),vals);
+   }
    public final double mode(int attIndex){
    	   int [] counts=new int[attribute(attIndex).numValues()];
    	   for(int i=0;i<numInstances();i++)if(!instance(i).isMissing(attIndex)){
