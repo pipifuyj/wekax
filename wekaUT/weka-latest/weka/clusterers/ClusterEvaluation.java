@@ -183,12 +183,12 @@ public class ClusterEvaluation {
    * @exception Exception if something goes wrong
    */
   public void evaluateClusterer(Instances test) throws Exception {
+      m_numClusters = m_Clusterer.numberOfClusters();
     int i = 0;
     int cnum;
     double loglk = 0.0;
     double[] dist;
     double temp;
-    int m_numClusters = m_Clusterer.numberOfClusters();
     int numInstFieldWidth = (int)((Math.log(test.numInstances())/
 				   Math.log(10))+1);
     double[] instanceStats = new double[m_numClusters];

@@ -79,7 +79,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
                     break;
                 }
             }
-            for(int j=I-1,jj=I-21;j>jj;j--){
+            for(int j=I-1;j>I-21&&j>-1;j--){
                 for(int k=0,kk=I;k<kk;k++){
                     if(distances[k]==dis[j]){
                         System.out.println("\tcircle: "+indexes[k]);

@@ -46,15 +46,18 @@ public class FurthestInitializer extends Initializer{
         return nearest;
     }
     public int furthest() throws Exception{
-        int index=-1;
+        ArrayList indexes=new ArrayList();
         double furthest=Double.NEGATIVE_INFINITY,distance;
         for(int i=0;i<selected.length;i++)if(!selected[i]){
             distance=distance(instances.instance(i));
-            if(distance>furthest){
+            if(distance>=furthest){
                 furthest=distance;
-                index=i;
+                indexes.add(new Integer(i));
             }
         }
+        Random random=new Random();
+        int index=random.nextInt(indexes.size());
+        index=((Integer)(indexes.get(index))).intValue();
         return index;
     }
 }
