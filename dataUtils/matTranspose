@@ -29,14 +29,11 @@ if($option[2]){
 }else{
     $rows=array();
     while(list($k,$v)=each($matrix)){
-        $v=preg_split("/\s+/",trim($v));
-        while(list($kk,$vv)=each($v)){
-            $rows[$kk][$k]=$vv;
-        }
+        $rows[]=preg_split("/\s+/",trim($v));
     }
-    while(list($i,$row)=each($rows)){
-        while(list($j,$v)=each($row)){
-            echo $v," ";
+    for($i=0,$ii=count($rows[0]);$i<$ii;$i++){
+        for($j=0;$j<=$k;$j++){
+            echo $rows[$j][$i]," ";
         }
         echo "\n";
     }
