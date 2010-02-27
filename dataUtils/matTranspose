@@ -20,12 +20,21 @@ if($option[2]){
 			$rows[$v1][$k]=$v2;
 		}
  	}
+    //output format is defined in hybrid
+    while(list($i,$row)=each($rows)){
+        while(list($j,$v)=each($row)){
+            echo $j," ";
+        }
+        echo "\n";
+    }
+    /**
     for($i=0;$i<$option[1];$i++){
         for($j=0;$j<$option[0];$j++){
             echo $rows[$i][$j]?$rows[$i][$j]:0," ";
         }
         echo "\n";
     }
+    */
 }else{
     $rows=array();
     for($i=0,$ii=count($matrix);$i<$ii;$i++){
