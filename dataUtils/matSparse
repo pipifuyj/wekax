@@ -21,8 +21,8 @@ while(list($k,$v)=each($matrix)){
             fwrite($f,$vv);
             fwrite($f," ");
         }
-        fwrite($f,"\n");
     }
+    fwrite($f,"\n");
 }
 fseek($f,0);
 fwrite($f,join(" ",$option));
