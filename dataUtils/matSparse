@@ -3,6 +3,7 @@
 /**
 * sparse the matrix, input and output formats are defined in cluto
 */
+ini_set("memory_limit","1G");
 $file=$argv[1];
 $matrix=file($file,FILE_IGNORE_NEW_LINES);
 $option=array_shift($matrix);
@@ -13,7 +14,7 @@ $f=tmpfile();
 while(list($k,$v)=each($matrix)){
     $v=preg_split("/\s+/",trim($v));
     while(list($kk,$vv)=each($v)){
-        if($vv){
+        if($vv!="0"){
             $option[2]++;
             fwrite($f,$kk+1);
             fwrite($f," ");
