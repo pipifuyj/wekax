@@ -1,4 +1,4 @@
-#/usr/bin/env php
+#!/usr/bin/env php
 <?php
 /**
 * sparse the matrix, input and output formats are defined in cluto
