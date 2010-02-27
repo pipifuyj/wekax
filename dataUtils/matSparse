@@ -21,7 +21,7 @@ while(list($k,$v)=each($matrix)){
             fwrite($f,$vv);
             fwrite($f," ");
         }
-        fwrite($f,"\b\n");
+        fwrite($f,"\n");
     }
 }
 fseek($f,0);
