@@ -1,0 +1,34 @@
+#/usr/bin/env php
+<?php
+/**
+* sparse the matrix, input and output formats are defined in cluto
+*/
+$file=$argv[1];
+$matrix=file($file,FILE_IGNORE_NEW_LINES);
+$option=array_shift($matrix);
+$option=preg_split("/\s+/",trim($option));
+$option[2]=0;
+
+$f=tmpfile();
+while(list($k,$v)=each($matrix)){
+    $v=preg_split("/\s+/",trim($v));
+    while(list($kk,$vv)=each($v)){
+        if($vv){
+            $option[2]++;
+            fwrite($f,$kk+1);
+            fwrite($f," ");
+            fwrite($f,$vv);
+            fwrite($f," ");
+        }
+        fwrite($f,"\b\n");
+    }
+}
+fseek($f,0);
+fwrite($f,join(" ",$option));
+fwrite($f,"\n");
+
+fseek($f,0);
+while(!feof($f)){
+    echo fread($f,8192);
+}
+?>
