@@ -28,8 +28,9 @@ if($option[2]){
     }
 }else{
     $rows=array();
-    while(list($k,$v)=each($matrix)){
-        $rows[]=preg_split("/\s+/",trim($v));
+    for($i=0,$ii=count($matrix);$i<$ii;$i++){
+        $rows[]=preg_split("/\s+/",trim($matrix[$i]));
+        unset($matrix[$i]);
     }
     for($i=0,$ii=count($rows[0]);$i<$ii;$i++){
         for($j=0;$j<=$k;$j++){
