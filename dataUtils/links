@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+# The program is designed for ActiveLearningChallenge.
+# It read links from file specified by argv[1], read labels from files in the current directory named by *.sample and *.label, then merge them together.
+# Notice: The index of instances in links file is started form 0, but in *.sample is started from 1. The index of instances in output links is started from 0.
+<?php
+$link=array();
+$file=file($argv[1]);
+foreach($file as $line){
+    list($a,$b,$l)=preg_split("/\s+/",trim($line));
+    $link[$a][$b]=$link[$b][$a]=$l;
+}
+$label=array();
+$i=0;
+while(is_file("$i.sample")){
+    $s=file("$i.sample",FILE_IGNORE_NEW_LINES);
+    $l=file("$i.label",FILE_IGNORE_NEW_LINES);
+    foreach($sample as $k=>$v){
+        $label[$v-1]=$l[$k];
+    }
+    $i++;
+}
+$n=count($label);
+$keys=array_keys($label);
+for($i=0;$i<$n;$i++)for($j=$i+1;$j<$n;$j++){
+	$a=$keys[$i];
+	$b=$keys[$j];
+    $l=$label[$a]==$label[$b]?1:-1;
+    $link[$a][$b]=$link[$b][$a]=$l;
+}
+for($i=0;$i<$n;$i++)for($j=$i+1;$j<$n;$j++){
+    $a=$keys[$i];
+	$b=$keys[$j];
+    foreach($link[$a] as $o=>$l)if($l==1){
+        $link[$b][$o]=$link[$o][$b]=$link[$a][$b];
+    }
+    foreach($link[$b] as $o=>$l)if($l==1){
+        $link[$a][$o]=$link[$o][$a]=$link[$a][$b];
+    }
+	if($link[$a][$b]==1){
+        foreach($link[$a] as $o=>$l)if($l==-1){
+            $link[$b][$o]=$link[$o][$b]=-1;
+        }
+        foreach($link[$b] as $o=>$l)if($l==-1){
+            $link[$a][$o]=$link[$o][$a]=-1;
+        }
+	}
+}
+foreach($link as $a=>$os){
+    foreach($os as $b=>$l){
+        if($a<$b){
+            echo "$a\t$b\t$l\n";
+        }
+    }
+}
+?>
