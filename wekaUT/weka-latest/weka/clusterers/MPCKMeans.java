@@ -2356,8 +2356,7 @@ public class MPCKMeans extends Clusterer implements OptionHandler,SemiSupCluster
       mpckmeans.buildClusterer(labeledPairs, clusterData, data, mpckmeans.getNumClusters(), data.numInstances());
       mpckmeans.printClusterAssignments();
 
-      // Rand index computation
-
+            if(mpckmeans.m_TotalTrainWithLabels.classIndex()>-1){
       double nCorrect = 0;
       for (int i=0; i<mpckmeans.m_TotalTrainWithLabels.numInstances(); i++) {
 	  for (int j=i+1; j<mpckmeans.m_TotalTrainWithLabels.numInstances(); j++) {
@@ -2376,6 +2375,7 @@ public class MPCKMeans extends Clusterer implements OptionHandler,SemiSupCluster
       int numInstances = mpckmeans.m_TotalTrainWithLabels.numInstances();
       double RandIndex = 100 * nCorrect/(numInstances*(numInstances-1)/2);
       System.err.println("Acc\t" + RandIndex);
+            }
 
       //      if (mpckmeans.getTotalTrainWithLabels().classIndex() >= 0) {
       // 	SemiSupClustererEvaluation eval = new SemiSupClustererEvaluation(mpckmeans.m_TotalTrainWithLabels,
