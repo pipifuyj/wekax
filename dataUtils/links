@@ -1,8 +1,10 @@
 #!/usr/bin/env php
+<?php
+/**
 # The program is designed for ActiveLearningChallenge.
 # It read links from file specified by argv[1], read labels from files in the current directory named by *.sample and *.label, then merge them together.
 # Notice: The index of instances in links file is started form 0, but in *.sample is started from 1. The index of instances in output links is started from 0.
-<?php
+*/
 $link=array();
 $file=file($argv[1]);
 foreach($file as $line){
@@ -14,7 +16,7 @@ $i=0;
 while(is_file("$i.sample")){
     $s=file("$i.sample",FILE_IGNORE_NEW_LINES);
     $l=file("$i.label",FILE_IGNORE_NEW_LINES);
-    foreach($sample as $k=>$v){
+    foreach($s as $k=>$v){
         $label[$v-1]=$l[$k];
     }
     $i++;
