@@ -7,6 +7,7 @@ $rclass=@file("$file.rclass",FILE_IGNORE_NEW_LINES);
 $option=array_shift($matrix);
 $option=preg_split("/\s+/",trim($option));
 printf("@relation %s\n\n",$file);
+//如果有@attribute名字
 if($clabel){
 	for($i=0;$i<$option[1];$i++){
 		printf("@attribute %s numeric\n",$clabel[$i]);

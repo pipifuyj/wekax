@@ -1,0 +1,75 @@
+#!/usr/bin/php
+<?php
+$file="D.22";
+$ClusterResult=file($file,FILE_IGNORE_NEW_LINES);
+for($i = 0; $i < 20000; $i ++){
+	$cr[$i+1] = preg_split("/\s+/",trim(array_shift($ClusterResult)));
+}
+
+$file = "1.label";
+$QueryResult=file($file,FILE_IGNORE_NEW_LINES);
+$i = 1;
+while(($line = array_shift($QueryResult))!== null){
+	$qr[$i] = preg_split("/\s+/",trim($line));
+	$i = $i + 1;
+}
+//var_dump($qr);
+
+$statics = array(
+	"1" => array("1" => 0,"0" => 0),
+	"-1"=> array("1" => 0,"0" => 0)
+);
+
+foreach($qr as $label){
+	if($label[1] === "1"){
+		if($cr[$label[0]][1] === "1") $statics[1][1]++;
+		if($cr[$label[0]][1] === "0") $statics[1][0]++;
+	}
+	if($label[1] === "-1"){
+		if($cr[$label[0]][1] === "1") $statics[-1][1]++;
+		if($cr[$label[0]][1] === "0") $statics[-1][0]++;
+	}
+}
+
+//var_dump($statics);
+$class1 = -1;$class0 = 1;$max = -1;
+if($max >=  $statics[1][1]){}
+else{$max = $statics[1][1]; $class1 = 1;$class0 = -1;}
+if($max >=  $statics[1][0]){}
+else{$max = $statics[1][0]; $class1 = -1; $class0 = 1;}
+if($max >=  $statics[-1][1]){}
+else{$max = $statics[-1][1]; $class1 = -1; $class0 = 1;}
+if($max >=  $statics[-1][0]){}
+else{$max = $statics[-1][0]; $class1 = 1;$class0 = -1;}
+
+//echo $class1,$class0;
+file_put_contents("D.predict","");
+for($i = 0; $i < 20000; $i ++){
+	if ($cr[$i+1][1] === "0") file_put_contents("D.predict",$class0."\n",FILE_APPEND);
+	else if ($cr[$i+1][1] === "1") file_put_contents("D.predict",$class1."\n",FILE_APPEND);
+}
+
+
+$file = fopen("D.hc-0.01-0.01", "r") or exit("Unable to open file!");
+$i = 1;
+while(!feof($file))
+{
+	$line = fgets($file);
+	$pieces = explode(" ", $line);
+	if("" !== $pieces[0]) $QuerySample[$i] = intval($pieces[0])+1;
+	$i ++;
+}
+fclose($file);
+$QuerySample = array_unique($QuerySample);
+
+$i = 1;
+foreach($qr as $value){
+	$HaveQuery[$i] = intval($value[0]); 
+	$i ++;
+}
+file_put_contents("D.sample","");
+foreach($QuerySample as $value){
+	if(!in_array($value,$HaveQuery)) file_put_contents("D.sample",$value."\n",FILE_APPEND);
+}
+
+?>
