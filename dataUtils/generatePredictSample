@@ -1,12 +1,12 @@
 #!/usr/bin/php
 <?php
-$file="D.22";
+$file= $argv[1];
 $ClusterResult=file($file,FILE_IGNORE_NEW_LINES);
 for($i = 0; $i < 20000; $i ++){
 	$cr[$i+1] = preg_split("/\s+/",trim(array_shift($ClusterResult)));
 }
 
-$file = "1.label";
+$file = "QueryResult";
 $QueryResult=file($file,FILE_IGNORE_NEW_LINES);
 $i = 1;
 while(($line = array_shift($QueryResult))!== null){
@@ -43,14 +43,33 @@ if($max >=  $statics[-1][0]){}
 else{$max = $statics[-1][0]; $class1 = 1;$class0 = -1;}
 
 //echo $class1,$class0;
+
+$i = 1;
+foreach($qr as $value){
+	$HaveQuery[$i] = intval($value[0]); 
+	$i ++;
+}
+
 file_put_contents("D.predict","");
 for($i = 0; $i < 20000; $i ++){
-	if ($cr[$i+1][1] === "0") file_put_contents("D.predict",$class0."\n",FILE_APPEND);
-	else if ($cr[$i+1][1] === "1") file_put_contents("D.predict",$class1."\n",FILE_APPEND);
+	if(in_array($i+1,$HaveQuery)){
+		foreach($qr as $value){
+			if(intval($value[0]) === $i+1) 	{file_put_contents("D.predict",$value[1]."\n",FILE_APPEND);continue;}	
+		}
+		continue;	
+	}else{  if($i === 2816) echo "wrong\n";
+		if ($cr[$i+1][1] === "0"){
+			file_put_contents("D.predict",$class0."\n",FILE_APPEND);	
+		}
+		else if ($cr[$i+1][1] === "1"){
+			file_put_contents("D.predict",$class1."\n",FILE_APPEND);		
+		} 
+	}
+	
 }
 
 
-$file = fopen("D.hc-0.01-0.01", "r") or exit("Unable to open file!");
+$file = fopen($argv[2], "r") or exit("Unable to open file!");
 $i = 1;
 while(!feof($file))
 {
@@ -62,14 +81,9 @@ while(!feof($file))
 fclose($file);
 $QuerySample = array_unique($QuerySample);
 
-$i = 1;
-foreach($qr as $value){
-	$HaveQuery[$i] = intval($value[0]); 
-	$i ++;
-}
+
 file_put_contents("D.sample","");
 foreach($QuerySample as $value){
 	if(!in_array($value,$HaveQuery)) file_put_contents("D.sample",$value."\n",FILE_APPEND);
 }
-
 ?>
