@@ -5,6 +5,7 @@
 # It read links from file specified by argv[1], read labels from files in the current directory named by *.sample and *.label, then merge them together.
 # Notice: The index of instances in links file is started form 0, but in *.sample is started from 1. The index of instances in output links is started from 0.
 */
+ini_set("memory_limit","1G");
 $link=array();
 $file=file($argv[1]);
 foreach($file as $line){
