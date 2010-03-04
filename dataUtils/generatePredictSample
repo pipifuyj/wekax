@@ -1,20 +1,23 @@
 #!/usr/bin/php
 <?php
+ini_set('memory_limit','1100M');
+//读入聚类结果
 $file= $argv[1];
 $ClusterResult=file($file,FILE_IGNORE_NEW_LINES);
 for($i = 0; $i < 20000; $i ++){
 	$cr[$i+1] = preg_split("/\s+/",trim(array_shift($ClusterResult)));
 }
 
-$file = "QueryResult";
+//读入已经查询的结果
+$file = $argv[3];
 $QueryResult=file($file,FILE_IGNORE_NEW_LINES);
 $i = 1;
 while(($line = array_shift($QueryResult))!== null){
 	$qr[$i] = preg_split("/\s+/",trim($line));
 	$i = $i + 1;
 }
-//var_dump($qr);
 
+//统计已经查询的结果和聚类结果的混淆矩阵
 $statics = array(
 	"1" => array("1" => 0,"0" => 0),
 	"-1"=> array("1" => 0,"0" => 0)
@@ -30,8 +33,7 @@ foreach($qr as $label){
 		if($cr[$label[0]][1] === "0") $statics[-1][0]++;
 	}
 }
-
-//var_dump($statics);
+//依据混淆矩阵求出聚类对应的label
 $class1 = -1;$class0 = 1;$max = -1;
 if($max >=  $statics[1][1]){}
 else{$max = $statics[1][1]; $class1 = 1;$class0 = -1;}
@@ -42,22 +44,28 @@ else{$max = $statics[-1][1]; $class1 = -1; $class0 = 1;}
 if($max >=  $statics[-1][0]){}
 else{$max = $statics[-1][0]; $class1 = 1;$class0 = -1;}
 
-//echo $class1,$class0;
+//输出聚类结果的统计
+$error = 1 - ($statics[$class0][0]+$statics[$class1][1])/count($qr);
+$res = "正确数：".($statics[$class0][0]+$statics[$class1][1])."\n"."总数：".count($qr)."\n"."错误率: ".$error;
+file_put_contents("error.rate",$res);
 
+//得到已经查询的instance
 $i = 1;
 foreach($qr as $value){
 	$HaveQuery[$i] = intval($value[0]); 
 	$i ++;
 }
+echo count($HaveQuery);
 
+//输入新的预测值
 file_put_contents("D.predict","");
 for($i = 0; $i < 20000; $i ++){
 	if(in_array($i+1,$HaveQuery)){
 		foreach($qr as $value){
-			if(intval($value[0]) === $i+1) 	{file_put_contents("D.predict",$value[1]."\n",FILE_APPEND);continue;}	
+			if(intval($value[0]) === $i+1) 	{file_put_contents("D.predict",$value[1]."\n",FILE_APPEND);break;}	
 		}
 		continue;	
-	}else{  if($i === 2816) echo "wrong\n";
+	}else{ 
 		if ($cr[$i+1][1] === "0"){
 			file_put_contents("D.predict",$class0."\n",FILE_APPEND);	
 		}
@@ -71,11 +79,11 @@ for($i = 0; $i < 20000; $i ++){
 
 $file = fopen($argv[2], "r") or exit("Unable to open file!");
 $i = 1;
-while(!feof($file))
-{
+while(!feof($file)){
 	$line = fgets($file);
 	$pieces = explode(" ", $line);
-	if("" !== $pieces[0]) $QuerySample[$i] = intval($pieces[0])+1;
+	for($j = 0; $j < 3; $j ++)  array_pop($pieces);
+	$QuerySample[$i] = intval(min($pieces))+1;
 	$i ++;
 }
 fclose($file);
@@ -84,6 +92,6 @@ $QuerySample = array_unique($QuerySample);
 
 file_put_contents("D.sample","");
 foreach($QuerySample as $value){
-	if(!in_array($value,$HaveQuery)) file_put_contents("D.sample",$value."\n",FILE_APPEND);
+	if(!in_array($value,$HaveQuery) && $value < 10001) file_put_contents("D.sample",$value."\n",FILE_APPEND);
 }
 ?>
