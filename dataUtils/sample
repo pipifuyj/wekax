@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Read a predict file and output line numbers (start from 1) in the order of distinct.
+ */
+function cmp($a,$b){
+    $A=abs($a);
+    $B=abs($b);
+    if($A<$B){
+        $c=-1;
+    }elseif($A>$B){
+        $c=1;
+    }else{
+        $c=0;
+    }
+    return $c;
+}
+$file=file($argv[1],FILE_IGNORE_NEW_LINES);
+uasort($file,"cmp");
+foreach($file as $number=>$line){
+    echo $number+1,"\n";
+}
+?>
