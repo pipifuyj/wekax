@@ -15,7 +15,7 @@ function cmp($a,$b){
     }
     return $c;
 }
-$file=file($argv[1],FILE_IGNORE_NEW_LINES);
+$file=file($argv[1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
 uasort($file,"cmp");
 foreach($file as $number=>$line){
     echo $number+1,"\n";
