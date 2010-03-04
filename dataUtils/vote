@@ -24,6 +24,7 @@ while(is_file($argv[$i])){
         $line=preg_split("/\s+/",$line);
         $result[$line[0]]+=$line[1]*$line[2]/($argc-1);
     }
+    $i++;
 }
 for($i=0,$ii=count($predict)+count($result);$i<$ii;$i++){
     if(isset($predict[$i])){
