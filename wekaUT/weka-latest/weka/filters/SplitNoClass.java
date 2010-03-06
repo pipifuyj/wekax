@@ -1,3 +1,6 @@
+/**
+ * The program is for Active Learning Challenge.
+ */
 package weka.filters;
 
 import java.io.*;
@@ -46,7 +49,7 @@ public class SplitNoClass extends Filter{
 	+ "\tGet help on available options.\n"
 	+ "\t(use -b -h for help on batch mode.)\n"
 	+ "-d <file>\n"
-	+ "\tThe name of the file containing input instances without class attribute.\n"
+	+ "\tThe name of the file containing input instances with class attribute but no value.\n"
 	+ "\tIf not supplied then instances will be read from stdin.\n"
 	+ "-l <file>\n"
 	+ "\tThe name of the file containing input query label.\n"
@@ -55,24 +58,12 @@ public class SplitNoClass extends Filter{
 			  +genericOptions);
     }
 
-    Instances train=new Instances(mydata.relationName()+".train",new FastVector(),0);
-    Instances test=new Instances(mydata.relationName()+".test",new FastVector(),0);
+    Instances train=new Instances(mydata,0);
+    train.setRelationName(mydata.relationName()+".train");
+    Instances test=new Instances(mydata,0);
+    test.setRelationName(mydata.relationName()+".test");
     Instance instance;
 
-    for(int i = 0; i < mydata.numAttributes(); i ++){
-	if(i < mydata.numAttributes()-1){
-	 train.insertAttributeAt(new Attribute("col"+i),train.numAttributes());
-	 test.insertAttributeAt(new Attribute("col"+i),test.numAttributes()); 
-	}
-	if(i == mydata.numAttributes()-1){
-		FastVector classatt = new FastVector(2);
-		classatt.addElement("1");
-		classatt.addElement("-1"); 
-		train.insertAttributeAt(new Attribute("col"+i,classatt),train.numAttributes());
-		test.insertAttributeAt(new Attribute("col"+i,classatt),test.numAttributes()); 	
-	}
-	
-    }
 output1.println(train.toString());
 output2.println(test.toString());
 
@@ -93,8 +84,7 @@ for(int i = 0; i < mydata.numInstances(); i ++){
 	for(int j = 0; j < qr.size(); j ++){
 		int[] temp3 = (int[])(qr.get(j));
 		if(temp3[0] == i){
-			if(temp3[1] == 1){instance.setValue(mydata.numAttributes()-1,Integer.toString(temp3[1]));}
-			else {instance.setValue(mydata.numAttributes()-1,Integer.toString(temp3[1]));}
+			instance.setValue(mydata.numAttributes()-1,Integer.toString(temp3[1]));
 			isFind = true; 
 			break;
 		}
