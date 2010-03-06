@@ -84,7 +84,7 @@ for(int i = 0; i < mydata.numInstances(); i ++){
 	for(int j = 0; j < qr.size(); j ++){
 		int[] temp3 = (int[])(qr.get(j));
 		if(temp3[0] == i){
-			instance.setClassValue(temp3[1]);
+			instance.setClassValue(Integer.toString(temp3[1]));
 			isFind = true; 
 			break;
 		}
