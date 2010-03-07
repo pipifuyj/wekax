@@ -540,25 +540,20 @@ public class ClusterEvaluation {
       }
 
       // Get basic options (options the same for all clusterers
-      //printClusterAssignments = Utils.getFlag('p', options);
       objectInputFileName = Utils.getOption('l', options);
       objectOutputFileName = Utils.getOption('d', options);
       trainFileName = Utils.getOption('t', options);
       testFileName = Utils.getOption('T', options);
 
       // Check -p option
-      try {
-	attributeRangeString = Utils.getOption('p', options);
+      try{
+          attributeRangeString=Utils.getOption('p',options);
+      }catch(Exception e){
+          throw new Exception(e.getMessage()+"\nNOTE: the -p option expects a parameter specifying a range of attributes to list with the predictions. Use '-p 0' for none.");
       }
-      catch (Exception e) {
-	throw new Exception(e.getMessage() + "\nNOTE: the -p option has changed. " +
-			    "It now expects a parameter specifying a range of attributes " +
-			    "to list with the predictions. Use '-p 0' for none.");
-      }
-      if (attributeRangeString.length() != 0) {
-	printClusterAssignments = true;
-	if (!attributeRangeString.equals("0")) 
-	  attributesToOutput = new Range(attributeRangeString);
+      if(attributeRangeString.length()!=0){
+          printClusterAssignments=true;
+          if(!attributeRangeString.equals("0"))attributesToOutput=new Range(attributeRangeString);
       }
 
       if (trainFileName.length() == 0) {
