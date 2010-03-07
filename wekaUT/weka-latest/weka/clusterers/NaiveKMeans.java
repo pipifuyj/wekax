@@ -73,10 +73,12 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
                 indexes[j]=((Integer)(clusters[i].get(j))).intValue();
             }
             Arrays.sort(dis);
-            for(int j=0;j<I;j++){
-                if(distances[j]==dis[0]){
-                    System.out.println("\tcenter: "+indexes[j]);
-                    break;
+            for(int j=0;j<20&&j<I;j++){
+                for(int k=0;k<I;k++){
+                    if(distances[k]==dis[j]){
+                        System.out.println("\tcenter: "+indexes[k]);
+                        break;
+                    }
                 }
             }
             for(int j=I-1;j>I-21&&j>-1;j--){
