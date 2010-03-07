@@ -34,6 +34,6 @@ for($i=0,$ii=count($predict)+count($result);$i<$ii;$i++){
 }
 arsort($predict);
 foreach($predict as $k=>$v){
-    echo $k,"\n";
+    echo $k+1,"\n";
 }
 ?>
