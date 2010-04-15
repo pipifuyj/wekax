@@ -1,5 +1,5 @@
 # ** Change this to your wekaUT install directory **
-INSTALL_DIR = /home/backup/svn/wekax.googlecode.com/wekaUT
+INSTALL_DIR = /home/backup/svn/wekax.googlecode.com
 
 # Java version to use
 JAVADIR = /home/backup/lib/j2sdk1.4.2_19
@@ -30,7 +30,7 @@ JAVADOC_LOG_FILE = javadoc.log
 
 # person to receive the email
 RECIPIENT = mbilenko
-CLASSPATH = ./:../:../../:../../../:${INSTALL_DIR}/packages/rmn.jar:${INSTALL_DIR}/packages/Jama-1.0.1.jar:${INSTALL_DIR}/packages/cplex.jar:${INSTALL_DIR}/packages/jmage.jar:${INSTALL_DIR}/packages/ir.jar:${INSTALL_DIR}/packages/jmatlink.jar
+CLASSPATH = ./:../:../../:../../../:${INSTALL_DIR}/packages/rmn.jar:${INSTALL_DIR}/packages/Jama-1.0.1.jar:${INSTALL_DIR}/packages/cplex.jar:${INSTALL_DIR}/packages/jmage.jar:${INSTALL_DIR}/packages/ir.jar:${INSTALL_DIR}/packages/jmatlink.jar:${INSTALL_DIR}/packages/colt-1.2.0.jar
 
 current:
 	find ./ -path './*.java' > ${SOURCE_FILE_LIST} ;\
