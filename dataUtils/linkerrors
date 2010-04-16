@@ -23,8 +23,8 @@ while(is_file("$i.sample")){
     $i++;
 }
 $error=array();
-foreach($link as $a=>$os){
-    foreach($os as $b=>$l){
+foreach($link as $a=>$os)if($label[$a]){
+    foreach($os as $b=>$l)if($label[$b]){
         if(($label[$a]==$label[$b] && $l==-1)||($label[$a]!=$label[$b] && $l==1))$error[$a][$b]=$l;
     }
 }
