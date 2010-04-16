@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+/**
+# The program is designed for ActiveLearningChallenge.
+# It read links from file specified by argv[1], read labels from files in the current directory named by *.sample and *.label, then output errors.
+# Notice: The index of instances in links file is started form 0, but in *.sample is started from 1. The index of instances in output links is started from 0.
+*/
+ini_set("memory_limit","1G");
+$link=array();
+$file=file($argv[1]);
+foreach($file as $line){
+    list($a,$b,$l)=preg_split("/\s+/",trim($line));
+    $link[$a][$b]=$link[$b][$a]=$l;
+}
+$label=array();
+$i=0;
+while(is_file("$i.sample")){
+    $s=file("$i.sample",FILE_IGNORE_NEW_LINES);
+    $l=file("$i.label",FILE_IGNORE_NEW_LINES);
+    foreach($s as $k=>$v){
+        $label[$v-1]=$l[$k];
+    }
+    $i++;
+}
+$error=array();
+foreach($link as $a=>$os){
+    foreach($os as $b=>$l){
+        if(($label[$a]==$label[$b] && $l==-1)||($label[$a]!=$label[$b] && $l==1))$error[$a][$b]=$l;
+    }
+}
+foreach($link as $a=>$os){
+    foreach($os as $b=>$l){
+        if($a<$b){
+            echo "$a\t$b\t$l\n";
+        }
+    }
+}
+?>
