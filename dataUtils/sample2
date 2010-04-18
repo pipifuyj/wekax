@@ -23,7 +23,7 @@ function distinct($results){
 $predict=array();
 $i=0;
 while(is_file("$i.sample")){
-    $sample=file("$i.sample",FILE_IGNORE_NEW_LINES);
+    $sample=file("$i.sample",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
     foreach($sample as $v){
         $predict[$v-1]=0;
     }
@@ -32,7 +32,7 @@ while(is_file("$i.sample")){
 $result=array();
 $i=1;
 while(is_file($argv[$i])){
-    $file=file($argv[$i],FILE_IGNORE_NEW_LINES);
+    $file=file($argv[$i],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
     foreach($file as $line){
         $line=preg_split("/\s+/",$line);
         $result[$line[0]][$i]=$line[1]*$line[2];
