@@ -25,11 +25,12 @@ function CVote($result){
     $probability/=$P;
     return array($value,$probability);
 }
+ini_set("memory_limit","1G");
 $predict=array();
 $i=0;
 while(is_file("$i.sample")){
-    $sample=file("$i.sample",FILE_IGNORE_NEW_LINES);
-    $label=file("$i.label",FILE_IGNORE_NEW_LINES);
+    $sample=file("$i.sample",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+    $label=file("$i.label",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
     foreach($sample as $k=>$v){
         $predict[$v-1]=$label[$k];
     }
@@ -38,7 +39,7 @@ while(is_file("$i.sample")){
 $result=array();
 $i=1;
 while(is_file($argv[$i])){
-    $file=file($argv[$i],FILE_IGNORE_NEW_LINES);
+    $file=file($argv[$i],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
     foreach($file as $line){
         $line=preg_split("/\s+/",$line);
         $result[$line[0]][$i]=array($line[1],$line[2]);
