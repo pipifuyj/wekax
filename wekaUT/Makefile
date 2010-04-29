@@ -1,11 +1,5 @@
 # Java version to use
-JAVADIR = /home/backup/lib/j2sdk1.4.2_19
-
-# a location where a temporary directory will be created and the compilation will take place
-TMP_LOCATION = /var/local/weka-latest
-
-# a directory where a successful build should be copied
-PERM_LOCATION = /u/ml/software/weka-latest
+JAVADIR = /opt/j2sdk1.4.2_19
 
 # name of the file that will contain all source files
 SOURCE_FILE_LIST = sourcefiles.log

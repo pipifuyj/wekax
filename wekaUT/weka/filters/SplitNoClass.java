@@ -10,19 +10,17 @@ import weka.core.*;
 public class SplitNoClass extends Filter{
   public static void filterFile(Filter filter, String [] options) 
     throws Exception {
+    String data,label,sparse;
     Instances mydata = null;
     BufferedReader dat = null;
     BufferedReader lab = null;
-    PrintWriter output1 = new PrintWriter(new FileOutputStream("/home/spidr/MyWorkspace/finaldataset/train-class-nominal-num.arff"));
-    PrintWriter output2 = new PrintWriter(new FileOutputStream("/home/spidr/MyWorkspace/finaldataset/test-class-nominal-num.arff"));
     boolean isSparse=false, isFind = false;
-    int id,labval;
     String line = "";
 
     try {
-      String data = Utils.getOption('d', options);
-      String label = Utils.getOption('l', options);
-      String sparse=Utils.getOption('s',options);
+      data=Utils.getOption('d',options);
+      label=Utils.getOption('l',options);
+      sparse=Utils.getOption('s',options);
 
       if (data.length() != 0) {
 	dat = new BufferedReader(new FileReader(data));
@@ -57,6 +55,10 @@ public class SplitNoClass extends Filter{
       throw new Exception('\n' + ex.getMessage()
 			  +genericOptions);
     }
+    
+    String path = label.substring(0,label.lastIndexOf("."));
+    PrintWriter output1 = new PrintWriter(new FileOutputStream(path+"-train.arff"));
+    PrintWriter output2 = new PrintWriter(new FileOutputStream(path+"-test.arff"));
 
     Instances train=new Instances(mydata,0);
     train.setRelationName(mydata.relationName()+".train");
@@ -69,12 +71,10 @@ output2.println(test.toString());
 
 ArrayList qr = new ArrayList();
 while ( (line = lab.readLine()) != null) {
-		String[] temp = line.split(" ");
-		id = Integer.parseInt(temp[0]);
-		labval = Integer.parseInt(temp[1]);
+		String[] temp = line.split("\\s+");
 		int[] temp1 = new int[2];
-		temp1[0] = id-1;
-		temp1[1] = labval;
+		temp1[0] = Integer.parseInt(temp[0])-1;
+		temp1[1] = Integer.parseInt(temp[1]);
                 qr.add(temp1);
 }
 
@@ -110,11 +110,3 @@ for(int i = 0; i < mydata.numInstances(); i ++){
     }
   }
 }
-
-
-
-
-
-
-
-
