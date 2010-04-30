@@ -1,25 +1,3 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- *    NaiveBayes.java
- *    Copyright (C) 1999 Eibe Frank,Len Trigg
- *
- */
-
 package weka.classifiers.bayes;
 
 import weka.classifiers.Classifier;
@@ -84,7 +62,6 @@ public class NaiveBayes extends DistributionClassifier
 
   /*** The precision parameter used for numeric attributes */
   protected static final double DEFAULT_NUM_PRECISION = 0.01;
-
     
     /**
      * Return class-feature-value distributions.
@@ -101,7 +78,6 @@ public class NaiveBayes extends DistributionClassifier
    * successfully
    */
   public void buildClassifier(Instances instances) throws Exception {
-
     if (instances.checkForStringAttributes()) {
       throw new UnsupportedAttributeTypeException("Cannot handle string attributes!");
     }
@@ -180,8 +156,7 @@ public class NaiveBayes extends DistributionClassifier
     // Compute counts
     Enumeration enumInsts = m_Instances.enumerateInstances();
     while (enumInsts.hasMoreElements()) {
-      Instance instance = 
-	(Instance) enumInsts.nextElement();
+      Instance instance = (Instance) enumInsts.nextElement();
       updateClassifier(instance);
     }
 
@@ -198,7 +173,6 @@ public class NaiveBayes extends DistributionClassifier
    * the model.
    */
   public void updateClassifier(Instance instance) throws Exception {
-
     if (!instance.classIsMissing()) {
       Enumeration enumAtts = m_Instances.enumerateAttributes();
       int attIndex = 0;
@@ -210,8 +184,7 @@ public class NaiveBayes extends DistributionClassifier
 	}
 	attIndex++;
       }
-      m_ClassDistribution.addValue(instance.classValue(),
-				   instance.weight());
+      m_ClassDistribution.addValue(instance.classValue(), instance.weight());
     }
   }
 
@@ -224,9 +197,7 @@ public class NaiveBayes extends DistributionClassifier
    * @return predicted class probability distribution
    * @exception Exception if there is a problem generating the prediction
    */
-  public double [] distributionForInstance(Instance instance) 
-  throws Exception { 
-    
+  public double [] distributionForInstance(Instance instance) throws Exception {
     double [] probs = new double[m_NumClasses];
     for (int j = 0; j < m_NumClasses; j++) {
       probs[j] = m_ClassDistribution.getProbability(j);
@@ -270,9 +241,7 @@ public class NaiveBayes extends DistributionClassifier
    * @return an enumeration of all the available options.
    */
   public Enumeration listOptions() {
-
     Vector newVector = new Vector(1);
-
     newVector.addElement(
     new Option("\tUse kernel density estimator rather than normal\n"
 	       +"\tdistribution for numeric attributes",
@@ -291,9 +260,7 @@ public class NaiveBayes extends DistributionClassifier
    * @exception Exception if an option is not supported
    */
   public void setOptions(String[] options) throws Exception {
-    
     m_UseKernelEstimator = Utils.getFlag('K', options);
-
     Utils.checkForRemainingOptions(options);
   }
 
@@ -303,14 +270,11 @@ public class NaiveBayes extends DistributionClassifier
    * @return an array of strings suitable for passing to setOptions
    */
   public String [] getOptions() {
-
     String [] options = new String [1];
     int current = 0;
-
     if (m_UseKernelEstimator) {
       options[current++] = "-K";
     }
-
     while (current < options.length) {
       options[current++] = "";
     }
@@ -323,9 +287,7 @@ public class NaiveBayes extends DistributionClassifier
    * @return a description of the classifier as a string.
    */
   public String toString() {
-    
     StringBuffer text = new StringBuffer();
-
     text.append("Naive Bayes Classifier");
     if (m_Instances == null) {
       text.append(": No model built yet.");
@@ -349,7 +311,6 @@ public class NaiveBayes extends DistributionClassifier
 	text.append(ex.getMessage());
       }
     }
-
     return text.toString();
   }
   
@@ -359,7 +320,6 @@ public class NaiveBayes extends DistributionClassifier
    * @return Value of m_UseKernelEstimatory.
    */
   public boolean getUseKernelEstimator() {
-    
     return m_UseKernelEstimator;
   }
   
@@ -369,7 +329,6 @@ public class NaiveBayes extends DistributionClassifier
    * @param v  Value to assign to m_UseKernelEstimatory.
    */
   public void setUseKernelEstimator(boolean v) {
-    
     m_UseKernelEstimator = v;
   }
 
@@ -379,7 +338,6 @@ public class NaiveBayes extends DistributionClassifier
    * @param argv the options
    */
   public static void main(String [] argv) {
-
     try {
       System.out.println(Evaluation.evaluateModel(new NaiveBayes(), argv));
     } catch (Exception e) {
@@ -388,15 +346,3 @@ public class NaiveBayes extends DistributionClassifier
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
