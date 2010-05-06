@@ -2,6 +2,7 @@ package weka.classifiers.bayes;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.DistributionClassifier;
+import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.Evaluation;
 import weka.classifiers.UpdateableClassifier;
 import java.io.*;
@@ -9,67 +10,8 @@ import java.util.*;
 import weka.core.*;
 import weka.estimators.*;
 
-/**
- * Class for a Naive Bayes classifier using estimator classes. Numeric 
- * estimator precision values are chosen based on analysis of the 
- * training data. For this reason, the classifier is not an 
- * UpdateableClassifier (which in typical usage are initialized with zero 
- * training instances) -- if you need the UpdateableClassifier functionality,
- * use the NaiveBayesUpdateable classifier. The NaiveBayesUpdateable
- * classifier will  use a default precision of 0.1 for numeric attributes
- * when buildClassifier is called with zero training instances.
- * <p>
- * For more information on Naive Bayes classifiers, see<p>
- *
- * George H. John and Pat Langley (1995). <i>Estimating
- * Continuous Distributions in Bayesian Classifiers</i>. Proceedings
- * of the Eleventh Conference on Uncertainty in Artificial
- * Intelligence. pp. 338-345. Morgan Kaufmann, San Mateo.<p>
- *
- * Valid options are:<p>
- *
- * -K <br>
- * Use kernel estimation for modelling numeric attributes rather than
- * a single normal distribution.<p>
- *
- * @author Len Trigg (trigg@cs.waikato.ac.nz)
- * @author Eibe Frank (eibe@cs.waikato.ac.nz)
- * @version $Revision: 1.2 $
- */
-public class NaiveBayes extends DistributionClassifier 
-  implements OptionHandler, WeightedInstancesHandler {
-
-  /** The attribute estimators. */
-  protected Estimator [][] m_Distributions;
-  
-  /** The class estimator. */
-  protected Estimator m_ClassDistribution;
-
-  /**
-   * Whether to use kernel density estimator rather than normal distribution
-   * for numeric attributes
-   */
-  protected boolean m_UseKernelEstimator;
-
-  /** The number of classes (or 1 for numeric class) */
-  protected int m_NumClasses;
-
-  /**
-   * The dataset header for the purposes of printing out a semi-intelligible 
-   * model 
-   */
-  protected Instances m_Instances;
-
-  /*** The precision parameter used for numeric attributes */
-  protected static final double DEFAULT_NUM_PRECISION = 0.01;
-    
-    /**
-     * Return class-feature-value distributions.
-     */
-    public Estimator [][]getDistributions(){
-	return m_Distributions;
-    }
-    
+public class PBayes extends NaiveBayes{
+	String P;
   /**
    * Generates the classifier.
    *
@@ -171,16 +113,17 @@ public class NaiveBayes extends DistributionClassifier
    */
   public void updateClassifier(Instance instance) throws Exception {
     if (!instance.classIsMissing()) {
-      Enumeration enumAtts = m_Instances.enumerateAttributes();
-      int attIndex = 0;
-      while (enumAtts.hasMoreElements()) {
-	Attribute attribute = (Attribute) enumAtts.nextElement();
-	if (!instance.isMissing(attribute)) {
-	  m_Distributions[attIndex][(int)instance.classValue()].addValue(instance.value(attribute),instance.weight());
-	}
-	attIndex++;
-      }
-      m_ClassDistribution.addValue(instance.classValue(), instance.weight());
+    	int classValue=(int)instance.classValue();
+		Enumeration enumAtts=m_Instances.enumerateAttributes();
+		int attIndex=0;
+		while(enumAtts.hasMoreElements()){
+			Attribute attribute=(Attribute)enumAtts.nextElement();
+			if(!instance.isMissing(attribute)){
+				m_Distributions[attIndex][classValue].addValue(instance.value(attribute),instance.weight());
+			}
+			attIndex++;
+		}
+		m_ClassDistribution.addValue(classValue,instance.weight());
     }
   }
 
@@ -231,11 +174,12 @@ public class NaiveBayes extends DistributionClassifier
    * @return an enumeration of all the available options.
    */
   public Enumeration listOptions() {
-    Vector newVector = new Vector(1);
+    Vector newVector = new Vector(2);
     newVector.addElement(
     new Option("\tUse kernel density estimator rather than normal\n"
 	       +"\tdistribution for numeric attributes",
 	       "K", 0,"-K"));
+    newVector.addElement(new Option("\tSet Probability data file. Each line represent one instance's probabilities to be all classes seperated by space.","P",0,"-P"));
     return newVector.elements();
   }
 
@@ -251,6 +195,7 @@ public class NaiveBayes extends DistributionClassifier
    */
   public void setOptions(String[] options) throws Exception {
     m_UseKernelEstimator = Utils.getFlag('K', options);
+    P=Utils.getOption('P',options);
     Utils.checkForRemainingOptions(options);
   }
 
@@ -260,8 +205,9 @@ public class NaiveBayes extends DistributionClassifier
    * @return an array of strings suitable for passing to setOptions
    */
   public String [] getOptions() {
-    String [] options = new String [1];
+    String [] options = new String [2];
     int current = 0;
+    options[current++]="-P";
     if (m_UseKernelEstimator) {
       options[current++] = "-K";
     }
@@ -278,7 +224,7 @@ public class NaiveBayes extends DistributionClassifier
    */
   public String toString() {
     StringBuffer text = new StringBuffer();
-    text.append("Naive Bayes Classifier");
+    text.append("PBayes Classifier");
     if (m_Instances == null) {
       text.append(": No model built yet.");
     } else {
@@ -305,31 +251,13 @@ public class NaiveBayes extends DistributionClassifier
   }
   
   /**
-   * Gets if kernel estimator is being used.
-   *
-   * @return Value of m_UseKernelEstimatory.
-   */
-  public boolean getUseKernelEstimator() {
-    return m_UseKernelEstimator;
-  }
-  
-  /**
-   * Sets if kernel estimator is to be used.
-   *
-   * @param v  Value to assign to m_UseKernelEstimatory.
-   */
-  public void setUseKernelEstimator(boolean v) {
-    m_UseKernelEstimator = v;
-  }
-
-  /**
    * Main method for testing this class.
    *
    * @param argv the options
    */
   public static void main(String [] argv) {
     try {
-      System.out.println(Evaluation.evaluateModel(new NaiveBayes(), argv));
+      System.out.println(Evaluation.evaluateModel(new PBayes(), argv));
     } catch (Exception e) {
       e.printStackTrace();
       System.err.println(e.getMessage());
