@@ -93,10 +93,8 @@ public class NaiveBayes extends DistributionClassifier
     m_Instances = new Instances(instances);
 
     // Reserve space for the distributions
-    m_Distributions = new Estimator[m_Instances.numAttributes() - 1]
-    [m_Instances.numClasses()];
-    m_ClassDistribution = new DiscreteEstimator(m_Instances.numClasses(), 
-						true);
+    m_Distributions=new Estimator[m_Instances.numAttributes()-1][m_Instances.numClasses()];
+    m_ClassDistribution=new DiscreteEstimator(m_Instances.numClasses(),true);
     int attIndex = 0;
     Enumeration enum = m_Instances.enumerateAttributes();
     while (enum.hasMoreElements()) {
@@ -143,8 +141,7 @@ public class NaiveBayes extends DistributionClassifier
 	  }
 	  break;
 	case Attribute.NOMINAL:
-	  m_Distributions[attIndex][j] = 
-	  new DiscreteEstimator(attribute.numValues(), true);
+	  m_Distributions[attIndex][j]=new DiscreteEstimator(attribute.numValues(),true);
 	  break;
 	default:
 	  throw new Exception("Attribute type unknown to NaiveBayes");
@@ -179,8 +176,7 @@ public class NaiveBayes extends DistributionClassifier
       while (enumAtts.hasMoreElements()) {
 	Attribute attribute = (Attribute) enumAtts.nextElement();
 	if (!instance.isMissing(attribute)) {
-	  m_Distributions[attIndex][(int)instance.classValue()].
-	    addValue(instance.value(attribute), instance.weight());
+	  m_Distributions[attIndex][(int)instance.classValue()].addValue(instance.value(attribute),instance.weight());
 	}
 	attIndex++;
       }
@@ -204,32 +200,26 @@ public class NaiveBayes extends DistributionClassifier
     }
     Enumeration enumAtts = instance.enumerateAttributes();
     int attIndex = 0;
-    while (enumAtts.hasMoreElements()) {
-      Attribute attribute = (Attribute) enumAtts.nextElement();
-      if (!instance.isMissing(attribute)) {
-	double temp, max = 0;
-	for (int j = 0; j < m_NumClasses; j++) {
-	  temp = Math.max(1e-75, m_Distributions[attIndex][j].
-	  getProbability(instance.value(attribute)));
-	  probs[j] *= temp;
-	  if (probs[j] > max) {
-	    max = probs[j];
-	  }
-	  if (Double.isNaN(probs[j])) {
-	    throw new Exception("NaN returned from estimator for attribute "
-				+ attribute.name() + ":\n"
-				+ m_Distributions[attIndex][j].toString());
-	  }
+	while(enumAtts.hasMoreElements()){
+		Attribute attribute=(Attribute)enumAtts.nextElement();
+		if(!instance.isMissing(attribute)){
+			double temp,max=0;
+			for(int j=0;j<m_NumClasses;j++){
+				temp=Math.max(1e-75,m_Distributions[attIndex][j].getProbability(instance.value(attribute)));
+				probs[j]*=temp;
+				if(probs[j]>max)max=probs[j];
+				if(Double.isNaN(probs[j])){
+					throw new Exception("NaN returned from estimator for attribute "
+							+attribute.name()+":\n"
+							+m_Distributions[attIndex][j].toString());
+				}
+			}
+			if((max>0)&&(max<1e-75)){//Danger of probability underflow
+				for(int j=0;j<m_NumClasses;j++)probs[j]*=1e75;
+			}
+		}
+		attIndex++;
 	}
-	if ((max > 0) && (max < 1e-75)) { // Danger of probability underflow
-	  for (int j = 0; j < m_NumClasses; j++) {
-	    probs[j] *= 1e75;
-	  }
-	}
-      }
-      attIndex++;
-    }
-
     // Display probabilities
     Utils.normalize(probs);
     return probs;
