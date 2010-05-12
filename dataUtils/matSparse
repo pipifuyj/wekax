@@ -3,12 +3,17 @@
 /**
 * sparse the matrix, input and output formats are defined in cluto
 */
-ini_set("memory_limit","1G");
-$file=$argv[1];
+$opt=getopt("m:o:");
+$file=$argv[$argc-1];
+if($opt['m'])ini_set("memory_limit",$opt['m']);
 $matrix=file($file,FILE_IGNORE_NEW_LINES);
-$option=array_shift($matrix);
-$option=preg_split("/\s+/",trim($option));
-$option[2]=0;
+if($opt['o']){
+    $option=array(count($matrix),count($matrix[0]),0);
+}else{
+    $option=array_shift($matrix);
+    $option=preg_split("/\s+/",trim($option));
+    $option[2]=0;
+}
 
 $f=tmpfile();
 while(list($k,$v)=each($matrix)){
