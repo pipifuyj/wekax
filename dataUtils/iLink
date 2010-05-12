@@ -102,6 +102,19 @@ class iLink{
 			printf("%s(%s %s)\n",implode(" ",$items),$sup,$conf);
 		}
 	}
+	public function PCliques($out="/dev/stdout"){
+		foreach($this->clique as $clique){
+			$count=count($clique[0]);
+			$G=array();
+			foreach($clique[0] as $o){
+				$G[$this->getLable($o)]++;
+			}
+			$P=0;
+			foreach($G as $g)$P+=$g*$g;
+			$P/=$count*$count;
+			file_put_contents($out,"$count {$clique[1]} {$clique[2]} $P\n",FILE_APPEND);
+		}
+	}
 	public function drawCliques($sup=0,$conf=0,$scale=1000){
 		$image=imagecreate($scale,$scale);
 		imagecolorallocate($image,0,0,0);

@@ -8,7 +8,7 @@ $file=$argv[$argc-1];
 if($opt['m'])ini_set("memory_limit",$opt['m']);
 $matrix=file($file,FILE_IGNORE_NEW_LINES);
 if($opt['o']){
-    $option=array(count($matrix),count($matrix[0]),0);
+    $option=array(count($matrix),count(preg_split("/\s+/",trim($matrix[0]))),0);
 }else{
     $option=array_shift($matrix);
     $option=preg_split("/\s+/",trim($option));
