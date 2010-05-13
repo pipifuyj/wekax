@@ -26,9 +26,10 @@ if($meta[2]){
 			fwrite($tmpfile,"{$mat[$index]}\n");
 			file_put_contents($templabelfile,"{$label[$index]}\n",FILE_APPEND);
 			$tempmeta[0]++;
-			$tempmeta[2]+=count(preg_split("/\s+/",trim($mat[$index])))/2;
+			// floor is necessary because there may be empty lines.
+			$tempmeta[2]+=floor(count(preg_split("/\s+/",trim($mat[$index])))/2);
 		}
-		file_put_contents($tmpmatfile,join(" ",$tempmeta)."\n");
+		file_put_contents($tempmatfile,join(" ",$tempmeta)."\n");
 		fseek($tmpfile,0);
 		while(!feof($tmpfile)){
 			file_put_contents($tempmatfile,fread($tmpfile,8192),FILE_APPEND);

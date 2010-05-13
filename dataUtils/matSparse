@@ -30,7 +30,7 @@ while(list($k,$v)=each($matrix)){
     fwrite($f,"\n");
 }
 
-echo $join(" ",$option),"\n";
+echo join(" ",$option),"\n";
 
 fseek($f,0);
 while(!feof($f)){
