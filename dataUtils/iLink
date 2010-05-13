@@ -107,7 +107,7 @@ class iLink{
 			$count=count($clique[0]);
 			$G=array();
 			foreach($clique[0] as $o){
-				$G[$this->getLable($o)]++;
+				$G[$this->getLabel($o)]++;
 			}
 			$P=0;
 			foreach($G as $g)$P+=$g*$g;

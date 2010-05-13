@@ -490,6 +490,14 @@ public final class Utils {
     return "";
   }
 
+  public static String [] getOptions(char flag,int n,String [] options)throws Exception{
+	  String [] Options=new String[n];
+	  for(int i=0;i<n;i++){
+		  Options[i]=getOption(flag,options);
+	  }
+	  return Options;
+  }
+
   /**
    * Quotes a string if it contains special characters.
    * 
