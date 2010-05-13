@@ -519,6 +519,9 @@ public class Attribute implements Copyable, Serializable {
       return (String) val;
     }
   }
+  public final int index(String value){
+	  return m_Values.indexOf(value);
+  }
 
   /**
    * Constructor for a numeric attribute with a particular index.

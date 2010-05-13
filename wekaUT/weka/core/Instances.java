@@ -592,17 +592,12 @@ public class Instances implements Serializable {
    * numAttributes()) and sets all values to be missing.
    * Shallow copies the attribute before it is inserted, and performs
    * a deep copy of the existing attribute information.
-   *
    * @param att the attribute to be inserted
    * @param pos the attribute's position
    * @exception IllegalArgumentException if the given index is out of range
    */
   public void insertAttributeAt(Attribute att, int position) {
-	 
-    if ((position < 0) ||
-	(position > m_Attributes.size())) {
-      throw new IllegalArgumentException("Index out of range");
-    }
+    if((position<0)||(position>m_Attributes.size()))throw new IllegalArgumentException("Index out of range");
     att = (Attribute)att.copy();
     freshAttributeInfo();
     att.setIndex(position);
@@ -621,12 +616,10 @@ public class Instances implements Serializable {
 
   /**
    * Returns the instance at the given position.
-   *
    * @param index the instance's index
    * @return the instance at the given position
    */
   public final Instance instance(int index) {
-
     return (Instance)m_Instances.elementAt(index);
   }
 
@@ -755,35 +748,43 @@ public class Instances implements Serializable {
    * Returns the number of distinct values of a given attribute.
    * Returns the number of instances if the attribute is a
    * string attribute. The value 'missing' is not counted.
-   *
    * @param att the attribute
    * @return the number of distinct values of a given attribute
    */
   public final int numDistinctValues(Attribute att) {
-
     return numDistinctValues(att.index());
   }
   
   /**
    * Returns the number of instances in the dataset.
-   *
    * @return the number of instances in the dataset as an integer
    */
   public final int numInstances() {
-
     return m_Instances.size();
+  }
+  public final int numInstancesWithClass(double value){
+	  int c=0;
+	  for(int i=0,ii=numInstances();i<ii;i++)if(instance(i).classValue()==value)c++;
+	  return c;
+  }
+  public final int numInstancesWithClass(String string){
+	  return numInstancesWithClass(classAttribute().index(string));
+  }
+  public final int [] indicesWithClass(double value){
+	  int [] indices=new int[numInstancesWithClass(value)];
+	  for(int i=0,ii=numInstances(),c=0;i<ii;i++)if(instance(i).classValue()==value)indices[c++]=i;
+	  return indices;
+  }
+  public final int [] indicesWithClass(String string){
+	  return indicesWithClass(classAttribute().index(string));
   }
 
   /**
-   * Shuffles the instances in the set so that they are ordered 
-   * randomly.
-   *
+   * Shuffles the instances in the set so that they are ordered randomly.
    * @param random a random number generator
    */
-  public final void randomize(Random random) {
-
-    for (int j = numInstances() - 1; j > 0; j--)
-      swap(j, random.nextInt(j+1));
+  public final void randomize(Random random){
+    for(int j=numInstances()-1;j>0;j--)swap(j,random.nextInt(j+1));
   }
 
   /**
@@ -791,50 +792,33 @@ public class Instances implements Serializable {
    * to the dataset.  Automatically expands the dataset if it
    * is not large enough to hold the instance. This method does
    * not check for carriage return at the end of the line.
-   *
    * @param reader the reader 
    * @return false if end of file has been reached
-   * @exception IOException if the information is not read 
-   * successfully
+   * @exception IOException if the information is not read successfully
    */ 
-  public final boolean readInstance(Reader reader) 
-       throws IOException {
-
+  public final boolean readInstance(Reader reader)throws IOException{
     StreamTokenizer tokenizer = new StreamTokenizer(reader);
-    
     initTokenizer(tokenizer);
     return getInstance(tokenizer, false);
   }    
 
   /**
    * Returns the relation's name.
-   *
    * @return the relation's name as a string
    */
   public final String relationName() {
-
     return m_RelationName;
   }
 
   /**
-   * Renames an attribute. This change only affects this
-   * dataset.
-   *
+   * Renames an attribute. This change only affects this dataset.
    * @param att the attribute's index
    * @param name the new name
    */
   public final void renameAttribute(int att, String name) {
-
     Attribute newAtt = attribute(att).copy(name);
     FastVector newVec = new FastVector(numAttributes());
-
-    for (int i = 0; i < numAttributes(); i++) {
-      if (i == att) {
-	newVec.addElement(newAtt);
-      } else {
-	newVec.addElement(attribute(i));
-      }
-    }
+    for(int i=0;i<numAttributes();i++)if(i==att)newVec.addElement(newAtt);else newVec.addElement(attribute(i));
     m_Attributes = newVec;
   }
 
@@ -986,26 +970,22 @@ public class Instances implements Serializable {
   /** 
    * Sets the class index of the set.
    * If the class index is negative there is assumed to be no class.
-   * (ie. it is undefined)
-   *
    * @param classIndex the new class index
    * @exception IllegalArgumentException if the class index is too big or < 0
    */
   public final void setClassIndex(int classIndex) {
-
     if (classIndex >= numAttributes()) {
       throw new IllegalArgumentException("Invalid class index: " + classIndex);
     }
     m_ClassIndex = classIndex;
   }
-
-  /**
-   * Sets the relation's name.
-   *
-   * @param newName the new relation name.
-   */
+  public final void setClassIndex(Integer classIndex){
+	  setClassIndex(classIndex.intValue());
+  }
+  public final void setClassIndex(Object classIndex){
+	  setClassIndex((Integer)classIndex);
+  }
   public final void setRelationName(String newName) {
-    
     m_RelationName = newName;
   }
 
