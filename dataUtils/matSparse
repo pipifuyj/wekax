@@ -29,9 +29,8 @@ while(list($k,$v)=each($matrix)){
     }
     fwrite($f,"\n");
 }
-fseek($f,0);
-fwrite($f,join(" ",$option));
-fwrite($f,"\n");
+
+echo $join(" ",$option),"\n";
 
 fseek($f,0);
 while(!feof($f)){

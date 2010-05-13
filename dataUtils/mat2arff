@@ -25,9 +25,9 @@ if($option[2]){
 		$v=preg_split("/\s+/",trim($v));
 		$row=array();
 		while(list($k1,$v1)=each($v)){
-			$v1--;
-			list($k2,$v2)=each($v);
-			$row[$v1]=$v2;
+			// Check whether the row is empty.
+			if(list($k2,$v2)=each($v))$row[$v1-1]=$v2;
+			else break;
 		}
 		echo "{";
 		ksort($row);

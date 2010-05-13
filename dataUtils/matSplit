@@ -1,0 +1,38 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Split a mat file, keep label association and scale.
+ * Usage: matSplit -l N file.mat file.label
+ * Output: file-i.mat file-i.label
+ */
+$opt=getopt("l:");
+$matfile=$argv[$argc-2];
+$mat=file($matfile,FILE_IGNORE_NEW_LINES);
+$meta=preg_split("/\s+/",trim(array_shift($mat)));
+$labelfile=$argv[$argc-1];
+$label=file($labelfile,FILE_IGNORE_NEW_LINES);
+$count=array_count_values($label);
+$p=$meta[0]/$opt['l'];
+foreach($count as $class=>$c)$count[$class]/=$p;
+$keys=array();
+foreach($count as $class=>$c)$keys[$class]=array_chunk(array_keys($label,$class),$c);
+if($meta[2]){
+	for($i=0;$i<$p;$i++){
+		$tempmatfile="$i-$matfile";
+		$tempmeta=array(0,$meta[1],0);
+		$templabelfile="$i-$labelfile";
+		$tmpfile=tmpfile();
+		foreach($count as $class=>$c)foreach($keys[$class][$i] as $index){
+			fwrite($tmpfile,"{$mat[$index]}\n");
+			file_put_contents($templabelfile,"{$label[$index]}\n",FILE_APPEND);
+			$tempmeta[0]++;
+			$tempmeta[2]+=count(preg_split("/\s+/",trim($mat[$index])))/2;
+		}
+		file_put_contents($tmpmatfile,join(" ",$tempmeta)."\n");
+		fseek($tmpfile,0);
+		while(!feof($tmpfile)){
+			file_put_contents($tempmatfile,fread($tmpfile,8192),FILE_APPEND);
+		}
+	}
+}
+?>
