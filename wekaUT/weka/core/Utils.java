@@ -490,7 +490,7 @@ public final class Utils {
   public static Dict getDict(String [] options){
 	  Dict dict=new Dict();
 	  String key,value;
-	  for(int i=0;i<options.length;i++)if(options[i].startWith("-")){
+	  for(int i=0;i<options.length;i++)if(options[i].startsWith("-")){
 		  key=options[i].substring(1);
 		  if(i+1==options.length)dict.put(key,null);
 		  else{

@@ -1,25 +1,3 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- *    Instances.java
- *    Copyright (C) 1999 Eibe Frank
- *
- */
-
 package weka.core;
 
 import java.io.*;
@@ -58,50 +36,33 @@ import java.util.*;
  * @version $Revision: 1.2 $ 
  */
 public class Instances implements Serializable {
- 
   /** The filename extension that should be used for arff files */
   public static String FILE_EXTENSION = ".arff";
-
   /** The dataset's name. */
   protected String m_RelationName;         
-
   /** The attribute information. */
   protected FastVector m_Attributes;
-
   /** The instances. */
   protected FastVector m_Instances;
-
   /** Index in ranges for MIN and MAX and WIDTH */
   public static int R_MIN = 0;
   public static int R_MAX = 1;
   public static int R_WIDTH = 2;
-
-
   /** The class attribute's index */
   protected int m_ClassIndex;
-
   /** Buffer of values for sparse instance */
   protected double[] m_ValueBuffer;
-
   /** Buffer of indices for sparse instance */
   protected int[] m_IndicesBuffer;
-
   /** Ranges of instances */
   protected double[][] m_Ranges;
-
   /**
-   * Reads an ARFF file from a reader, and assigns a weight of
-   * one to each instance. Lets the index of the class 
-   * attribute be undefined (negative).
-   *
+   * Reads an ARFF file from a reader, and assigns a weight of one to each instance. Lets the index of the class attribute be undefined (negative).
    * @param reader the reader
-   * @exception IOException if the ARFF file is not read 
-   * successfully
+   * @exception IOException if the ARFF file is not read successfully
    */
   public Instances(Reader reader) throws IOException {
-
     StreamTokenizer tokenizer;
-
     tokenizer = new StreamTokenizer(reader);
     initTokenizer(tokenizer);
     readHeader(tokenizer);
@@ -112,23 +73,15 @@ public class Instances implements Serializable {
   }
  
   /**
-   * Reads the header of an ARFF file from a reader and 
-   * reserves space for the given number of instances. Lets
-   * the class index be undefined (negative).
-   *
+   * Reads the header of an ARFF file from a reader and reserves space for the given number of instances. Lets the class index be undefined (negative).
    * @param reader the reader
    * @param capacity the capacity
-   * @exception IllegalArgumentException if the header is not read successfully
-   * or the capacity is negative.
+   * @exception IllegalArgumentException if the header is not read successfully or the capacity is negative.
    * @exception IOException if there is a problem with the reader.
    */
    public Instances(Reader reader, int capacity) throws IOException {
-
     StreamTokenizer tokenizer;
-
-    if (capacity < 0) {
-      throw new IllegalArgumentException("Capacity has to be positive!");
-    }
+    if(capacity<0)throw new IllegalArgumentException("Capacity has to be positive!");
     tokenizer = new StreamTokenizer(reader); 
     initTokenizer(tokenizer);
     readHeader(tokenizer);
@@ -143,9 +96,7 @@ public class Instances implements Serializable {
    * @param instances the set to be copied
    */
   public Instances(Instances dataset) {
-
     this(dataset, dataset.numInstances());
-
     dataset.copyInstances(0, this, dataset.numInstances());
   }
 
@@ -159,11 +110,7 @@ public class Instances implements Serializable {
    * @param capacity the capacity of the new dataset 
    */
   public Instances(Instances dataset, int capacity) {
-    
-    if (capacity < 0) {
-      capacity = 0;
-    }
-    
+    if(capacity<0)capacity=0;
     // Strings only have to be "shallow" copied because
     // they can't be modified.
     m_ClassIndex = dataset.m_ClassIndex;
@@ -173,22 +120,16 @@ public class Instances implements Serializable {
   }
 
   /**
-   * Creates a new set of instances by copying a 
-   * subset of another set.
-   *
-   * @param source the set of instances from which a subset 
-   * is to be created
+   * Creates a new set of instances by copying a subset of another set.
+   * @param source the set of instances from which a subset is to be created
    * @param first the index of the first instance to be copied
    * @param toCopy the number of instances to be copied
    * @exception IllegalArgumentException if first and toCopy are out of range
    */
   public Instances(Instances source, int first, int toCopy) {
-    
     this(source, toCopy);
-
     if ((first < 0) || ((first + toCopy) > source.numInstances())) {
-      throw new IllegalArgumentException("Parameters first and/or toCopy out "+
-                                         "of range");
+      throw new IllegalArgumentException("Parameters first and/or toCopy out of range");
     }
     source.copyInstances(first, this, toCopy);
   }
@@ -198,19 +139,15 @@ public class Instances implements Serializable {
    * attribute information. Sets the capacity of the set of 
    * instances to 0 if its negative. Given attribute information
    * must not be changed after this constructor has been used.
-   *
    * @param name the name of the relation
    * @param attInfo the attribute information
    * @param capacity the capacity of the set
    */
   public Instances(String name, FastVector attInfo, int capacity) {
-
     m_RelationName = name;
     m_ClassIndex = -1;
     m_Attributes = attInfo;
-    for (int i = 0; i < numAttributes(); i++) {
-      attribute(i).setIndex(i);
-    }
+    for(int i=0;i<numAttributes();i++)attribute(i).setIndex(i);
     m_Instances = new FastVector(capacity);
   }
  

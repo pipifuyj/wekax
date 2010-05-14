@@ -7,24 +7,24 @@ public class Dict extends HashMap{
 		return (String)get(key);
 	}
 	public Integer getInteger(Object key){
-		return (Integer)get(key);
-	}
-	public int getInt(Object key){
 		try{
-			return getInteger(key).intValue();
+			return (Integer)get(key);
 		}catch(Exception e){
-			return Integer.parseInt(getString(key));
+			return Integer.valueOf(getString(key));
 		}
 	}
-	public Boolean getBoolean(Object key){
-		return (Boolean)get(key);
+	public int getInt(Object key){
+		return getInteger(key).intValue();
 	}
-	public boolean getBool(Object key){
+	public Boolean getBoolean(Object key){
 		try{
-			return getBoolean(key).booleanValue();
+			return (Boolean)get(key);
 		}catch(Exception e){
 			return Boolean.valueOf(getString(key));
 		}
+	}
+	public boolean getBool(Object key){
+		return getBoolean(key).booleanValue();
 	}
 	public Object put(Object key,int value){
 		Object old=get(key);

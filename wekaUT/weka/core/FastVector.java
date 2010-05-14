@@ -1,25 +1,3 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- *    FastVector.java
- *    Copyright (C) 1999 Eibe Frank
- *
- */
-
 package weka.core;
 
 import java.util.*;
@@ -27,9 +5,7 @@ import java.io.*;
 
 /**
  * Implements a fast vector class without synchronized
- * methods. Replaces java.util.Vector. (Synchronized methods tend to
- * be slow.)
- *
+ * methods. Replaces java.util.Vector. (Synchronized methods tend to be slow.)
  * @author Eibe Frank (eibe@cs.waikato.ac.nz)
  * @version $Revision: 1.1.1.1 $ */
 public class FastVector implements Copyable, Serializable {
@@ -122,39 +98,25 @@ public class FastVector implements Copyable, Serializable {
   private double m_CapacityMultiplier;
 
   /**
-   * Constructs an empty vector with initial
-   * capacity zero.
+   * Constructs an empty vector with initial capacity zero.
    */
   public FastVector() {
-  
-    m_Objects = new Object[0];
-    m_Size = 0;
-    m_CapacityIncrement = 1;
-    m_CapacityMultiplier = 2;
+	  this(0);
   }
 
   /**
    * Constructs a vector with the given capacity.
-   *
    * @param capacity the vector's initial capacity
    */
   public FastVector(int capacity) {
-
-    m_Objects = new Object[capacity];
-    m_Size = 0;
-    m_CapacityIncrement = 1;
-    m_CapacityMultiplier = 2;
+	  this(capacity,1,2);
   }
 
   /**
-   * Constructs a vector with the given capacity, capacity 
-   * increment and capacity mulitplier.
-   *
+   * Constructs a vector with the given capacity, capacity increment and capacity mulitplier.
    * @param capacity the vector's initial capacity
    */
-  public FastVector(int capacity, int capIncrement, 
-		    double capMultiplier) {
-
+  public FastVector(int capacity,int capIncrement,double capMultiplier){
     m_Objects = new Object[capacity];
     m_Size = 0;
     m_CapacityIncrement = capIncrement;
