@@ -10,13 +10,21 @@ public class Dict extends HashMap{
 		return (Integer)get(key);
 	}
 	public int getInt(Object key){
-		return getInteger(key).intValue();
+		try{
+			return getInteger(key).intValue();
+		}catch(Exception e){
+			return Integer.parseInt(getString(key));
+		}
 	}
 	public Boolean getBoolean(Object key){
 		return (Boolean)get(key);
 	}
 	public boolean getBool(Object key){
-		return getBoolean(key).booleanValue();
+		try{
+			return getBoolean(key).booleanValue();
+		}catch(Exception e){
+			return Boolean.valueOf(getString(key));
+		}
 	}
 	public Object put(Object key,int value){
 		Object old=get(key);

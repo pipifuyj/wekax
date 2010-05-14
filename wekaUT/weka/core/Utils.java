@@ -406,12 +406,8 @@ public final class Utils {
    * @exception Exception if an illegal option was found
    */
 
-  public static boolean getFlag(char flag, String [] options) 
-    throws Exception {
-
-    if (options == null) {
-      return false;
-    }
+  public static boolean getFlag(char flag,String [] options)throws Exception{
+    if(options==null)return false;
     for (int i = 0; i < options.length; i++) {
       if ((options[i].length() > 1) && (options[i].charAt(0) == '-')) {
 	try {
@@ -489,6 +485,20 @@ public final class Utils {
 		  Options[i]=getOption(flag,options);
 	  }
 	  return Options;
+  }
+  
+  public static Dict getDict(String [] options){
+	  Dict dict=new Dict();
+	  String key,value;
+	  for(int i=0;i<options.length;i++)if(options[i].startWith("-")){
+		  key=options[i].substring(1);
+		  if(i+1==options.length)dict.put(key,null);
+		  else{
+			  i++;
+			  dict.put(key,options[i]);
+		  }
+	  }
+	  return dict;
   }
 
   /**

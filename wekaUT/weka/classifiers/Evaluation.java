@@ -1,25 +1,3 @@
-/*
- *    This program is free software; you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation; either version 2 of the License, or
- *    (at your option) any later version.
- *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
- *
- *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
-
-/*
- *    Evaluation.java
- *    Copyright (C) 1999 Eibe Frank,Len Trigg
- *
- */
-
 package weka.classifiers;
 
 import java.util.*;
@@ -31,63 +9,6 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * Class for evaluating machine learning models. <p>
- *
- * ------------------------------------------------------------------- <p>
- *
- * General options when evaluating a learning scheme from the command-line: <p>
- *
- * -t filename <br>
- * Name of the file with the training data. (required) <p>
- *
- * -T filename <br>
- * Name of the file with the test data. If missing a cross-validation 
- * is performed. <p>
- *
- * -c index <br>
- * Index of the class attribute (1, 2, ...; default: last). <p>
- *
- * -x number <br>
- * The number of folds for the cross-validation (default: 10). <p>
- *
- * -s seed <br>
- * Random number seed for the cross-validation (default: 1). <p>
- *
- * -m filename <br>
- * The name of a file containing a cost matrix. <p>
- *
- * -l filename <br>
- * Loads classifier from the given file. <p>
- *
- * -d filename <br>
- * Saves classifier built from the training data into the given file. <p>
- *
- * -v <br>
- * Outputs no statistics for the training data. <p>
- *
- * -o <br>
- * Outputs statistics only, not the classifier. <p>
- * 
- * -i <br>
- * Outputs information-retrieval statistics per class. <p>
- *
- * -k <br>
- * Outputs information-theoretic statistics. <p>
- *
- * -p range <br>
- * Outputs predictions for test instances, along with the attributes in 
- * the specified range (and nothing else). Use '-p 0' if no attributes are
- * desired. <p>
- *
- * -r <br>
- * Outputs cumulative margin distribution (and nothing else). <p>
- *
- * -g <br> 
- * Only for classifiers that implement "Graphable." Outputs
- * the graph representation of the classifier (and nothing
- * else). <p>
- *
- * ------------------------------------------------------------------- <p>
- *
  * Example usage as the main of a classifier (called FunkyClassifier):
  * <code> <pre>
  * public static void main(String [] args) {
@@ -100,9 +21,6 @@ import java.util.zip.GZIPOutputStream;
  * }
  * </pre> </code> 
  * <p>
- *
- * ------------------------------------------------------------------ <p>
- *
  * Example usage from within an application:
  * <code> <pre>
  * Instances trainInstances = ... instances got from somewhere
@@ -113,131 +31,87 @@ import java.util.zip.GZIPOutputStream;
  * evaluation.evaluateModel(scheme, testInstances);
  * System.out.println(evaluation.toSummaryString());
  * </pre> </code> 
- *
- *
- * @author   Eibe Frank (eibe@cs.waikato.ac.nz)
- * @author   Len Trigg (trigg@cs.waikato.ac.nz)
- * @version  $Revision: 1.1.1.1 $
   */
 public class Evaluation implements Summarizable {
-
   /** The number of classes. */
   private int m_NumClasses;
-
   /** The number of folds for a cross-validation. */
   private int m_NumFolds;
- 
   /** The weight of all incorrectly classified instances. */
   private double m_Incorrect;
-
   /** The weight of all correctly classified instances. */
   private double m_Correct;
-
   /** The weight of all unclassified instances. */
   private double m_Unclassified;
-
   /*** The weight of all instances that had no class assigned to them. */
   private double m_MissingClass;
-
   /** The weight of all instances that had a class assigned to them. */
   private double m_WithClass;
-
   /** Array for storing the confusion matrix. */
   private double [][] m_ConfusionMatrix;
-
   /** The names of the classes. */
   private String [] m_ClassNames;
-
   /** Is the class nominal or numeric? */
   private boolean m_ClassIsNominal;
-  
   /** The prior probabilities of the classes */
   private double [] m_ClassPriors;
-
   /** The sum of counts for priors */
   private double m_ClassPriorsSum;
-
   /** The cost matrix (if given). */
   private CostMatrix m_CostMatrix;
-
   /** The total cost of predictions (includes instance weights) */
   private double m_TotalCost;
-
   /** Sum of errors. */
   private double m_SumErr;
-  
   /** Sum of absolute errors. */
   private double m_SumAbsErr;
-
   /** Sum of squared errors. */
   private double m_SumSqrErr;
-
   /** Sum of class values. */
   private double m_SumClass;
-  
   /** Sum of squared class values. */
   private double m_SumSqrClass;
-
   /*** Sum of predicted values. */
   private double m_SumPredicted;
-
   /** Sum of squared predicted values. */
   private double m_SumSqrPredicted;
-
   /** Sum of predicted * class values. */
   private double m_SumClassPredicted;
-
   /** Sum of absolute errors of the prior */
   private double m_SumPriorAbsErr;
-
   /** Sum of absolute errors of the prior */
   private double m_SumPriorSqrErr;
-
   /** Total Kononenko & Bratko Information */
   private double m_SumKBInfo;
-
   /*** Resolution of the margin histogram */
   private static int k_MarginResolution = 500;
-
   /** Cumulative margin distribution */
   private double m_MarginCounts [];
-
   /** Number of non-missing class training instances seen */
   private int m_NumTrainClassVals;
-
   /** Array containing all numeric training class values seen */
   private double [] m_TrainClassVals;
-
   /** Array containing all numeric training class weights */
   private double [] m_TrainClassWeights;
-
   /** Numeric class error estimator for prior */
   private Estimator m_PriorErrorEstimator;
-
   /** Numeric class error estimator for scheme */
   private Estimator m_ErrorEstimator;
-
   /**
-   * The minimum probablility accepted from an estimator to avoid
-   * taking log(0) in Sf calculations.
+   * The minimum probablility accepted from an estimator to avoid taking log(0) in Sf calculations.
    */
   private static final double MIN_SF_PROB = Double.MIN_VALUE;
-
   /** Total entropy of prior predictions */
   private double m_SumPriorEntropy;
-  
   /** Total entropy of scheme predictions */
   private double m_SumSchemeEntropy;
-  
   /**
    * Initializes all the counters for the evaluation.
-   *
    * @param data set of training instances, to get some header 
    * information and prior class distribution information
    * @exception Exception if the class is not defined
    */
   public Evaluation(Instances data) throws Exception {
-    
     this(data, null);
   }
 
@@ -250,9 +124,7 @@ public class Evaluation implements Summarizable {
    * @exception Exception if cost matrix is not compatible with 
    * data, the class is not defined or the class is numeric
    */
-  public Evaluation(Instances data, CostMatrix costMatrix) 
-       throws Exception {
-    
+  public Evaluation(Instances data,CostMatrix costMatrix)throws Exception{
     m_NumClasses = data.numClasses();
     m_NumFolds = 1;
     m_ClassIsNominal = data.classAttribute().isNominal();
@@ -281,13 +153,10 @@ public class Evaluation implements Summarizable {
 
   /**
    * Returns a copy of the confusion matrix.
-   *
    * @return a copy of the confusion matrix as a two-dimensional array
    */
   public double[][] confusionMatrix() {
-
     double[][] newMatrix = new double[m_ConfusionMatrix.length][0];
-
     for (int i = 0; i < m_ConfusionMatrix.length; i++) {
       newMatrix[i] = new double[m_ConfusionMatrix[i].length];
       System.arraycopy(m_ConfusionMatrix[i], 0, newMatrix[i], 0,
@@ -299,7 +168,6 @@ public class Evaluation implements Summarizable {
   /**
    * Performs a (stratified if class is nominal) cross-validation 
    * for a classifier on a set of instances.
-   *
    * @param classifier the classifier with any options set.
    * @param data the data on which the cross-validation is to be 
    * performed 
@@ -307,10 +175,7 @@ public class Evaluation implements Summarizable {
    * @exception Exception if a classifier could not be generated 
    * successfully or the class is not defined
    */
-  public void crossValidateModel(Classifier classifier,
-				 Instances data, int numFolds) 
-    throws Exception {
-    
+  public void crossValidateModel(Classifier classifier,Instances data,int numFolds)throws Exception{
     // Make a copy of the data we can reorder
     data = new Instances(data);
     if (data.classAttribute().isNominal()) {
@@ -330,7 +195,6 @@ public class Evaluation implements Summarizable {
   /**
    * Performs a (stratified if class is nominal) cross-validation 
    * for a classifier on a set of instances.
-   *
    * @param classifier a string naming the class of the classifier
    * @param data the data on which the cross-validation is to be 
    * performed 
@@ -340,105 +204,34 @@ public class Evaluation implements Summarizable {
    * @exception Exception if a classifier could not be generated 
    * successfully or the class is not defined
    */
-  public void crossValidateModel(String classifierString,
-				 Instances data, int numFolds,
-				 String[] options) 
-       throws Exception {
-    
-    crossValidateModel(Classifier.forName(classifierString, options),
-		       data, numFolds);
+  public void crossValidateModel(String classifierString,Instances data,int numFolds,String[] options)throws Exception{
+    crossValidateModel(Classifier.forName(classifierString, options),data,numFolds);
   }
 
   /**
-   * Evaluates a classifier with the options given in an array of
-   * strings. <p>
-   *
-   * Valid options are: <p>
-   *
-   * -t filename <br>
-   * Name of the file with the training data. (required) <p>
-   *
-   * -T filename <br>
-   * Name of the file with the test data. If missing a cross-validation 
-   * is performed. <p>
-   *
-   * -c index <br>
-   * Index of the class attribute (1, 2, ...; default: last). <p>
-   *
-   * -x number <br>
-   * The number of folds for the cross-validation (default: 10). <p>
-   *
-   * -s seed <br>
-   * Random number seed for the cross-validation (default: 1). <p>
-   *
-   * -m filename <br>
-   * The name of a file containing a cost matrix. <p>
-   *
-   * -l filename <br>
-   * Loads classifier from the given file. <p>
-   *
-   * -d filename <br>
-   * Saves classifier built from the training data into the given file. <p>
-   *
-   * -v <br>
-   * Outputs no statistics for the training data. <p>
-   *
-   * -o <br>
-   * Outputs statistics only, not the classifier. <p>
-   * 
-   * -i <br>
-   * Outputs detailed information-retrieval statistics per class. <p>
-   *
-   * -k <br>
-   * Outputs information-theoretic statistics. <p>
-   *
-   * -p range <br>
-   * Outputs predictions for test instances, along with the attributes in 
-   * the specified range (and nothing else). Use '-p 0' if no attributes are
-   * desired. <p>
-   *
-   * -r <br>
-   * Outputs cumulative margin distribution (and nothing else). <p>
-   *
-   * -g <br> 
-   * Only for classifiers that implement "Graphable." Outputs
-   * the graph representation of the classifier (and nothing
-   * else). <p>
-   *
+   * Evaluates a classifier with the options given in an array of strings.
    * @param classifierString class of machine learning classifier as a string
    * @param options the array of string containing the options
    * @exception Exception if model could not be evaluated successfully
    * @return a string describing the results 
    */
-  public static String evaluateModel(String classifierString, 
-				     String [] options) throws Exception {
-
+  public static String evaluateModel(String classifierString,String [] options)throws Exception{
     Classifier classifier;	 
-
-    // Create classifier
     try {
-      classifier = 
-      (Classifier)Class.forName(classifierString).newInstance();
+      classifier=(Classifier)Class.forName(classifierString).newInstance();
     } catch (Exception e) {
-      throw new Exception("Can't find class with name " 
-			  + classifierString + '.');
+      throw new Exception("Can't find class with name "+classifierString+'.');
     }
     return evaluateModel(classifier, options);
   }
   
   /**
-   * A test method for this class. Just extracts the first command line
-   * argument as a classifier class name and calls evaluateModel.
-   * @param args an array of command line arguments, the first of which
-   * must be the class name of a classifier.
+   * A test method for this class. Just extracts the first command line argument as a classifier class name and calls evaluateModel.
+   * @param args an array of command line arguments, the first of which must be the class name of a classifier.
    */
   public static void main(String [] args) {
-
     try {
-      if (args.length == 0) {
-	throw new Exception("The first argument must be the class name"
-			    + " of a classifier");
-      }
+      if(args.length==0)throw new Exception("The first argument must be the class name"+" of a classifier");
       String classifier = args[0];
       args[0] = "";
       System.out.println(evaluateModel(classifier, args));
@@ -506,18 +299,11 @@ public class Evaluation implements Summarizable {
    * @param options the array of string containing the options
    * @exception Exception if model could not be evaluated successfully
    * @return a string describing the results */
-  public static String evaluateModel(Classifier classifier,
-				     String [] options) throws Exception {
-			      
+  public static String evaluateModel(Classifier classifier,String [] options)throws Exception{
     Instances train = null, tempTrain, test = null, template = null;
     int seed = 1, folds = 10, classIndex = -1;
-    String trainFileName, testFileName, sourceClass, 
-      classIndexString, seedString, foldsString, objectInputFileName, 
-      objectOutputFileName, attributeRangeString;
-    boolean IRstatistics = false, noOutput = false,
-      printClassifications = false, trainStatistics = true,
-      printMargins = false, printComplexityStatistics = false,
-      printGraph = false, classStatistics = false, printSource = false;
+    String trainFileName, testFileName, sourceClass, classIndexString, seedString, foldsString, objectInputFileName, objectOutputFileName, attributeRangeString;
+    boolean IRstatistics = false, noOutput = false, printClassifications = false, trainStatistics = true, printMargins = false, printComplexityStatistics = false, printGraph = false, classStatistics = false, printSource = false;
     StringBuffer text = new StringBuffer();
     BufferedReader trainReader = null, testReader = null;
     ObjectInputStream objectInputStream = null;
@@ -525,16 +311,12 @@ public class Evaluation implements Summarizable {
     CostMatrix costMatrix = null;
     StringBuffer schemeOptionsText = null;
     Range attributesToOutput = null;
-    long trainTimeStart = 0, trainTimeElapsed = 0,
-      testTimeStart = 0, testTimeElapsed = 0;
+    long trainTimeStart = 0, trainTimeElapsed = 0, testTimeStart = 0, testTimeElapsed = 0;
     
     try {
-
       // Get basic options (options the same for all schemes)
       classIndexString = Utils.getOption('c', options);
-      if (classIndexString.length() != 0) {
-	classIndex = Integer.parseInt(classIndexString);
-      }
+      if(classIndexString.length()!=0)classIndex=Integer.parseInt(classIndexString); 
       trainFileName = Utils.getOption('t', options); 
       objectInputFileName = Utils.getOption('l', options);
       objectOutputFileName = Utils.getOption('d', options);
