@@ -3,9 +3,11 @@
 /**
  * Split a mat file, keep label association and scale.
  * Usage: matSplit -l N file.mat file.label
- * Output: file-i.mat file-i.label
+ * Output: file-i.mat file-i.label file-i.index
  */
+$usage="matSplit -l N file.mat file.label\n";
 $opt=getopt("l:");
+if(!isset($opt['l']))exit($usage);
 $matfile=$argv[$argc-2];
 $mat=file($matfile,FILE_IGNORE_NEW_LINES);
 $meta=preg_split("/\s+/",trim(array_shift($mat)));
@@ -16,15 +18,18 @@ $p=$meta[0]/$opt['l'];
 foreach($count as $class=>$c)$count[$class]/=$p;
 $keys=array();
 foreach($count as $class=>$c)$keys[$class]=array_chunk(array_keys($label,$class),$c);
+$indexfile=substr($labelfile,0,strrpos($labelfile,".")).".index";
 if($meta[2]){
 	for($i=0;$i<$p;$i++){
 		$tempmatfile="$i-$matfile";
 		$tempmeta=array(0,$meta[1],0);
-		$templabelfile="$i-$labelfile";
+		file_put_contents($templabelfile="$i-$labelfile","");
+		file_put_contents($tempindexfile="$i-$indexfile","");
 		$tmpfile=tmpfile();
 		foreach($count as $class=>$c)foreach($keys[$class][$i] as $index){
 			fwrite($tmpfile,"{$mat[$index]}\n");
 			file_put_contents($templabelfile,"{$label[$index]}\n",FILE_APPEND);
+			file_put_contents($tempindexfile,"$index\n",FILE_APPEND);
 			$tempmeta[0]++;
 			// floor is necessary because there may be empty lines.
 			$tempmeta[2]+=floor(count(preg_split("/\s+/",trim($mat[$index])))/2);

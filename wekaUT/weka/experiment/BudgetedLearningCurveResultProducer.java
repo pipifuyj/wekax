@@ -226,7 +226,7 @@ public class BudgetedLearningCurveResultProducer
 	    System.err.println (e);
 	}
 	//DEBUG
-	Utils.print(m_FeatureCosts);
+	Utils.println(m_FeatureCosts);
     }
     
     /**

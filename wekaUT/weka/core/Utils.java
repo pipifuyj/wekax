@@ -31,10 +31,16 @@ public final class Utils {
 	public static void print(double [] array){
 		for(int i=0;i<array.length;i++)System.out.print(array[i]+" ");
 	}
-    public static void println(double [] array){
-    	print(array);
-    	System.out.println();
-    }
+	public static void println(double [] array){
+		print(array);
+		System.out.println();
+	}
+	public static void print(double [][] array){
+		for(int i=0;i<array.length;i++)print(array[i]);
+	}
+	public static void println(double [][] array){
+		for(int i=0;i<array.length;i++)println(array[i]);
+	}
   /**
    * Reads properties that inherit from three locations. Properties
    * are first defined in the system resource location (i.e. in the
