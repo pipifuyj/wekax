@@ -471,8 +471,15 @@ public final class Utils {
   
   public static int getInt(char flag,String [] options)throws Exception{
 	  String s=getOption(flag,options);
-	  if(s.length()>0)return Integer.parseInt(s);
-	  else return 1/0;
+	  return Integer.parseInt(s);
+  }
+  
+  public static int getInt(char flag,int def,String [] options)throws Exception{
+	  try{
+		  return getInt(flag,options);
+	  }catch(Exception e){
+		  return def;
+	  }
   }
   
   public static Integer getInteger(char flag,String [] options)throws Exception{
@@ -700,30 +707,22 @@ public final class Utils {
    * (optional) arguments to pass to it's setOptions method. If the
    * object implements OptionHandler and the options parameter is
    * non-null, the object will have it's options set. Example use:<p>
-   *
    * <code> <pre>
    * String classifierName = Utils.getOption('W', options);
-   * Classifier c = (Classifier)Utils.forName(Classifier.class,
-   *                                          classifierName,
-   *                                          options);
+   * Classifier c = (Classifier)Utils.forName(Classifier.class,classifierName,options);
    * setClassifier(c);
    * </pre></code>
-   *
    * @param classType the class that the instantiated object should
    * be assignable to -- an exception is thrown if this is not the case
    * @param className the fully qualified class name of the object
    * @param options an array of options suitable for passing to setOptions. May
-   * be null. Any options accepted by the object will be removed from the
-   * array.
+   * be null. Any options accepted by the object will be removed from the array.
    * @return the newly created object, ready for use.
    * @exception Exception if the class name is invalid, or if the
    * class is not assignable to the desired class type, or the options
    * supplied are not acceptable to the object
    */
-  public static Object forName(Class classType,
-			       String className,
-			       String [] options) throws Exception {
-
+  public static Object forName(Class classType,String className,String [] options)throws Exception{
     Class c = null;
     try {
       c = Class.forName(className);
@@ -731,12 +730,10 @@ public final class Utils {
       throw new Exception("Can't find class called: " + className);
     }
     if (!classType.isAssignableFrom(c)) {
-      throw new Exception(classType.getName() + " is not assignable from "
-			  + className);
+      throw new Exception(classType.getName()+" is not assignable from "+className);
     }
     Object o = c.newInstance();
-    if ((o instanceof OptionHandler)
-	&& (options != null)) {
+    if((o instanceof OptionHandler)&&(options!=null)){
       ((OptionHandler)o).setOptions(options);
       Utils.checkForRemainingOptions(options);
     }
@@ -745,13 +742,11 @@ public final class Utils {
 
   /**
    * Computes entropy for an array of integers.
-   *
    * @param counts array of counts
    * @return - a log2 a - b log2 b - c log2 c + (a+b+c) log2 (a+b+c)
    * when given array [a b c]
    */
   public static double info(int counts[]) {
-    
     int total = 0; int c;
     double x = 0;
     for (int j = 0; j < counts.length; j++) {
@@ -763,34 +758,28 @@ public final class Utils {
 
   /**
    * Tests if a is smaller or equal to b.
-   *
    * @param a a double
    * @param b a double
    */
   public static boolean smOrEq(double a,double b) {
-    
     return (a-b < SMALL);
   }
 
   /**
    * Tests if a is greater or equal to b.
-   *
    * @param a a double
    * @param b a double
    */
   public static boolean grOrEq(double a,double b) {
-    
     return (b-a < SMALL);
   }
   
   /**
    * Tests if a is smaller than b.
-   *
    * @param a a double
    * @param b a double
    */
   public static boolean sm(double a,double b) {
-    
     return (b-a > SMALL);
   }
 
@@ -801,39 +790,29 @@ public final class Utils {
    * @param b a double 
    */
   public static boolean gr(double a,double b) {
-    
     return (a-b > SMALL);
   }
 
   /**
    * Returns the logarithm of a for base 2.
-   *
    * @param a a double
    */
   public static double log2(double a) {
-    
     return Math.log(a) / log2;
   }
 
   /**
-   * Returns index of maximum element in a given
-   * array of doubles. First maximum is returned.
-   *
+   * Returns index of maximum element in a given array of doubles. First maximum is returned.
    * @param doubles the array of doubles
    * @return the index of the maximum element
    */
   public static int maxIndex(double [] doubles) {
-
     double maximum = 0;
     int maxIndex = 0;
-
-    for (int i = 0; i < doubles.length; i++) {
-      if ((i == 0) || (doubles[i] > maximum)) {
-	maxIndex = i;
-	maximum = doubles[i];
-      }
+    for(int i=0;i<doubles.length;i++)if((i==0)||(doubles[i]>maximum)){
+    	maxIndex=i;
+    	maximum=doubles[i];
     }
-
     return maxIndex;
   }
 
@@ -845,17 +824,12 @@ public final class Utils {
    * @return the index of the maximum element
    */
   public static int maxIndex(int [] ints) {
-
     int maximum = 0;
     int maxIndex = 0;
-
-    for (int i = 0; i < ints.length; i++) {
-      if ((i == 0) || (ints[i] > maximum)) {
-	maxIndex = i;
-	maximum = ints[i];
-      }
+    for(int i=0;i<ints.length;i++)if((i == 0)||(ints[i]>maximum)){
+    	maxIndex=i;
+    	maximum=ints[i];
     }
-
     return maxIndex;
   }
 
@@ -908,17 +882,14 @@ public final class Utils {
    * @return the index of the minimum element
    */
   public static int minIndex(double [] doubles) {
-
     double minimum = 0;
     int minIndex = 0;
-
     for (int i = 0; i < doubles.length; i++) {
       if ((i == 0) || (doubles[i] < minimum)) {
 	minIndex = i;
 	minimum = doubles[i];
       }
     }
-
     return minIndex;
   }
 
@@ -929,12 +900,7 @@ public final class Utils {
    * @exception IllegalArgumentException if sum is Zero or NaN
    */
   public static void normalize(double[] doubles) {
-
-    double sum = 0;
-    for (int i = 0; i < doubles.length; i++) {
-      sum += doubles[i];
-    }
-    normalize(doubles, sum);
+    normalize(doubles,sum(doubles));
   }
 
   /**
@@ -989,11 +955,9 @@ public final class Utils {
    * @return the resulting integer value
    */
   public static int round(double value) {
-
     int roundedValue = value > 0
       ? (int)(value + 0.5)
       : -(int)(Math.abs(value) + 0.5);
-    
     return roundedValue;
   }
 
@@ -1173,9 +1137,7 @@ public final class Utils {
    * @return the sum of the elements
    */
   public static double sum(double[] doubles) {
-
     double sum = 0;
-
     for (int i = 0; i < doubles.length; i++) {
       sum += doubles[i];
     }
@@ -1189,9 +1151,7 @@ public final class Utils {
    * @return the sum of the elements
    */
   public static int sum(int[] ints) {
-
     int sum = 0;
-
     for (int i = 0; i < ints.length; i++) {
       sum += ints[i];
     }
@@ -1200,15 +1160,11 @@ public final class Utils {
 
   /**
    * Returns c*log2(c) for a given integer value c.
-   *
    * @param c an integer value
    * @return c*log2(c) (but is careful to return 0 if c is 0)
    */
   public static double xlogx(int c) {
-    
-    if (c == 0) {
-      return 0.0;
-    }
+    if(c == 0)return 0.0;
     return c * Utils.log2((double) c);
   }
 
@@ -1221,8 +1177,7 @@ public final class Utils {
    * @param lo0 the first index of the subset to be sorted
    * @param hi0 the last index of the subset to be sorted
    */
-  private static void quickSort(int [] array, int [] index,
-				int lo0, int hi0) {
+  private static void quickSort(int [] array,int [] index,int lo0,int hi0) {
 
     int lo = lo0;
     int hi = hi0;

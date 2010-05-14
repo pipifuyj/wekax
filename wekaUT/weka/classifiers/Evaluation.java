@@ -251,8 +251,7 @@ public class Evaluation implements Summarizable {
    * Name of the file with the training data. (required) <p>
    *
    * -T name of test file <br>
-   * Name of the file with the test data. If missing a cross-validation 
-   * is performed. <p>
+   * Name of the file with the test data. If missing a cross-validation is performed. <p>
    *
    * -c class index <br>
    * Index of the class attribute (1, 2, ...; default: last). <p>
@@ -285,7 +284,10 @@ public class Evaluation implements Summarizable {
    * Outputs information-theoretic statistics. <p>
    *
    * -p <br>
-   * Outputs predictions for test instances (and nothing else). <p>
+   * Expects a parameter specifying a range of attributes to list with the predictions. <p>
+   * 
+   * -P name of result file <br>
+   * Name of the file where the predictions for test instances to be output. <p> 
    *
    * -r <br>
    * Outputs cumulative margin distribution (and nothing else). <p>
@@ -302,14 +304,13 @@ public class Evaluation implements Summarizable {
   public static String evaluateModel(Classifier classifier,String [] options)throws Exception{
     Instances train = null, tempTrain, test = null, template = null;
     int seed = 1, folds = 10, classIndex = -1;
-    String trainFileName, testFileName, sourceClass, classIndexString, seedString, foldsString, objectInputFileName, objectOutputFileName, attributeRangeString;
-    boolean IRstatistics = false, noOutput = false, printClassifications = false, trainStatistics = true, printMargins = false, printComplexityStatistics = false, printGraph = false, classStatistics = false, printSource = false;
+    String trainFileName, testFileName, sourceClass, classIndexString, objectInputFileName, objectOutputFileName, attributeRangeString, predictionFileName;
+    boolean IRstatistics = false, noOutput = false, trainStatistics = true, printMargins = false, printComplexityStatistics = false, printGraph = false, classStatistics = false, printSource = false;
     StringBuffer text = new StringBuffer();
     BufferedReader trainReader = null, testReader = null;
     ObjectInputStream objectInputStream = null;
     Random random;
     CostMatrix costMatrix = null;
-    StringBuffer schemeOptionsText = null;
     Range attributesToOutput = null;
     long trainTimeStart = 0, trainTimeElapsed = 0, testTimeStart = 0, testTimeElapsed = 0;
     
@@ -354,48 +355,24 @@ public class Evaluation implements Summarizable {
       } catch (Exception e) {
 	throw new Exception("Can't open file " + e.getMessage() + '.');
       }
-      if (testFileName.length() != 0) {
-	template = test = new Instances(testReader, 1);
-	if (classIndex != -1) {
-	  test.setClassIndex(classIndex - 1);
-	} else {
-	  test.setClassIndex(test.numAttributes() - 1);
-	}
-	if (classIndex > test.numAttributes()) {
-	  throw new Exception("Index of class attribute too large.");
-	}
+      if(testFileName.length()!=0){
+    	  template=test=new Instances(testReader,1);
+    	  if(classIndex!=-1)test.setClassIndex(classIndex-1);
+    	  else test.setClassIndex(test.numAttributes()-1);
+    	  if(classIndex>test.numAttributes())throw new Exception("Index of class attribute too large.");
       }
-      if (trainFileName.length() != 0) {
-	if ((classifier instanceof UpdateableClassifier) &&
-	    (testFileName.length() != 0)) {
-	  train = new Instances(trainReader, 1);
-	} else {
-	  train = new Instances(trainReader);
-	}
-        template = train;
-	if (classIndex != -1) {
-	  train.setClassIndex(classIndex - 1);
-	} else {
-	  train.setClassIndex(train.numAttributes() - 1);
-	}
-	if (classIndex > train.numAttributes()) {
-	  throw new Exception("Index of class attribute too large.");
-	}
-	//train = new Instances(train);
+      if(trainFileName.length()!=0){
+    	  if((classifier instanceof UpdateableClassifier)&&(testFileName.length()!=0))train=new Instances(trainReader,1);
+    	  else train=new Instances(trainReader);
+    	  template=train;
+    	  if(classIndex!=-1)train.setClassIndex(classIndex-1);
+    	  else train.setClassIndex(train.numAttributes()-1);
+    	  if(classIndex>train.numAttributes())throw new Exception("Index of class attribute too large.");
       }
-      if (template == null) {
-        throw new Exception("No actual dataset provided to use as template");
-      }
-      seedString = Utils.getOption('s', options);
-      if (seedString.length() != 0) {
-	seed = Integer.parseInt(seedString);
-      }
-      foldsString = Utils.getOption('x', options);
-      if (foldsString.length() != 0) {
-	folds = Integer.parseInt(foldsString);
-      }
+      if(template==null)throw new Exception("No actual dataset provided to use as template");
+      seed=Utils.getInt('s',seed,options);
+      folds=Utils.getInt('x',folds,options);
       costMatrix = handleCostOption(Utils.getOption('m', options), template.numClasses());
-
       classStatistics = Utils.getFlag('i', options);
       noOutput = Utils.getFlag('o', options);
       trainStatistics = !Utils.getFlag('v', options);
@@ -404,44 +381,16 @@ public class Evaluation implements Summarizable {
       printGraph = Utils.getFlag('g', options);
       sourceClass = Utils.getOption('z', options);
       printSource = (sourceClass.length() != 0);
-      
-      // Check -p option
-      try {
-	attributeRangeString = Utils.getOption('p', options);
-      }
-      catch (Exception e) {
-	throw new Exception(e.getMessage() + "\nNOTE: the -p option has changed. " +
-			    "It now expects a parameter specifying a range of attributes " +
-			    "to list with the predictions. Use '-p 0' for none.");
-      }
-      if (attributeRangeString.length() != 0) {
-	printClassifications = true;
-	if (!attributeRangeString.equals("0")) 
-	  attributesToOutput = new Range(attributeRangeString);
-      }
+      attributeRangeString = Utils.getOption('p', options);
+      if(attributeRangeString.length()!=0)attributesToOutput=new Range(attributeRangeString);
+      predictionFileName=Utils.getOption('P',options);
 
       // If a model file is given, we can't process 
       // scheme-specific options
       if (objectInputFileName.length() != 0) {
 	Utils.checkForRemainingOptions(options);
       } else {
-
-	// Set options for classifier
-	if (classifier instanceof OptionHandler) {
-	  for (int i = 0; i < options.length; i++) {
-	    if (options[i].length() != 0) {
-	      if (schemeOptionsText == null) {
-		schemeOptionsText = new StringBuffer();
-	      }
-	      if (options[i].indexOf(' ') != -1) {
-		schemeOptionsText.append('"' + options[i] + "\" ");
-	      } else {
-		schemeOptionsText.append(options[i] + " ");
-	      }
-	    }
-	  }
-	  ((OptionHandler)classifier).setOptions(options);
-	}
+	if(classifier instanceof OptionHandler)((OptionHandler)classifier).setOptions(options);
       }
       Utils.checkForRemainingOptions(options);
     } catch (Exception e) {
@@ -519,20 +468,13 @@ public class Evaluation implements Summarizable {
       return wekaStaticWrapper((Sourcable) classifier, sourceClass);
     }
 
-    // Output test instance predictions only
-    if (printClassifications) {
-      return printClassifications(classifier, new Instances(template, 0),
-				  testFileName, classIndex, attributesToOutput);
+    if(predictionFileName.length()>0){
+    	PrintWriter writer=new PrintWriter(new FileOutputStream(predictionFileName));
+    	writer.print(printClassifications(classifier,new Instances(template,0),testFileName,classIndex,attributesToOutput));
     }
 
     // Output model
     if (!(noOutput || printMargins)) {
-      if (classifier instanceof OptionHandler) {
-	if (schemeOptionsText != null) {
-	  text.append("\nOptions: "+schemeOptionsText);
-	  text.append("\n");
-	}
-      }
       text.append("\n" + classifier.toString() + "\n");
     }
 
