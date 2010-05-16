@@ -457,6 +457,7 @@ public class Evaluation implements Summarizable {
     if(predictionFileName.length()>0){
     	PrintWriter writer=new PrintWriter(new FileOutputStream(predictionFileName));
     	writer.print(printClassifications(classifier,new Instances(template,0),testFileName,classIndex,attributesToOutput));
+    	writer.close();
     }
 
     // Output model
