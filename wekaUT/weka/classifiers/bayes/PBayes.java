@@ -182,7 +182,6 @@ public class PBayes extends NaiveBayes{
   public void setOptions(String[] options) throws Exception {
     m_UseKernelEstimator = Utils.getFlag('K', options);
     Prob=Utils.getOption("Prob",options);
-    Utils.checkForRemainingOptions(options);
   }
 
   /**

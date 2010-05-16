@@ -384,38 +384,26 @@ public class Evaluation implements Summarizable {
       attributeRangeString = Utils.getOption('p', options);
       if(attributeRangeString.length()!=0)attributesToOutput=new Range(attributeRangeString);
       predictionFileName=Utils.getOption('P',options);
-
-      // If a model file is given, we can't process 
-      // scheme-specific options
-      if (objectInputFileName.length() != 0) {
-	Utils.checkForRemainingOptions(options);
-      } else {
-	if(classifier instanceof OptionHandler)((OptionHandler)classifier).setOptions(options);
-      }
+      // If a model file is given, we can't process scheme-specific options
+      if(objectInputFileName.length()==0&&classifier instanceof OptionHandler)((OptionHandler)classifier).setOptions(options);
       Utils.checkForRemainingOptions(options);
     } catch (Exception e) {
       throw new Exception("\nWeka exception: " + e.getMessage()
 			   + makeOptionString(classifier));
     }
-
-
     // Setup up evaluation objects
     Evaluation trainingEvaluation = new Evaluation(new Instances(template, 0), costMatrix);
     Evaluation testingEvaluation = new Evaluation(new Instances(template, 0), costMatrix);
-    
-    if (objectInputFileName.length() != 0) {
-      
+    if(objectInputFileName.length()!=0){    
       // Load classifier from file
       classifier = (Classifier) objectInputStream.readObject();
       objectInputStream.close();
     }
-    
     // Build the classifier if no object file provided
     if ((classifier instanceof UpdateableClassifier) &&
 	(testFileName.length() != 0) &&
 	(costMatrix == null) &&
 	(trainFileName.length() != 0)) {
-      
       // Build classifier incrementally
       trainingEvaluation.setPriors(train);
       testingEvaluation.setPriors(train);
@@ -424,7 +412,6 @@ public class Evaluation implements Summarizable {
 	classifier.buildClassifier(train);
       }
       while (train.readInstance(trainReader)) {
-	
 	trainingEvaluation.updatePriors(train.instance(0));
 	testingEvaluation.updatePriors(train.instance(0));
 	((UpdateableClassifier)classifier).
@@ -434,7 +421,6 @@ public class Evaluation implements Summarizable {
       trainTimeElapsed = System.currentTimeMillis() - trainTimeStart;
       trainReader.close();
     } else if (objectInputFileName.length() == 0) {
-      
       // Build classifier in one go
       tempTrain = new Instances(train);
       trainingEvaluation.setPriors(tempTrain);

@@ -371,28 +371,18 @@ public final class Utils {
 
   /**
    * Checks if the given array contains any non-empty options.
-   *
    * @param strings an array of strings
    * @exception Exception if there are any non-empty options
    */
-  public static void checkForRemainingOptions(String [] options) 
-    throws Exception {
-    
-    int illegalOptionsFound = 0;
-    StringBuffer text = new StringBuffer();
-
-    if (options == null) {
-      return;
-    }
-    for (int i = 0; i < options.length; i++) {
-      if (options[i].length() > 0) {
-	illegalOptionsFound++;
-	text.append(options[i] + ' ');
-      }
-    }
-    if (illegalOptionsFound > 0) {
-      throw new Exception("Illegal options: " + text);
-    }
+  public static void checkForRemainingOptions(String [] options)throws Exception{
+	  if(options==null)return;
+	  int illegalOptionsFound=0;
+	  StringBuffer text=new StringBuffer();
+	  for(int i=0;i<options.length;i++)if(options[i].length()>0){
+		  illegalOptionsFound++;
+		  text.append(options[i]+' ');
+	  }
+	  if(illegalOptionsFound>0)throw new Exception("Illegal options remaining: "+text);
   }
   
   /**
@@ -413,9 +403,6 @@ public final class Utils {
 	try {
 	  Double dummy = Double.valueOf(options[i]);
 	} catch (NumberFormatException e) {
-	  if (options[i].length() > 2) {
-	    throw new Exception("Illegal option: " + options[i]);
-	  }
 	  if (options[i].charAt(1) == flag) {
 	    options[i] = "";
 	    return true;
@@ -443,15 +430,11 @@ public final class Utils {
     if (options == null)return "";
     for (int i = 0; i < options.length; i++) {
       if ((options[i].length() > 0) && (options[i].charAt(0) == '-')) {
-	
 	// Check if it is a negative number
 	try {
 	  Double dummy = Double.valueOf(options[i]);
 	} catch (NumberFormatException e) {
-	  if (options[i].length() != 2) {
-	    throw new Exception("Illegal option: " + options[i]);
-	  }
-	  if (options[i].charAt(1) == flag) {
+	  if(options[i].compareTo("-"+flag)==0){
 	    if (i + 1 == options.length) {
 	      throw new Exception("No value given for -" + flag + " option.");
 	    }
@@ -470,7 +453,7 @@ public final class Utils {
   }
   public static String getOption(String flag,String [] options)throws Exception{
 	  String option="";
-	  for(int i=0;i<options.length;i++)if(options[i]=="--"+flag){
+	  for(int i=0;i<options.length;i++)if(options[i].compareTo("--"+flag)==0){
 		  options[i]="";
 		  if(i+1==options.length)return "";
 		  if(options[i+1].startsWith("-"))return "";
