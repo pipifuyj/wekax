@@ -468,8 +468,24 @@ public final class Utils {
     }
     return "";
   }
+  public static String getOption(String flag,String [] options)throws Exception{
+	  String option="";
+	  for(int i=0;i<options.length;i++)if(options[i]=="--"+flag){
+		  options[i]="";
+		  if(i+1==options.length)return "";
+		  if(options[i+1].startsWith("-"))return "";
+		  option=new String(options[i+1]);
+		  options[i+1]="";
+		  return option;
+	  }
+	  return option;
+  }
   
   public static int getInt(char flag,String [] options)throws Exception{
+	  String s=getOption(flag,options);
+	  return Integer.parseInt(s);
+  }
+  public static int getInt(String flag,String [] options)throws Exception{
 	  String s=getOption(flag,options);
 	  return Integer.parseInt(s);
   }
@@ -481,8 +497,18 @@ public final class Utils {
 		  return def;
 	  }
   }
+  public static int getInt(String flag,int def,String [] options)throws Exception{
+	  try{
+		  return getInt(flag,options);
+	  }catch(Exception e){
+		  return def;
+	  }
+  }
   
   public static Integer getInteger(char flag,String [] options)throws Exception{
+	  return new Integer(getInt(flag,options));
+  }
+  public static Integer getInteger(String flag,String [] options)throws Exception{
 	  return new Integer(getInt(flag,options));
   }
 

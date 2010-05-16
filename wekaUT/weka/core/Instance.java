@@ -499,17 +499,12 @@ public class Instance implements Copyable, Serializable {
    * values is performed before the value is set.
    *
    * @param value the new attribute value (If the corresponding
-   * attribute is nominal (or a string) then this is the new value's
-   * index as a double).  
+   * attribute is nominal (or a string) then this is the new value's index as a double).  
    * @exception UnassignedClassException if the class is not set
-   * @exception UnaddignedDatasetException if the instance doesn't
-   * have access to a dataset 
+   * @exception UnaddignedDatasetException if the instance doesn't have access to a dataset 
    */
   public void setClassValue(double value) {
-
-    if (classIndex() < 0) {
-      throw new UnassignedClassException("Class is not set!");
-    }
+    if(classIndex()<0)throw new UnassignedClassException("Class is not set!");
     setValue(classIndex(), value);
   }
 
@@ -524,14 +519,10 @@ public class Instance implements Copyable, Serializable {
    * @exception UnassignedClassException if the class is not set
    * @exception UnassignedDatasetException if the dataset is not set
    * @exception IllegalArgumentException if the attribute is not
-   * nominal or a string, or the value couldn't be found for a nominal
-   * attribute 
+   * nominal or a string, or the value couldn't be found for a nominal attribute 
    */
   public final void setClassValue(String value) {
-
-    if (classIndex() < 0) {
-      throw new UnassignedClassException("Class is not set!");
-    }
+    if(classIndex()<0)throw new UnassignedClassException("Class is not set!");
     setValue(classIndex(), value);
   }
 
@@ -579,11 +570,9 @@ public class Instance implements Copyable, Serializable {
    *
    * @param attIndex the attribute's index 
    * @param value the new attribute value (If the corresponding
-   * attribute is nominal (or a string) then this is the new value's
-   * index as a double).  
+   * attribute is nominal (or a string) then this is the new value's index as a double).  
    */
   public void setValue(int attIndex, double value) {
-    
     freshAttributeVector();
     m_AttValues[attIndex] = value;
   }
@@ -596,7 +585,6 @@ public class Instance implements Copyable, Serializable {
    * @param array the attribute value array  
    */
   public void setValueArray(double [] array) {
-    
     freshAttributeVector();
     m_AttValues = array;
   }
@@ -606,14 +594,11 @@ public class Instance implements Copyable, Serializable {
    * (internal floating-point format). Performs a deep copy
    * of the vector of attribute values before the value is set.
    * Does exactly the same thing as setValue().
-   *
    * @param indexOfIndex the index of the attribute's index 
    * @param value the new attribute value (If the corresponding
-   * attribute is nominal (or a string) then this is the new value's
-   * index as a double).  
+   * attribute is nominal (or a string) then this is the new value's index as a double).  
    */
   public void setValueSparse(int indexOfIndex, double value) {
-    
     freshAttributeVector();
     m_AttValues[indexOfIndex] = value;
   }
@@ -622,27 +607,18 @@ public class Instance implements Copyable, Serializable {
    * Sets a value of a nominal or string attribute to the given
    * value. Performs a deep copy of the vector of attribute values
    * before the value is set.
-   *
    * @param attIndex the attribute's index
    * @param value the new attribute value (If the attribute
    * is a string attribute and the value can't be found,
    * the value is added to the attribute).
    * @exception UnassignedDatasetException if the dataset is not set
    * @exception IllegalArgumentException if the selected
-   * attribute is not nominal or a string, or the supplied value couldn't 
-   * be found for a nominal attribute 
+   * attribute is not nominal or a string, or the supplied value couldn't be found for a nominal attribute 
    */
   public final void setValue(int attIndex, String value) {
-    
     int valIndex;
-
-    if (m_Dataset == null) {
-      throw new UnassignedDatasetException("Instance doesn't have access to a dataset!");
-    }
-    if (!attribute(attIndex).isNominal() &&
-	!attribute(attIndex).isString()) {
-      throw new IllegalArgumentException("Attribute neither nominal nor string!");
-    }
+    if(m_Dataset==null)throw new UnassignedDatasetException("Instance doesn't have access to a dataset!");
+    if(!attribute(attIndex).isNominal()&&!attribute(attIndex).isString())throw new IllegalArgumentException("Attribute neither nominal nor string!");
     valIndex = attribute(attIndex).indexOfValue(value);
     if (valIndex == -1) {
       if (attribute(attIndex).isNominal()) {

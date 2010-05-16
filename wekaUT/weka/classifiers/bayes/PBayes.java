@@ -11,29 +11,19 @@ import weka.core.*;
 import weka.estimators.*;
 
 public class PBayes extends NaiveBayes{
-	String P;
+	String Prob;
   /**
    * Generates the classifier.
-   *
    * @param instances set of instances serving as training data 
-   * @exception Exception if the classifier has not been generated 
-   * successfully
+   * @exception Exception if the classifier has not been generated successfully
    */
   public void buildClassifier(Instances instances) throws Exception {
-    if (instances.checkForStringAttributes()) {
-      throw new UnsupportedAttributeTypeException("Cannot handle string attributes!");
-    }
-    if (instances.classAttribute().isNumeric()) {
-      throw new UnsupportedClassTypeException("Naive Bayes: Class is numeric!");
-    }
+    if(instances.checkForStringAttributes())throw new UnsupportedAttributeTypeException("Cannot handle string attributes!");
+    if(instances.classAttribute().isNumeric())throw new UnsupportedClassTypeException("Naive Bayes: Class is numeric!");
     m_NumClasses = instances.numClasses();
-    if (m_NumClasses < 0) {
-      throw new Exception ("Dataset has no class attribute");
-    }
-
+    if(m_NumClasses<0)throw new Exception ("Dataset has no class attribute");
     // Copy the instances
     m_Instances = new Instances(instances);
-
     // Reserve space for the distributions
     m_Distributions=new Estimator[m_Instances.numAttributes()-1][m_Instances.numClasses()];
     m_ClassDistribution=new DiscreteEstimator(m_Instances.numClasses(),true);
@@ -41,7 +31,6 @@ public class PBayes extends NaiveBayes{
     Enumeration enum = m_Instances.enumerateAttributes();
     while (enum.hasMoreElements()) {
       Attribute attribute = (Attribute) enum.nextElement();
-
       // If the attribute is numeric, determine the estimator 
       // numeric precision from differences between adjacent values
       double numPrecision = DEFAULT_NUM_PRECISION;
@@ -69,8 +58,6 @@ public class PBayes extends NaiveBayes{
 	  }
 	}
       }
-
-
       for (int j = 0; j < m_Instances.numClasses(); j++) {
 	switch (attribute.type()) {
 	case Attribute.NUMERIC: 
@@ -91,22 +78,23 @@ public class PBayes extends NaiveBayes{
       }
       attIndex++;
     }
-
     // Compute counts
+    BufferedReader reader=new BufferedReader(new FileReader(Prob));
     Enumeration enumInsts = m_Instances.enumerateInstances();
     while (enumInsts.hasMoreElements()) {
       Instance instance = (Instance) enumInsts.nextElement();
+      String line=reader.readLine();
+      String [] lines=line.split("\\s+");
+      instance.setClassValue(lines[1]);
+      instance.setWeight(Double.parseDouble(lines[2]));
       updateClassifier(instance);
     }
-
     // Save space
     m_Instances = new Instances(m_Instances, 0);
   }
 
-
   /**
    * Updates the classifier with the given instance.
-   *
    * @param instance the new training instance to include in the model 
    * @exception Exception if the instance could not be incorporated in
    * the model.
@@ -120,18 +108,17 @@ public class PBayes extends NaiveBayes{
 			Attribute attribute=(Attribute)enumAtts.nextElement();
 			if(!instance.isMissing(attribute)){
 				m_Distributions[attIndex][classValue].addValue(instance.value(attribute),instance.weight());
+				m_Distributions[attIndex][1-classValue].addValue(instance.value(attribute),1-instance.weight());
 			}
 			attIndex++;
 		}
 		m_ClassDistribution.addValue(classValue,instance.weight());
+		m_ClassDistribution.addValue(1-classValue,1-instance.weight());
     }
   }
 
-
   /**
-   * Calculates the class membership probabilities for the given test 
-   * instance.
-   *
+   * Calculates the class membership probabilities for the given test instance.
    * @param instance the instance to be classified
    * @return predicted class probability distribution
    * @exception Exception if there is a problem generating the prediction
@@ -170,7 +157,6 @@ public class PBayes extends NaiveBayes{
 
   /**
    * Returns an enumeration describing the available options.
-   *
    * @return an enumeration of all the available options.
    */
   public Enumeration listOptions() {
@@ -179,7 +165,7 @@ public class PBayes extends NaiveBayes{
     new Option("\tUse kernel density estimator rather than normal\n"
 	       +"\tdistribution for numeric attributes",
 	       "K", 0,"-K"));
-    newVector.addElement(new Option("\tSet Probability data file. Each line represent one instance's probabilities to be all classes seperated by space.","P",0,"-P"));
+    newVector.addElement(new Option("\tSet Probability data file. Each line represent one instance's probabilities to be all classes seperated by space.","Prob",0,"-Prob"));
     return newVector.elements();
   }
 
@@ -195,7 +181,7 @@ public class PBayes extends NaiveBayes{
    */
   public void setOptions(String[] options) throws Exception {
     m_UseKernelEstimator = Utils.getFlag('K', options);
-    P=Utils.getOption('P',options);
+    Prob=Utils.getOption("Prob",options);
     Utils.checkForRemainingOptions(options);
   }
 
@@ -207,7 +193,7 @@ public class PBayes extends NaiveBayes{
   public String [] getOptions() {
     String [] options = new String [2];
     int current = 0;
-    options[current++]="-P";
+    options[current++]="-Prob";
     if (m_UseKernelEstimator) {
       options[current++] = "-K";
     }
