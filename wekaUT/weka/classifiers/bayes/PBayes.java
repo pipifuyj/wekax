@@ -85,9 +85,7 @@ public class PBayes extends NaiveBayes{
       Instance instance = (Instance) enumInsts.nextElement();
       String line=reader.readLine();
       String [] lines=line.split("\\s+");
-      instance.setClassValue(lines[1]);
-      instance.setWeight(Double.parseDouble(lines[2]));
-      updateClassifier(instance);
+      updateClassifier(instance,lines[1],Double.parseDouble(lines[2]));
     }
     // Save space
     m_Instances = new Instances(m_Instances, 0);
@@ -99,22 +97,23 @@ public class PBayes extends NaiveBayes{
    * @exception Exception if the instance could not be incorporated in
    * the model.
    */
-  public void updateClassifier(Instance instance) throws Exception {
-    if (!instance.classIsMissing()) {
-    	int classValue=(int)instance.classValue();
-		Enumeration enumAtts=m_Instances.enumerateAttributes();
-		int attIndex=0;
-		while(enumAtts.hasMoreElements()){
-			Attribute attribute=(Attribute)enumAtts.nextElement();
-			if(!instance.isMissing(attribute)){
-				m_Distributions[attIndex][classValue].addValue(instance.value(attribute),instance.weight());
-				m_Distributions[attIndex][1-classValue].addValue(instance.value(attribute),1-instance.weight());
-			}
-			attIndex++;
-		}
-		m_ClassDistribution.addValue(classValue,instance.weight());
-		m_ClassDistribution.addValue(1-classValue,1-instance.weight());
-    }
+  public void updateClassifier(Instance instance,String classValue,double prob)throws Exception{
+	  Attribute classAttribute=instance.classAttribute();
+	  int classIndex=classAttribute.index(classValue);
+	  int [] cs={classIndex,1-classIndex};
+	  double [] ps={instance.weight()*prob,instance.weight()*(1-prob)};
+	  Enumeration enumAtts=m_Instances.enumerateAttributes();
+	  int attIndex=0;
+	  while(enumAtts.hasMoreElements()){
+		  Attribute attribute=(Attribute)enumAtts.nextElement();
+		  if(!instance.isMissing(attribute)){
+			  m_Distributions[attIndex][cs[0]].addValue(instance.value(attribute),ps[0]);
+			  m_Distributions[attIndex][cs[1]].addValue(instance.value(attribute),ps[1]);
+		  }
+		  attIndex++;
+	  }
+	  m_ClassDistribution.addValue(cs[0],ps[0]);
+	  m_ClassDistribution.addValue(cs[1],ps[1]);
   }
 
   /**
