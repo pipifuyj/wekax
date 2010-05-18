@@ -19,7 +19,7 @@ public class PBayes extends NaiveBayes{
    */
   public void buildClassifier(Instances instances) throws Exception {
     if(instances.checkForStringAttributes())throw new UnsupportedAttributeTypeException("Cannot handle string attributes!");
-    if(instances.classAttribute().isNumeric())throw new UnsupportedClassTypeException("Naive Bayes: Class is numeric!");
+    if(instances.classAttribute().isNumeric())throw new UnsupportedClassTypeException("PBayes: Class is numeric!");
     m_NumClasses = instances.numClasses();
     if(m_NumClasses<0)throw new Exception ("Dataset has no class attribute");
     // Copy the instances
@@ -61,19 +61,14 @@ public class PBayes extends NaiveBayes{
       for (int j = 0; j < m_Instances.numClasses(); j++) {
 	switch (attribute.type()) {
 	case Attribute.NUMERIC: 
-	  if (m_UseKernelEstimator) {
-	    m_Distributions[attIndex][j] = 
-	    new KernelEstimator(numPrecision);
-	  } else {
-	    m_Distributions[attIndex][j] = 
-	    new NormalEstimator(numPrecision);
-	  }
+	  if(m_UseKernelEstimator)m_Distributions[attIndex][j]=new KernelEstimator(numPrecision);
+	  else m_Distributions[attIndex][j]=new NormalEstimator(numPrecision);
 	  break;
 	case Attribute.NOMINAL:
 	  m_Distributions[attIndex][j]=new DiscreteEstimator(attribute.numValues(),true);
 	  break;
 	default:
-	  throw new Exception("Attribute type unknown to NaiveBayes");
+	  throw new Exception("Attribute type unknown to PBayes");
 	}
       }
       attIndex++;
@@ -81,11 +76,12 @@ public class PBayes extends NaiveBayes{
     // Compute counts
     BufferedReader reader=new BufferedReader(new FileReader(Prob));
     Enumeration enumInsts = m_Instances.enumerateInstances();
+    Attribute classAttribute=m_Instances.classAttribute();
     while (enumInsts.hasMoreElements()) {
       Instance instance = (Instance) enumInsts.nextElement();
       String line=reader.readLine();
       String [] lines=line.split("\\s+");
-      updateClassifier(instance,lines[1],Double.parseDouble(lines[2]));
+      updateClassifier(instance,classAttribute.index(lines[1]),Double.parseDouble(lines[2]));
     }
     // Save space
     m_Instances = new Instances(m_Instances, 0);
@@ -97,9 +93,7 @@ public class PBayes extends NaiveBayes{
    * @exception Exception if the instance could not be incorporated in
    * the model.
    */
-  public void updateClassifier(Instance instance,String classValue,double prob)throws Exception{
-	  Attribute classAttribute=instance.classAttribute();
-	  int classIndex=classAttribute.index(classValue);
+  public void updateClassifier(Instance instance,int classIndex,double prob)throws Exception{
 	  int [] cs={classIndex,1-classIndex};
 	  double [] ps={instance.weight()*prob,instance.weight()*(1-prob)};
 	  Enumeration enumAtts=m_Instances.enumerateAttributes();
