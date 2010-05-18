@@ -111,6 +111,10 @@ public class PBayes extends NaiveBayes{
 	  m_ClassDistribution.addValue(cs[0],ps[0]);
 	  m_ClassDistribution.addValue(cs[1],ps[1]);
   }
+  // NaiveBayes
+  public void updateClassifier(Instance instance)throws Exception{
+	  updateClassifier(instance,(int)instance.classValue(),1);
+  }
   public void updateClassifier(){
 	  for(int j=0;j<m_NumClasses;j++)m_probs[j]=m_ClassDistribution.getProbability(j);
   }
@@ -148,7 +152,7 @@ public class PBayes extends NaiveBayes{
 		attIndex++;
 	}
 	double power=1.0/atts;
-	for(int i=0;i<m_NumClasses;i++)probs[i]=Math.pow(probs[i],power);
+	//for(int i=0;i<m_NumClasses;i++)probs[i]=Math.pow(probs[i],power);
     Utils.normalize(probs);
     return probs;
   }
