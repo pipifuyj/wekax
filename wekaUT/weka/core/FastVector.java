@@ -14,73 +14,51 @@ public class FastVector implements Copyable, Serializable {
    * Class for enumerating the vector's elements.
    */
   public class FastVectorEnumeration implements Enumeration {
-
     /** The counter. */
     private int m_Counter;
-
     /** The vector. */
     private FastVector m_Vector;
-
     /** Special element. Skipped during enumeration. */
     private int m_SpecialElement;
 
     /**
      * Constructs an enumeration.
-     *
      * @param vector the vector which is to be enumerated
      */
     public FastVectorEnumeration(FastVector vector) {
-
-      m_Counter = 0;
-      m_Vector = vector;
-      m_SpecialElement = -1;
+    	this(vector,-1);
     }
 
     /**
      * Constructs an enumeration with a special element.
      * The special element is skipped during the enumeration.
-     *
      * @param vector the vector which is to be enumerated
      * @param special the index of the special element
      */
     public FastVectorEnumeration(FastVector vector, int special) {
-
       m_Vector = vector;
       m_SpecialElement = special;
-      if (special == 0) {
-	m_Counter = 1;
-      } else {
-	m_Counter = 0;
-      }
+      if(special==0)m_Counter=1;
+      else m_Counter=0;
     }
 
 
     /**
      * Tests if there are any more elements to enumerate.
-     *
      * @return true if there are some elements left
      */
     public final boolean hasMoreElements() {
-
-      if (m_Counter < m_Vector.size()) {
-	return true;
-      }
-      return false;
+      return m_Counter<m_Vector.size();
     }
 
     /**
      * Returns the next element.
-     *
      * @return the next element to be enumerated
      */
     public final Object nextElement() {
-  
-      Object result = m_Vector.elementAt(m_Counter);
-
+      Object result=m_Vector.elementAt(m_Counter);
       m_Counter++;
-      if (m_Counter == m_SpecialElement) {
-	m_Counter++;
-      }
+      if(m_Counter==m_SpecialElement)m_Counter++;
       return result;
     }
   }
@@ -189,34 +167,27 @@ public class FastVector implements Copyable, Serializable {
 
   /**
    * Returns the element at the given position.
-   *
    * @param index the element's index
    * @return the element with the given index
    */
   public final Object elementAt(int index) {
-
     return m_Objects[index];
   }
 
   /**
    * Returns an enumeration of this vector.
-   *
    * @return an enumeration of this vector
    */
   public final Enumeration elements() {
-  
     return new FastVectorEnumeration(this);
   }
 
   /**
-   * Returns an enumeration of this vector, skipping the
-   * element with the given index.
-   *
+   * Returns an enumeration of this vector, skipping the element with the given index.
    * @param index the element to skip
    * @return an enumeration of this vector
    */
   public final Enumeration elements(int index) {
-  
     return new FastVectorEnumeration(this, index);
   }
 

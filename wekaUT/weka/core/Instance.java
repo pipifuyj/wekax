@@ -272,16 +272,11 @@ public class Instance implements Copyable, Serializable {
 
   /**
    * Returns an enumeration of all the attributes.
-   *
    * @return enumeration of all the attributes
-   * @exception UnassignedDatasetException if the instance doesn't
-   * have access to a dataset 
+   * @exception UnassignedDatasetException if the instance doesn't have access to a dataset 
    */
   public Enumeration enumerateAttributes() {
-
-    if (m_Dataset == null) {
-      throw new UnassignedDatasetException("Instance doesn't have access to a dataset!");
-    }
+    if(m_Dataset==null)throw new UnassignedDatasetException("Instance doesn't have access to a dataset!");
     return m_Dataset.enumerateAttributes();
   }
 
@@ -824,42 +819,17 @@ public class Instance implements Copyable, Serializable {
 
   /**
    * Returns an instance's attribute value in internal format.
-   *
    * @param attIndex the attribute's index
    * @return the specified value as a double (If the corresponding
-   * attribute is nominal (or a string) then it returns the value's index as a 
-   * double).
+   * attribute is nominal or string then it returns the value's index as a double).
    */
   public double value(int attIndex) {
-
     return m_AttValues[attIndex];
   }
-
-  /**
-   * Returns an instance's attribute value in internal format.
-   * Does exactly the same thing as value() if applied to an Instance.
-   *
-   * @param indexOfIndex the index of the attribute's index
-   * @return the specified value as a double (If the corresponding
-   * attribute is nominal (or a string) then it returns the value's index as a 
-   * double).
-   */
   public double valueSparse(int indexOfIndex) {
-
-    return m_AttValues[indexOfIndex];
-  }  
-
-  /**
-   * Returns an instance's attribute value in internal format.
-   * The given attribute has to belong to a dataset.
-   *
-   * @param att the attribute
-   * @return the specified value as a double (If the corresponding
-   * attribute is nominal (or a string) then it returns the value's index as a
-   * double).
-   */
+	  return value(indexOfIndex);
+  }
   public double value(Attribute att) {
-
     return value(att.index());
   }
 

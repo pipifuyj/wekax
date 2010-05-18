@@ -12,6 +12,7 @@ import weka.estimators.*;
 
 public class PBayes extends NaiveBayes{
 	String Prob;
+	double [] m_probs;
   /**
    * Generates the classifier.
    * @param instances set of instances serving as training data 
@@ -83,6 +84,8 @@ public class PBayes extends NaiveBayes{
       String [] lines=line.split("\\s+");
       updateClassifier(instance,classAttribute.index(lines[1]),Double.parseDouble(lines[2]));
     }
+    m_probs=new double[m_NumClasses];
+    updateClassifier();
     // Save space
     m_Instances = new Instances(m_Instances, 0);
   }
@@ -90,8 +93,7 @@ public class PBayes extends NaiveBayes{
   /**
    * Updates the classifier with the given instance.
    * @param instance the new training instance to include in the model 
-   * @exception Exception if the instance could not be incorporated in
-   * the model.
+   * @exception Exception if the instance could not be incorporated in the model.
    */
   public void updateClassifier(Instance instance,int classIndex,double prob)throws Exception{
 	  int [] cs={classIndex,1-classIndex};
@@ -109,6 +111,9 @@ public class PBayes extends NaiveBayes{
 	  m_ClassDistribution.addValue(cs[0],ps[0]);
 	  m_ClassDistribution.addValue(cs[1],ps[1]);
   }
+  public void updateClassifier(){
+	  for(int j=0;j<m_NumClasses;j++)m_probs[j]=m_ClassDistribution.getProbability(j);
+  }
 
   /**
    * Calculates the class membership probabilities for the given test instance.
@@ -116,16 +121,15 @@ public class PBayes extends NaiveBayes{
    * @return predicted class probability distribution
    * @exception Exception if there is a problem generating the prediction
    */
-  public double [] distributionForInstance(Instance instance) throws Exception {
-    double [] probs = new double[m_NumClasses];
-    for (int j = 0; j < m_NumClasses; j++) {
-      probs[j] = m_ClassDistribution.getProbability(j);
-    }
+  public double [] distributionForInstance(Instance instance)throws Exception{
+    double [] probs=new double[m_NumClasses];
+    System.arraycopy(m_probs,0,probs,0,m_NumClasses);
     Enumeration enumAtts = instance.enumerateAttributes();
-    int attIndex = 0;
+    int attIndex=0,atts=0;
 	while(enumAtts.hasMoreElements()){
 		Attribute attribute=(Attribute)enumAtts.nextElement();
 		if(!instance.isMissing(attribute)){
+			atts++;
 			double temp,max=0;
 			for(int j=0;j<m_NumClasses;j++){
 				temp=Math.max(1e-75,m_Distributions[attIndex][j].getProbability(instance.value(attribute)));
@@ -143,7 +147,8 @@ public class PBayes extends NaiveBayes{
 		}
 		attIndex++;
 	}
-    // Display probabilities
+	double power=1.0/atts;
+	for(int i=0;i<m_NumClasses;i++)probs[i]=Math.pow(probs[i],power);
     Utils.normalize(probs);
     return probs;
   }

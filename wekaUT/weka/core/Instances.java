@@ -472,21 +472,17 @@ public class Instances implements Serializable {
 
   /**
    * Returns an enumeration of all the attributes.
-   *
    * @return enumeration of all the attributes.
    */
   public Enumeration enumerateAttributes() {
-
     return m_Attributes.elements(m_ClassIndex);
   }
 
   /**
    * Returns an enumeration of all instances in the dataset.
-   *
    * @return enumeration of all instances in the dataset
    */
   public final Enumeration enumerateInstances() {
-
     return m_Instances.elements();
   }
 
