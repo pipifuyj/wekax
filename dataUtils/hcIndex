@@ -7,6 +7,7 @@ $usage="hcIndex -o 1/2/3 file.hc\n";
 if($argc==1)exit($usage);
 $opt=getopt("o:");
 $hc=file($argv[$argc-1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$HC=array(array(),array(),array(),array());
 foreach($hc as &$line){
 	preg_match("/^(.+)\((.+)\)/",$line,$line);
 	$items=preg_split("/\s+/",trim($line[1]));
@@ -17,12 +18,19 @@ foreach($hc as &$line){
 	if($pos=strpos($confidence,"%"))$confidence=substr($confidence,0,$pos)/100;
 	$count=count($items);
 	$line=array($items,$support,$confidence,$count);
+	$HC[1][]=$support;
+	$HC[2][]=$confidence;
+	$HC[3][]=$count;
 	unset($line);
 }
 if(isset($opt['o'])){
-	$cmp='return $hc1['.$opt['o'].']>$hc2['.$opt['o'].']?-1:1;';
-	$cmp=create_function('$hc1,$hc2',$cmp);
-	usort($hc,$cmp);
+	if(is_array($opt['o'])){
+		if(count($opt['o'])==2){
+			array_multisort($HC[$opt['o'][0]],SORT_DESC,$HC[$opt['o'][1]],SORT_DESC,$hc);
+		}else{
+			array_multisort($HC[$opt['o'][0]],SORT_DESC,$HC[$opt['o'][1]],SORT_DESC,$HC[$opt['o'][2]],SORT_DESC,$hc);
+		}
+	}else array_multisort($HC[$opt['o']],SORT_DESC,$hc);
 }
 $indices=array();
 foreach($hc as $line){
