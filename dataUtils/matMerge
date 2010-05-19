@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Merge some mat file and rclass, rindex file simultaneously.
+ */
+$usage="matMerge -w output.mat file.mat ...\n";
+$opt=getopt("w:");
+if(isset($opt['w'])){
+	$mat=$opt['w'];
+	$rclass="$mat.rclass";
+	$rindex="$mat.rindex";
+}else{
+	exit($usage);
+}
+$f=$argv[3];
+$M=file($f,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$O=preg_split("/\s+/",trim(array_shift($M)));
+$N=$O[1];
+$S=$O[2]>0;
+$C=is_file("$f.rclass")?file("$f.rclass",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES):false;
+$I=is_file("$f.rindex")?file("$f.rindex",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES):false;
+for($i=4;$i<$argc;$i++){
+	$f=$argv[$i];
+	$m=file($f,FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+	$o=preg_split("/\s+/",trim(array_shift($m)));
+	$n=$o[1];
+	if($N!=$n)exit("mats with different clabels\n");
+	$s=$o[2]>0;
+	if($S!=$s)exit("mats with different formats\n");
+	$O[0]+=$o[0];
+	$O[2]+=$o[2];
+	$M=array_merge($M,$m);
+	if($C)$C=array_merge($C,file("$f.rclass",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES));
+	if($I)$I=array_merge($I,file("$f.rindex",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES));
+}
+file_put_contents($mat,implode("\t",$O));
+file_put_contents($mat,"\n",FILE_APPEND);
+file_put_contents($mat,implode("\n",$M));
+if($C)file_put_contents($rclass,implode("\n",$C));
+if($I)file_put_contents($rindex,implode("\n",$I));
+?>

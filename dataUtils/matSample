@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+$usage="mstSample file.mat sample.index output.mat\n";
+if($argc<4)exit($usage);
+$mat=file($argv[1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$meta=preg_split("/\s+/",trim(array_shift($mat)));
+if(is_file("{$argv[1]}.rclass"))$rclass=file("{$argv[1]}.rclass",FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$index=file($argv[2],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$M=array();
+$I=array();
+$C=array();
+$meta[0]=0;
+if($meta[2]){
+	$meta[2]=0;
+	foreach($index as $i){
+		$i=trim($i);
+		if(!isset($mat[$i]))continue;
+		$meta[0]++;
+		$meta[2]+=floor(count(preg_split("/\s+/",trim($mat[$i])))/2);
+		$M[]=$mat[$i];
+		$I[]=$i;
+	}
+	if(isset($rclass))foreach($I as $i)$C[]=$rclass[$i];
+}
+file_put_contents($argv[3],join(" ",$meta)."\n");
+file_put_contents($argv[3],join("\n",$M),FILE_APPEND);
+file_put_contents("{$argv[3]}.rindex",join("\n",$I));
+file_put_contents("{$argv[3]}.rclass",join("\n",$C));
+?>

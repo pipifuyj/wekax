@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+/**
+ * show indices of items in hc
+ */
+$usage="hcIndex -o 1/2/3 file.hc\n";
+if($argc==1)exit($usage);
+$opt=getopt("o:");
+$hc=file($argv[$argc-1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+foreach($hc as &$line){
+	preg_match("/^(.+)\((.+)\)/",$line,$line);
+	$items=preg_split("/\s+/",trim($line[1]));
+	$line=preg_split("/\s+/",trim($line[2]));
+	$support=$line[0];
+	if($pos=strpos($support,"%"))$support=substr($support,0,$pos)/100;
+	$confidence=$line[1];
+	if($pos=strpos($confidence,"%"))$confidence=substr($confidence,0,$pos)/100;
+	$count=count($items);
+	$line=array($items,$support,$confidence,$count);
+	unset($line);
+}
+if(isset($opt['o'])){
+	$cmp='return $hc1['.$opt['o'].']>$hc2['.$opt['o'].']?-1:1;';
+	$cmp=create_function('$hc1,$hc2',$cmp);
+	usort($hc,$cmp);
+}
+$indices=array();
+foreach($hc as $line){
+	foreach($line[0] as $item){
+		$indices[$item]=true;
+	}
+}
+foreach($indices as $index=>$true){
+	echo $index,"\n";
+}
+?>
