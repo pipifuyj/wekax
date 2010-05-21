@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+/**
+ * show indices of items in hc
+ */
+$usage="hcSort 321 file.hc\n";
+if($argc!=3)exit($usage);
+$hc=file($argv[$argc-1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$HC=array(array(),array(),array(),array());
+foreach($hc as &$line){
+	preg_match("/^(.+)\((.+)\)/",$line,$line);
+	$items=preg_split("/\s+/",trim($line[1]));
+	$line=preg_split("/\s+/",trim($line[2]));
+	$support=$line[0];
+	if($pos=strpos($support,"%"))$support=substr($support,0,$pos)/100;
+	$confidence=$line[1];
+	if($pos=strpos($confidence,"%"))$confidence=substr($confidence,0,$pos)/100;
+	$count=count($items);
+	$line=array($items,$support,$confidence,$count);
+	$HC[1][]=$support;
+	$HC[2][]=$confidence;
+	$HC[3][]=$count;
+	unset($line);
+}
+$len=strlen($argv[1]);
+if($len==3){
+	array_multisort($HC[$argv[1][0]],SORT_DESC,$HC[$argv[1][1]],SORT_DESC,$HC[$argv[1][2]],SORT_DESC,$hc);
+}elseif($len==2){
+	array_multisort($HC[$argv[1][0]],SORT_DESC,$HC[$argv[1][1]],SORT_DESC,$hc);
+}else{
+	array_multisort($HC[$argv[1][0]],SORT_DESC,$hc);
+}
+foreach($hc as $line){
+	echo implode(" ",$line[0]),"(",$line[1]," ",$line[2],")\n";
+}
+?>
