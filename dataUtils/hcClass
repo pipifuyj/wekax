@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+$usage="hcClass file.hc file.cs ...\n";
+if($argc==1)exit($usage);
+$hc=$argv[1];
+require("hcRead.php");
+$CS=array();
+for($i=2;$i<$argc;$i++){
+	$cs=$argv[$i];
+	require("csRead.php");
+	foreach($cs as $c=>$s)$CS[$c]=$s;
+}
+$cs=$CS;
+foreach($hc as $line){
+	$p=0;
+	foreach($line[0] as $item)if($cs[$item][1]>$p)list($p,$i)=array($cs[$item][1],$item);
+	foreach($line[0] as $item)$cs[$item]=array($cs[$i][0],$p);
+}
+require("csWrite.php");
+?>

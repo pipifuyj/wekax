@@ -74,22 +74,34 @@ public class PBayes extends NaiveBayes{
       }
       attIndex++;
     }
-    // Compute counts
-    BufferedReader reader=new BufferedReader(new FileReader(Prob));
-    Enumeration enumInsts = m_Instances.enumerateInstances();
-    Attribute classAttribute=m_Instances.classAttribute();
-    while (enumInsts.hasMoreElements()) {
-      Instance instance = (Instance) enumInsts.nextElement();
-      String line=reader.readLine();
-      String [] lines=line.split("\\s+");
-      updateClassifier(instance,classAttribute.index(lines[1]),Double.parseDouble(lines[2]));
-    }
+    if(Prob.length()>0)updateClassifier(m_Instances,Prob);
+    else updateClassifier(m_Instances);
     m_probs=new double[m_NumClasses];
     updateClassifier();
     // Save space
     m_Instances = new Instances(m_Instances, 0);
   }
 
+  public void updateClassifier(Instances instances,String Prob)throws Exception{
+    BufferedReader reader=new BufferedReader(new FileReader(Prob));
+    Enumeration enumInsts=instances.enumerateInstances();
+    Attribute classAttribute=instances.classAttribute();
+    while (enumInsts.hasMoreElements()) {
+      Instance instance = (Instance) enumInsts.nextElement();
+      String line=reader.readLine();
+      String [] lines=line.split("\\s+");
+      updateClassifier(instance,classAttribute.index(lines[1]),Double.parseDouble(lines[2]));
+    }
+  }
+  // NaiveBayes
+  public void updateClassifier(Instances instances)throws Exception{
+    Enumeration enumInsts=instances.enumerateInstances();
+    Attribute classAttribute=instances.classAttribute();
+    while (enumInsts.hasMoreElements()) {
+      Instance instance = (Instance) enumInsts.nextElement();
+      updateClassifier(instance);
+    }
+  }
   /**
    * Updates the classifier with the given instance.
    * @param instance the new training instance to include in the model 

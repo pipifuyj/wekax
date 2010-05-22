@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+/**
+ * set indices of items in cs
+ */
+$usage="hcIndex file.cs file.index\n";
+if($argc==1)exit($usage);
+$cs=$argv[$argc-2];
+require("csRead.php");
+$index=file($argv[$argc-1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+$cs=array_combine($index,$cs);
+require("csWrite.php");
+?>
