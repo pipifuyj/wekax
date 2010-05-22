@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+$usage="csMerge file.cs ...\n";
+if($argc==1)exit($usage);
+$CS=array();
+for($i=1;$i<$argc;$i++){
+	$cs=$argv[$i];
+	require("csRead.php");
+	foreach($cs as $c=>$s)$CS[$c]=$s;
+}
+$cs=$CS;
+require("csWrite.php");
+?>

@@ -1,20 +1,56 @@
 #!/usr/bin/env php
 <?php
-$usage="hcClass file.hc file.cs ...\n";
+$usage="hcClass file.hc file.cs\n";
 if($argc==1)exit($usage);
 $hc=$argv[1];
 require("hcRead.php");
+$cs=$argv[2];
+require("csRead.php");
 $CS=array();
-for($i=2;$i<$argc;$i++){
-	$cs=$argv[$i];
-	require("csRead.php");
-	foreach($cs as $c=>$s)$CS[$c]=$s;
-}
-$cs=$CS;
-foreach($hc as $line){
+$strategy=1;
+if($strategy==0)foreach($hc as $line){
 	$p=0;
 	foreach($line[0] as $item)if($cs[$item][1]>$p)list($p,$i)=array($cs[$item][1],$item);
 	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=array($cs[$i][0],$p);
+}
+if($strategy==1){
+foreach($hc as $line){
+	$p=0;
+	foreach($line[0] as $item)if($cs[$item][1]>$p)list($p,$i)=array($cs[$item][1],$item);
+	foreach($line[0] as $item)$CS[$item]=array($cs[$i][0],$cs[$i][1]);
+}
+foreach($CS as $c=>$s)list($cs[$c][0],$cs[$c][1])=$s;
+}
+if($strategy==2)foreach($hc as $line){
+	$P=array();
+	foreach($line[0] as $item){
+		if(isset($P[$cs[$item][0]]))$P[$cs[$item][0]]+=$cs[$item][1];
+		else $P[$cs[$item][0]]=$cs[$item][1];
+	}
+	$max=$sum=0;
+	foreach($P as $c=>$p){
+		$sum+=$p;
+		if($p>$max)list($max,$i)=array($p,$c);
+	}
+	$p=$max/$sum;
+	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=array($i,$p);
+}
+if($strategy==3){
+foreach($hc as $line){
+	$P=array();
+	foreach($line[0] as $item){
+		if(isset($P[$cs[$item][0]]))$P[$cs[$item][0]]+=$cs[$item][1];
+		else $P[$cs[$item][0]]=$cs[$item][1];
+	}
+	$max=$sum=0;
+	foreach($P as $c=>$p){
+		$sum+=$p;
+		if($p>$max)list($max,$i)=array($p,$c);
+	}
+	$p=$max/$sum;
+	foreach($line[0] as $item)$CS[$item]=array($i,$p);
+}
+foreach($CS as $c=>$s)list($cs[$c][0],$cs[$c][1])=$s;
 }
 require("csWrite.php");
 ?>
