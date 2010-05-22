@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+$usage="csEval file.cs\n";
+if($argc==1)exit($usage);
+$cs=$argv[$argc-1];
+require("csRead.php");
+$C=array();
+foreach($cs as $c){
+	$C[]=$c[0];
+	$C[]=$c[2];
+}
+$C=array_unique($C);
+sort($C);
+$N=count($C);
+$M=array();
+for($i=0;$i<$N;$i++)$M[$C[$i]]=array();
+for($i=0;$i<$N;$i++)for($j=0;$j<$N;$j++)$M[$C[$i]][$C[$j]]=0;
+foreach($cs as &$c){
+	$M[$c[2]][$c[0]]++;
+}
+for($i=0;$i<$N;$i++){
+	for($j=0;$j<$N;$j++)echo $M[$C[$i]][$C[$j]],"\t";
+	echo "\n";
+}
+$S=array();
+$T=0;
+for($i=0;$i<$N;$i++){
+	$S[$C[$i]]=array_sum($M[$C[$i]]);
+	$T+=$M[$C[$i]][$C[$i]];
+	echo $M[$C[$i]][$C[$i]]/$S[$C[$i]],"\t";
+}
+echo "\n";
+echo $T/array_sum($S);
+echo "\n";
+?>

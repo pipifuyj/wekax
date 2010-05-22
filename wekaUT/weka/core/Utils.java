@@ -9,6 +9,11 @@ import java.io.FileInputStream;
 public final class Utils {
 	public static double log2 = Math.log(2);
 	public static double SMALL = 1e-6;
+	public static double [][] clone(double [][] array){
+		double [][] Array=new double[array.length][];
+		for(int i=0;i<array.length;i++)Array[i]=(double [])array[i].clone();
+		return Array;
+	}
 	public static int [][] chunk(int [] array,int n){
 		int m=array.length/n;
 		int [][]Array=new int [m][];

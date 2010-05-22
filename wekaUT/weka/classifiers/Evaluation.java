@@ -156,13 +156,7 @@ public class Evaluation implements Summarizable {
    * @return a copy of the confusion matrix as a two-dimensional array
    */
   public double[][] confusionMatrix() {
-    double[][] newMatrix = new double[m_ConfusionMatrix.length][0];
-    for (int i = 0; i < m_ConfusionMatrix.length; i++) {
-      newMatrix[i] = new double[m_ConfusionMatrix[i].length];
-      System.arraycopy(m_ConfusionMatrix[i], 0, newMatrix[i], 0,
-		       m_ConfusionMatrix[i].length);
-    }
-    return newMatrix;
+    return Utils.clone(m_ConfusionMatrix);
   }
 
   /**

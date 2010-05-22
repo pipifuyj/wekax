@@ -14,7 +14,7 @@ $cs=$CS;
 foreach($hc as $line){
 	$p=0;
 	foreach($line[0] as $item)if($cs[$item][1]>$p)list($p,$i)=array($cs[$item][1],$item);
-	foreach($line[0] as $item)$cs[$item]=array($cs[$i][0],$p);
+	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=array($cs[$i][0],$p);
 }
 require("csWrite.php");
 ?>
