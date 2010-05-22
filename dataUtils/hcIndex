@@ -1,44 +1,25 @@
 #!/usr/bin/env php
 <?php
 /**
- * show indices of items in hc
+ * show indices of items in hc with some conditions
  */
-$usage="hcIndex -o 1/2/3 file.hc\n";
+$usage="hcIndex -0 size -1 support -2 confidence file.hc\n";
 if($argc==1)exit($usage);
-$opt=getopt("o:");
-$hc=file($argv[$argc-1],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
-$HC=array(array(),array(),array(),array());
-foreach($hc as &$line){
-	preg_match("/^(.+)\((.+)\)/",$line,$line);
-	$items=preg_split("/\s+/",trim($line[1]));
-	$line=preg_split("/\s+/",trim($line[2]));
-	$support=$line[0];
-	if($pos=strpos($support,"%"))$support=substr($support,0,$pos)/100;
-	$confidence=$line[1];
-	if($pos=strpos($confidence,"%"))$confidence=substr($confidence,0,$pos)/100;
-	$count=count($items);
-	$line=array($items,$support,$confidence,$count);
-	$HC[1][]=$support;
-	$HC[2][]=$confidence;
-	$HC[3][]=$count;
-	unset($line);
-}
-if(isset($opt['o'])){
-	if(is_array($opt['o'])){
-		if(count($opt['o'])==2){
-			array_multisort($HC[$opt['o'][0]],SORT_DESC,$HC[$opt['o'][1]],SORT_DESC,$hc);
-		}else{
-			array_multisort($HC[$opt['o'][0]],SORT_DESC,$HC[$opt['o'][1]],SORT_DESC,$HC[$opt['o'][2]],SORT_DESC,$hc);
-		}
-	}else array_multisort($HC[$opt['o']],SORT_DESC,$hc);
-}
+$opt=getopt("0:1:2:");
+$size=isset($opt[0])?$opt[0]:0;
+$support=isset($opt[1])?$opt[1]:0;
+$confidence=isset($opt[2])?$opt[2]:0;
+$hc=$argv[$argc-1];
+require("hcRead.php");
 $indices=array();
 foreach($hc as $line){
+	if(count($line[0])<$size)continue;
+	if($line[1]<$support)continue;
+	if($line[2]<$confidence)continue;
 	foreach($line[0] as $item){
+		if(isset($indices[$item]))continue;
 		$indices[$item]=true;
+		echo $item,"\n";
 	}
-}
-foreach($indices as $index=>$true){
-	echo $index,"\n";
 }
 ?>
