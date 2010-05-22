@@ -1,21 +1,14 @@
 #!/usr/bin/env php
 <?php
 /**
- * show indices of items in hc with some conditions
+ * show indices of items in hc
  */
-$usage="hcIndex -0 size -1 support -2 confidence file.hc\n";
+$usage="hcIndex file.hc\n";
 if($argc==1)exit($usage);
-$opt=getopt("0:1:2:");
-$size=isset($opt[0])?$opt[0]:0;
-$support=isset($opt[1])?$opt[1]:0;
-$confidence=isset($opt[2])?$opt[2]:0;
 $hc=$argv[$argc-1];
 require("hcRead.php");
 $indices=array();
 foreach($hc as $line){
-	if(count($line[0])<$size)continue;
-	if($line[1]<$support)continue;
-	if($line[2]<$confidence)continue;
 	foreach($line[0] as $item){
 		if(isset($indices[$item]))continue;
 		$indices[$item]=true;
