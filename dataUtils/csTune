@@ -1,12 +1,14 @@
 #!/usr/bin/env php
 <?php
 $usage="csTune file.cs\n";
-if($argc==1)exit($usage);
+if($argc!=2)exit($usage);
 $cs=$argv[$argc-1];
 require("csRead.php");
+$max=1;
+$min=1/$csRead['number'];
 foreach($cs as &$c){
-	if($c[0]==$c[2])$c[1]=(1+$c[1])/2;
-	else $c[1]=$c[1]/2;
+	if($c[0]==$c[2])$c[1]=($max+$c[1])/2;
+	else $c[1]=($min+$c[1])/2;
 	unset($c);
 }
 require("csWrite.php");

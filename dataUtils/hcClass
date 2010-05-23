@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 $usage="hcClass file.hc file.cs\n";
-if($argc==1)exit($usage);
+if($argc!=3)exit($usage);
 $hc=$argv[1];
 require("hcRead.php");
 $cs=$argv[2];
