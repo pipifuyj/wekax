@@ -133,6 +133,10 @@ public class Instances implements Serializable {
     }
     source.copyInstances(first, this, toCopy);
   }
+  public Instances(Instances source,int [] indices){
+	  this(source,indices.length);
+	  source.copyInstances(indices,this);
+  }
 
   /**
    * Creates an empty set of instances. Uses the given
@@ -149,6 +153,12 @@ public class Instances implements Serializable {
     m_Attributes = attInfo;
     for(int i=0;i<numAttributes();i++)attribute(i).setIndex(i);
     m_Instances = new FastVector(capacity);
+  }
+  public Instances(String name,FastVector attInfo){
+	  this(name,attInfo,0);
+  }
+  public Instances(String name){
+	  this(name,new FastVector());
   }
  
   /**
@@ -603,6 +613,13 @@ public class Instances implements Serializable {
    public final double mode(Attribute att){
    	   return mode(att.index());
    }
+   public final Instance mode(){
+	   double [] vals=new double[numAttributes()];
+	   for(int i=0,ii=numAttributes();i<ii;i++){
+		   vals[i]=mode(i);
+	   }
+	   return new Instance(numInstances(),vals);
+   }
   public final double meanOrMode(int attIndex) {
     if (attribute(attIndex).isNumeric()) {
     	return mean(attIndex);
@@ -614,6 +631,13 @@ public class Instances implements Serializable {
   }
   public final double meanOrMode(Attribute att) {
     return meanOrMode(att.index());
+  }
+  public final Instance meanOrMode(){
+	   double [] vals=new double[numAttributes()];
+	   for(int i=0,ii=numAttributes();i<ii;i++){
+		   vals[i]=meanOrMode(i);
+	   }
+	   return new Instance(numInstances(),vals);
   }
 
   /**
@@ -1646,19 +1670,19 @@ public class Instances implements Serializable {
   }
 
   /**
-   * Copies instances from one set to the end of another 
-   * one.
-   *
+   * Copies instances from one set to the end of another one.
    * @param source the source of the instances
    * @param from the position of the first instance to be copied
    * @param dest the destination for the instances
    * @param num the number of instances to be copied
    */
   private void copyInstances(int from, Instances dest, int num) {
-    
     for (int i = 0; i < num; i++) {
       dest.add(instance(from + i));
     }
+  }
+  private void copyInstances(int [] indices,Instances dest){
+	  for(int i=0;i<indices.length;i++)dest.add(instance(indices[i]));
   }
   
   /**

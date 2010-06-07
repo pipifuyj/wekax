@@ -362,15 +362,15 @@ public final class Utils {
 
     return new String(result);
   }
+  public static int [] toInt(String [] strings){
+	  int [] ints=new int[strings.length];
+	  for(int i=0;i<strings.length;i++){
+		  ints[i]=Integer.valueOf(strings[i]).intValue();
+	  }
+	  return ints;
+  }
 
-  /**
-   * Tests if a is equal to b.
-   *
-   * @param a a double
-   * @param b a double
-   */
   public static boolean eq(double a, double b){
-    
     return (a - b < SMALL) && (b - a < SMALL); 
   }
 
@@ -400,7 +400,6 @@ public final class Utils {
    * @return true if the flag was found
    * @exception Exception if an illegal option was found
    */
-
   public static boolean getFlag(char flag,String [] options)throws Exception{
     if(options==null)return false;
     for (int i = 0; i < options.length; i++) {
@@ -465,6 +464,19 @@ public final class Utils {
 		  option=new String(options[i+1]);
 		  options[i+1]="";
 		  return option;
+	  }
+	  return option;
+  }
+  public static String getOption(int index,String [] options)throws Exception{
+	  String option="";
+	  int count=0;
+	  for(int i=0;i<options.length;i++)if(options[i].length()>0){
+		  count+=1;
+		  if(count==index){
+			  option=new String(options[i]);
+			  options[i]="";
+			  break;
+		  }
 	  }
 	  return option;
   }

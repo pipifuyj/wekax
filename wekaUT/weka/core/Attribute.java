@@ -218,32 +218,24 @@ public class Attribute implements Copyable, Serializable {
    * Constructor for nominal attributes and string attributes.
    * If a null vector of attribute values is passed to the method,
    * the attribute is assumed to be a string.
-   *
    * @param attributeName the name for the attribute
    * @param attributeValues a vector of strings denoting the 
    * attribute values. Null if the attribute is a string attribute.
    */
-  public Attribute(String attributeName, 
-		   FastVector attributeValues) {
-
-    this(attributeName, attributeValues,
-	 new ProtectedProperties(new Properties()));
+  public Attribute(String attributeName,FastVector attributeValues){
+    this(attributeName,attributeValues,new ProtectedProperties(new Properties()));
   }
 
   /**
    * Constructor for nominal attributes and string attributes, where
    * metadata is supplied. If a null vector of attribute values is passed
    * to the method, the attribute is assumed to be a string.
-   *
    * @param attributeName the name for the attribute
    * @param attributeValues a vector of strings denoting the 
    * attribute values. Null if the attribute is a string attribute.
    * @param metadata the attribute's properties
    */
-  public Attribute(String attributeName, 
-		   FastVector attributeValues,
-		   ProtectedProperties metadata) {
-
+  public Attribute(String attributeName,FastVector attributeValues,ProtectedProperties metadata){
     m_Name = attributeName;
     m_Index = -1;
     if (attributeValues == null) {
@@ -556,15 +548,12 @@ public class Attribute implements Copyable, Serializable {
    * a particular index.
    * If a null vector of attribute values is passed to the method,
    * the attribute is assumed to be a string.
-   *
    * @param attributeName the name for the attribute
    * @param attributeValues a vector of strings denoting the attribute values.
    * Null if the attribute is a string attribute.
    * @param index the attribute's index
    */
-  Attribute(String attributeName, FastVector attributeValues, 
-	    int index) {
-
+  Attribute(String attributeName,FastVector attributeValues,int index){
     this(attributeName, attributeValues);
     m_Index = index;
   }

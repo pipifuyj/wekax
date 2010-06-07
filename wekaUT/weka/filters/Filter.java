@@ -332,14 +332,6 @@ public abstract class Filter implements Serializable {
   }
 
   /**
-   * @deprecated use <code>setInputFormat(Instances)</code> instead.
-   */
-  public boolean inputFormat(Instances instanceInfo) throws Exception {
-
-    return setInputFormat(instanceInfo);
-  }
-
-  /**
    * Sets the format of the input instances. If the filter is able to
    * determine the output format before seeing any input instances, it
    * does so here. This default implementation clears the output format
@@ -360,14 +352,6 @@ public abstract class Filter implements Serializable {
     m_OutputQueue = new Queue();
     m_NewBatch = true;
     return false;
-  }
-
-  /**
-   * @deprecated use <code>getOutputFormat()</code> instead.
-   */
-  public final Instances outputFormat() {
-
-    return getOutputFormat();
   }
 
   /**
@@ -901,15 +885,11 @@ public abstract class Filter implements Serializable {
 
   /**
    * Main method for testing this class.
-   *
    * @param argv should contain arguments to the filter: use -h for help
    */
   public static void main(String [] args) {
-    
     try {
-      if (args.length == 0) {
-        throw new Exception("First argument must be the class name of a Filter");
-      }
+      if(args.length==0)throw new Exception("First argument must be the class name of a Filter");
       String fname = args[0];
       Filter f = (Filter)Class.forName(fname).newInstance();
       args[0] = "";
