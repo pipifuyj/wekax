@@ -7,7 +7,7 @@ require("hcRead.php");
 $cs=$argv[2];
 require("csRead.php");
 $CS=array();
-$strategy=5;
+$strategy=4;
 if($strategy==0)foreach($hc as $line){
 	$p=0;
 	foreach($line[0] as $item)if($cs[$item][1]>$p)list($p,$i)=array($cs[$item][1],$item);
@@ -49,7 +49,7 @@ foreach($CS as $c=>$s)list($cs[$c][0],$cs[$c][1])=$s;
 }
 if($strategy==4)foreach($hc as $line){
 	$label=strategy2($line,0.99);
-	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=$label;
+	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=array($label[0],1);
 }
 if($strategy==5){
 foreach($hc as $line){

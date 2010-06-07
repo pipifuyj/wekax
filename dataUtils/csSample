@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+$usage="csSample file.cs sample.index\n";
+if($argc!=3)exit($usage);
+require("csWrite.php");
+$cs=$argv[1];
+require("csRead.php");
+$index=file($argv[2],FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES);
+foreach($index as $i)csWrite::write($i,$cs[$i]);
+?>

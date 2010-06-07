@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+$usage="mat2arff relation.mat";
+if($argc!=2)exit("$usage\n");
 $file=$argv[1];
 $matrix=file($file,FILE_IGNORE_NEW_LINES);
 $clabel=@file("$file.clabel",FILE_IGNORE_NEW_LINES);

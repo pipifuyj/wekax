@@ -2,7 +2,13 @@
 /**
  * Write $cs to stdout
  */
-foreach($cs as $_cs=>$__cs){
-	echo $_cs," ",implode(" ",$__cs),"\n";
+class csWrite{
+	public static function write($index,$cs){
+		echo $index," ",implode(" ",$cs),"\n";
+	}
+	public static function output($CS){
+		foreach($CS as $index=>$cs)self::write($index,$cs);
+	}
 }
+if(isset($cs))csWrite::output($cs);
 ?>
