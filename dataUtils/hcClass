@@ -7,7 +7,7 @@ require("hcRead.php");
 $cs=$argv[2];
 require("csRead.php");
 $CS=array();
-$strategy=1;
+$strategy=5;
 if($strategy==0)foreach($hc as $line){
 	$p=0;
 	foreach($line[0] as $item)if($cs[$item][1]>$p)list($p,$i)=array($cs[$item][1],$item);
@@ -21,9 +21,10 @@ foreach($hc as $line){
 }
 foreach($CS as $c=>$s)list($cs[$c][0],$cs[$c][1])=$s;
 }
-if($strategy==2)foreach($hc as $line){
+function strategy2($hc,$p=0){
+	global $cs;
 	$P=array();
-	foreach($line[0] as $item){
+	foreach($hc[0] as $item)if($cs[$item][1]>$p){
 		if(isset($P[$cs[$item][0]]))$P[$cs[$item][0]]+=$cs[$item][1];
 		else $P[$cs[$item][0]]=$cs[$item][1];
 	}
@@ -32,23 +33,28 @@ if($strategy==2)foreach($hc as $line){
 		$sum+=$p;
 		if($p>$max)list($max,$i)=array($p,$c);
 	}
-	$p=$max/$sum;
-	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=array($i,$p);
+	if($sum)return array($i,$max/$sum);
+	else return strategy2($hc,$p-0.01);
+}
+if($strategy==2)foreach($hc as $line){
+	$label=strategy2($line);
+	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=$label;
 }
 if($strategy==3){
 foreach($hc as $line){
-	$P=array();
-	foreach($line[0] as $item){
-		if(isset($P[$cs[$item][0]]))$P[$cs[$item][0]]+=$cs[$item][1];
-		else $P[$cs[$item][0]]=$cs[$item][1];
-	}
-	$max=$sum=0;
-	foreach($P as $c=>$p){
-		$sum+=$p;
-		if($p>$max)list($max,$i)=array($p,$c);
-	}
-	$p=$max/$sum;
-	foreach($line[0] as $item)$CS[$item]=array($i,$p);
+	$label=strategy2($line);
+	foreach($line[0] as $item)$CS[$item]=$label;
+}
+foreach($CS as $c=>$s)list($cs[$c][0],$cs[$c][1])=$s;
+}
+if($strategy==4)foreach($hc as $line){
+	$label=strategy2($line,0.99);
+	foreach($line[0] as $item)list($cs[$item][0],$cs[$item][1])=$label;
+}
+if($strategy==5){
+foreach($hc as $line){
+	$label=strategy2($line,0.99);
+	foreach($line[0] as $item)$CS[$item]=$label;
 }
 foreach($CS as $c=>$s)list($cs[$c][0],$cs[$c][1])=$s;
 }
