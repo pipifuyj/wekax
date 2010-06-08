@@ -556,6 +556,9 @@ public class Instances implements Serializable {
       m_ClassIndex++;
     }
   }
+  public void appendAttribute(Attribute att){
+	  insertAttributeAt(att,numAttributes());
+  }
 
   /**
    * Returns the instance at the given position.

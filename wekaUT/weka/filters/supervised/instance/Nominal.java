@@ -30,12 +30,15 @@ public class Nominal extends Filter implements SupervisedFilter,OptionHandler{
 		for(int i=0;i<numAttributes;i++){
 			FastVector vector=new FastVector();
 			for(int j=0;j<numInstances;j++){
-				vector.addElement(String.valueOf(input.instance(j).value(i)));
+				double value=input.instance(j).value(i);
+				String string=String.valueOf(value);
+				if(vector.indexOf(string)==-1)vector.addElement(string);
 			}
 			Attribute attribute=new Attribute(input.attribute(i).name(),vector);
-			output.insertAttributeAt(attribute,0);
+			output.appendAttribute(attribute);
 		}
 		setOutputFormat(output);
+		for(int i=0;i<numInstances;i++)push(input.instance(i));
 		return super.batchFinished();
 	}
 	public static void main(String [] argv){

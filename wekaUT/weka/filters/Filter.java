@@ -157,16 +157,17 @@ public abstract class Filter implements Serializable {
   /**
    * Adds an output instance to the queue. The derived class should use this
    * method for each output instance it makes available. 
-   *
    * @param instance the instance to be added to the queue
    */
   protected void push(Instance instance) {
-
     if (instance != null) {
       copyStringValues(instance, m_OutputFormat, m_OutputStringAtts);
       instance.setDataset(m_OutputFormat);
       m_OutputQueue.push(instance);
     }
+  }
+  protected void push(Object object){
+	  push((Instance)object);
   }
 
   /**
@@ -681,23 +682,20 @@ public abstract class Filter implements Serializable {
       System.err.println("Setting end of batch");
     }
     if (filter.batchFinished()) {
-      if (debug) {
-	System.err.println("Filter said collect output");
-      }
+      if(debug)System.err.println("Filter said collect output");
       if (!printedHeader) {
-	if (debug) {
-	  System.err.println("Getting output format");
-	}
+	if(debug)System.err.println("Getting output format");
 	output.println(filter.getOutputFormat().toString());
       }
-      if (debug) {
-	System.err.println("Getting output instance");
-      }
-      while (filter.numPendingOutput() > 0) {
-	output.println(filter.output().toString());
-	if (debug){
-	  System.err.println("Getting output instance");
-	}
+      int num=filter.numPendingOutput();
+      while(num>0){
+    	  if(debug)System.err.println("Getting output instance: "+num);
+    	  Instance instance=filter.output();
+    	  if(debug)System.err.println("String output instance: "+num);
+    	  String string=instance.toString();
+    	  if(debug)System.err.println("Printing output instance: "+num);
+    	  output.println(string);
+    	  num=filter.numPendingOutput();
       }
     }
     if (debug) {
