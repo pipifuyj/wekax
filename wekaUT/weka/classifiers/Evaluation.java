@@ -33,6 +33,7 @@ import java.util.zip.GZIPOutputStream;
  * </pre> </code> 
   */
 public class Evaluation implements Summarizable {
+	private Instances template;
   /** The number of classes. */
   private int m_NumClasses;
   /** The number of folds for a cross-validation. */
@@ -125,6 +126,7 @@ public class Evaluation implements Summarizable {
    * data, the class is not defined or the class is numeric
    */
   public Evaluation(Instances data,CostMatrix costMatrix)throws Exception{
+	  template=data;
     m_NumClasses = data.numClasses();
     m_NumFolds = 1;
     m_ClassIsNominal = data.classAttribute().isNominal();
@@ -353,7 +355,6 @@ public class Evaluation implements Summarizable {
     	  template=test=new Instances(testReader,1);
     	  if(classIndex!=-1)test.setClassIndex(classIndex-1);
     	  else test.setClassIndex(test.numAttributes()-1);
-    	  if(classIndex>test.numAttributes())throw new Exception("Index of class attribute too large.");
       }
       if(trainFileName.length()!=0){
     	  if((classifier instanceof UpdateableClassifier)&&(testFileName.length()!=0))train=new Instances(trainReader,1);
@@ -632,14 +633,10 @@ public class Evaluation implements Summarizable {
    * @exception Exception if model could not be evaluated 
    * successfully
    */
-  public void evaluateModel(Classifier classifier,
-			    Instances data) throws Exception {
-    
+  public void evaluateModel(Classifier classifier,Instances data)throws Exception{
     double [] predicted;
-
     for (int i = 0; i < data.numInstances(); i++) {
-      evaluateModelOnce((Classifier)classifier, 
-			data.instance(i));
+      evaluateModelOnce((Classifier)classifier,data.instance(i));
     }
   }
   
@@ -1180,12 +1177,13 @@ public class Evaluation implements Summarizable {
 
   /**
    * Calls toSummaryString() with no title and no complexity stats
-   *
    * @return a summary description of the classifier evaluation
    */
   public String toSummaryString() {
-
-    return toSummaryString("", false);
+    return toSummaryString("");
+  }
+  public String toSummaryString(String title){
+	return toSummaryString(title,false);
   }
 
   /**
@@ -1819,70 +1817,70 @@ public class Evaluation implements Summarizable {
   /**
    * Prints the predictions for the given dataset into a String variable.
    */
+  public String Classifications(Classifier classifier,String testFileName)throws Exception{
+	  return printClassifications(classifier,template,testFileName,-1,null);
+  }
+  public String Classifications(Classifier classifier,FileReader testReader)throws Exception{
+	  return printClassifications(classifier,template,testReader,-1,null);
+  }
+  private static String printClassifications(Classifier classifier,Instances train,String testFileName,int classIndex,Range attributesToOutput)throws Exception{
+	  if(testFileName.length()==0)return "";
+	  FileReader testReader=null;
+	  try{
+		  testReader=new FileReader(testFileName);
+	  }catch(Exception e){
+		  throw new Exception("Can't open file "+e.getMessage()+".");
+	  }
+	  return printClassifications(classifier,train,testReader,classIndex,attributesToOutput);
+  }
   private static String printClassifications(Classifier classifier, 
 					     Instances train,
-					     String testFileName,
+					     FileReader fileReader,
 					     int classIndex,
 					     Range attributesToOutput) throws Exception {
-
     StringBuffer text = new StringBuffer();
-    if (testFileName.length() != 0) {
-      BufferedReader testReader = null;
-      try {
-	testReader = new BufferedReader(new FileReader(testFileName));
-      } catch (Exception e) {
-	throw new Exception("Can't open file " + e.getMessage() + '.');
-      }
-      Instances test = new Instances(testReader, 1);
-      if (classIndex != -1) {
-	test.setClassIndex(classIndex - 1);
-      } else {
-	test.setClassIndex(test.numAttributes() - 1);
-      }
-      int i = 0;
-      while (test.readInstance(testReader)) {
-	Instance instance = test.instance(0);    
-	Instance withMissing = (Instance)instance.copy();
-	withMissing.setDataset(test);
-	double predValue = 
-	  ((Classifier)classifier).classifyInstance(withMissing);
-	if (test.classAttribute().isNumeric()) {
-	  if (Instance.isMissingValue(predValue)) {
-	    text.append(i + " missing ");
-	  } else {
-	    text.append(i + " " + predValue + " ");
-	  }
-	  if (instance.classIsMissing()) {
-	    text.append("missing");
-	  } else {
-	    text.append(instance.classValue());
-	  }
-	  text.append(" " + attributeValuesString(withMissing, attributesToOutput) + "\n");
-	} else {
-	  if (Instance.isMissingValue(predValue)) {
-	    text.append(i + " missing ");
-	  } else {
-	    text.append(i + " "
-	      	  + test.classAttribute().value((int)predValue) + " ");
-	  }
-	  if (classifier instanceof DistributionClassifier) {
-	    if (Instance.isMissingValue(predValue)) {
-	      text.append("missing ");
-	    } else {
-	      text.append(((DistributionClassifier)classifier).
-	      	    distributionForInstance(withMissing)
-	      	    [(int)predValue]+" ");
-	    }
-	  }
-	  text.append(instance.toString(instance.classIndex()) + " "
-		      + attributeValuesString(withMissing, attributesToOutput) + "\n");
+	BufferedReader testReader=new BufferedReader(fileReader);
+	Instances test=new Instances(testReader,1);
+	if(classIndex!=-1)test.setClassIndex(classIndex-1);
+	else test.setClassIndex(-1);
+	int i=0;
+	while(test.readInstance(testReader)){
+		Instance instance=test.instance(0);    
+		Instance withMissing=(Instance)instance.copy();
+		withMissing.setDataset(test);
+		double predValue=((Classifier)classifier).classifyInstance(withMissing);
+		if(test.classAttribute().isNumeric()){
+			if(Instance.isMissingValue(predValue)){
+				text.append(i+" missing ");
+			}else{
+				text.append(i+" "+predValue+" ");
+			}
+			if(instance.classIsMissing()){
+				text.append("missing");
+			}else{
+				text.append(instance.classValue());
+			}
+			text.append(" "+attributeValuesString(withMissing, attributesToOutput)+"\n");
+		}else{
+			if(Instance.isMissingValue(predValue)){
+				text.append(i+" missing ");
+			}else{
+				text.append(i+" "+test.classAttribute().value((int)predValue)+" ");
+			}
+			if(classifier instanceof DistributionClassifier){
+				if(Instance.isMissingValue(predValue)){
+					text.append("missing ");
+				}else{
+					text.append(((DistributionClassifier)classifier).distributionForInstance(withMissing)[(int)predValue]+" ");
+    			}
+			}
+			text.append(instance.toString(instance.classIndex())+" "+attributeValuesString(withMissing,attributesToOutput)+"\n");
+		}
+		test.delete(0);
+		i++;
 	}
-	test.delete(0);
-	i++;
-      }
-      testReader.close();
-    }
-    return text.toString();
+	testReader.close();
+	return text.toString();
   }
 
   /**

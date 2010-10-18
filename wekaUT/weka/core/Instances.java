@@ -937,6 +937,7 @@ public class Instances implements Serializable {
     if (classIndex >= numAttributes()) {
       throw new IllegalArgumentException("Invalid class index: " + classIndex);
     }
+	if(classIndex<0)classIndex+=numAttributes();
     m_ClassIndex = classIndex;
   }
   public final void setClassIndex(Integer classIndex){

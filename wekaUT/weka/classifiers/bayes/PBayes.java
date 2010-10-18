@@ -11,7 +11,7 @@ import weka.core.*;
 import weka.estimators.*;
 
 public class PBayes extends NaiveBayes{
-	String Prob;
+	public String Prob;
 	double [] m_probs;
   /**
    * Generates the classifier.
