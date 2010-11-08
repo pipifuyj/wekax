@@ -10,12 +10,12 @@ import weka.clusterers.initializers.*;
 
 public class NaiveKMeans extends Clusterer implements OptionHandler{
 	private Instances instances;
-    private Metric metric=new Euclidean();
+    public Metric metric=new Euclidean();
 	private ReplaceMissingValues replaceMissingValues;
-	private int K=2;
+	public int K=2;
     private ArrayList [] clusters;
-	private Instances centroids;
-    private Instances [] instanceses;
+	public Instances centroids;
+    public Instances [] instanceses;
 	private int [] assignments;
     private Initializer initializer=new RandomInitializer();
 	
@@ -24,8 +24,10 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		replaceMissingValues.setInputFormat(data);
 		instances=Filter.useFilter(data,replaceMissingValues);
         metric.buildMetric(data);
+		if(centroids.numInstances()==0){
         initializer.setClusterer(this);
         centroids=initializer.initialize();
+		}
         instanceses=new Instances[K];
         clusters=new ArrayList[K];
 		assignments=new int[instances.numInstances()];
@@ -48,11 +50,12 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 					assignments[i]=assignment;
 				}
 			}
-            printClusters();
 			centroids=new Instances(instances,0);
 			for(int i=0;i<K;i++){
 				centroids.add(instanceses[i].mean());
+				System.out.print(instanceses[i].numInstances()+"\t");
 			}
+			System.out.println();
             loop++;
 		}
         evaluate();
@@ -92,14 +95,6 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
         }
     }
     
-    public void printClusters(){
-        for(int i=0;i<K;i++){
-            System.out.println("Cluster "+i+":");
-            System.out.println("\tcentroid: "+centroids.instance(i));
-            System.out.println("\tconsists of "+instanceses[i].numInstances()+" instances");
-        }
-    }
-	
 	public int clusterInstance(Instance instance) throws Exception{
 		double min=Integer.MAX_VALUE;
 		int assignment=0;
