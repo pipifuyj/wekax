@@ -18,6 +18,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
     public Instances [] instanceses;
 	private int [] assignments;
     private Initializer initializer=new RandomInitializer();
+	public boolean doEvaluate=true;
 	
 	public void buildClusterer(Instances data) throws Exception{
 		replaceMissingValues=new ReplaceMissingValues();
@@ -58,7 +59,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 			System.out.println();
             loop++;
 		}
-        evaluate();
+		if(doEvaluate)evaluate();
 	}
     
     public void evaluate() throws Exception{

@@ -160,6 +160,16 @@ public class Instances implements Serializable {
   public Instances(String name){
 	  this(name,new FastVector());
   }
+  public Instances copy(){
+	  Instances instances=new Instances(this,0);
+	  Instance instance;
+	  for(int i=0,ii=numInstances();i<ii;i++){
+		  instance=instance(i).deepcopy();
+		  instance.setDataset(instances);
+		  instances.m_Instances.addElement(instance);
+	  }
+	  return instances;
+  }
  
   /**
    * Create a copy of the structure, but "cleanse" string types (i.e.

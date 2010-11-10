@@ -239,6 +239,11 @@ public class Instance implements Copyable, Serializable {
     result.m_Dataset = m_Dataset;
     return result;
   }
+  public Instance deepcopy(){
+	  Instance instance=new Instance(m_Weight,toDoubleArray());
+	  instance.m_Dataset=m_Dataset;
+	  return instance;
+  }
 
   /**
    * Returns the dataset this instance has access to. (ie. obtains
