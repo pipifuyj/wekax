@@ -72,6 +72,9 @@ public abstract class Clusterer implements Cloneable, Serializable {
    * successfully
    */
   public abstract int numberOfClusters() throws Exception;
+  public double [] getAssignments(){
+	  return null;
+  }
 
   /**
    * Creates a new instance of a clusterer given it's class name and

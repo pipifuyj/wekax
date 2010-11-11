@@ -11,6 +11,7 @@ import weka.clusterers.initializers.*;
 public class NaiveKMeans extends Clusterer implements OptionHandler{
 	private Instances instances;
     public Metric metric=new Euclidean();
+	public boolean metricBuilt=true;
 	private ReplaceMissingValues replaceMissingValues;
 	public int K=2;
     private ArrayList [] clusters;
@@ -24,7 +25,6 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		replaceMissingValues=new ReplaceMissingValues();
 		replaceMissingValues.setInputFormat(data);
 		instances=Filter.useFilter(data,replaceMissingValues);
-        metric.buildMetric(data);
 		if(centroids.numInstances()==0){
         initializer.setClusterer(this);
         centroids=initializer.initialize();
@@ -32,25 +32,10 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
         instanceses=new Instances[K];
         clusters=new ArrayList[K];
 		assignments=new int[instances.numInstances()];
-		boolean done=false;
         int loop=0;
-		while(!done){
+		while(true){
             System.out.println("===***=== "+loop+" ===***===");
-			done=true;
-			for(int i=0;i<K;i++){
-				instanceses[i]=new Instances(instances,0);
-                clusters[i]=new ArrayList();
-			}
-			for(int i=0;i<instances.numInstances();i++){
-				Instance instance=instances.instance(i);
-				int assignment=clusterInstance(instance);
-				instanceses[assignment].add(instance);
-                clusters[assignment].add(new Integer(i));
-				if(assignment!=assignments[i]){
-					done=false;
-					assignments[i]=assignment;
-				}
-			}
+			if(clusterInstances())break;
 			centroids=new Instances(instances,0);
 			for(int i=0;i<K;i++){
 				centroids.add(instanceses[i].mean());
@@ -108,6 +93,25 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 		}
 		return assignment;
 	}
+
+	public boolean clusterInstances()throws Exception{
+		for(int i=0;i<K;i++){
+			instanceses[i]=new Instances(instances,0);
+			clusters[i]=new ArrayList();
+		}
+		boolean done=true;
+		for(int i=0;i<instances.numInstances();i++){
+			Instance instance=instances.instance(i);
+			int assignment=clusterInstance(instance);
+			instanceses[assignment].add(instance);
+			clusters[assignment].add(new Integer(i));
+			if(assignment!=assignments[i]){
+				done=false;
+				assignments[i]=assignment;
+			}
+		}
+		return done;
+	}
     
     public Instances getCluster(int clusterId){
         return instanceses[clusterId];
@@ -115,6 +119,12 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	
 	public int numberOfClusters() throws Exception{
 		return K;
+	}
+
+	public double [] getAssignments(){
+		double[] array=new double[assignments.length];
+		for(int i=0;i<assignments.length;i++)array[i]=assignments[i];
+		return array;
 	}
     
     public Instances getInstances(){
@@ -142,6 +152,7 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
         string=Utils.getOption('M',options);
         if(string.length()!=0){
             metric=(Metric)Utils.forName(Metric.class,string,options);
+			metricBuilt=false;
         }
         string=Utils.getOption('I',options);
         if(string.length()!=0){

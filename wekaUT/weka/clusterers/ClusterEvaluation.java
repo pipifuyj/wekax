@@ -166,11 +166,17 @@ public class ClusterEvaluation {
    * is EM.
    */
   public ClusterEvaluation () {
+	  this(new EM());
+  }
+  public ClusterEvaluation(Clusterer clusterer){
+	  this(clusterer,null);
+  }
+  public ClusterEvaluation(Clusterer clusterer,Instances instances){
     setFolds(10);
     setDoXval(false);
     setSeed(1);
-    setClusterer(new EM());
-    m_trainInstances = null;
+    setClusterer(clusterer);
+    m_trainInstances=instances;
     m_clusteringResults = new StringBuffer();
     m_clusterAssignments = null;
   }
@@ -299,6 +305,13 @@ public class ClusterEvaluation {
     }
   }
 
+  public static String evaluateClusterer(Clusterer clusterer,Instances instances)throws Exception{
+	  ClusterEvaluation ce=new ClusterEvaluation(clusterer,instances);
+	  ce.m_numClusters=ce.m_Clusterer.numberOfClusters();
+	  ce.m_clusterAssignments=ce.m_Clusterer.getAssignments();
+	  ce.evaluateClustersWithRespectToClass();
+	  return ce.clusterResultsToString();
+  }
   /**
    * Evaluates cluster assignments with respect to actual class labels.
    * Assumes that m_Clusterer has been trained and tested on 
@@ -306,8 +319,10 @@ public class ClusterEvaluation {
    * @param inst the instances (including class) to evaluate with respect to
    * @exception Exception if something goes wrong
    */
-  private void evaluateClustersWithRespectToClass(Instances inst)
-    throws Exception {
+  public void evaluateClustersWithRespectToClass()throws Exception{
+	  evaluateClustersWithRespectToClass(m_trainInstances);
+  }
+  public void evaluateClustersWithRespectToClass(Instances inst)throws Exception{
     int numClasses = inst.classAttribute().numValues();
     int [][] counts = new int [m_numClusters][numClasses];
     int [] clusterTotals = new int[m_numClusters];
@@ -404,9 +419,10 @@ public class ClusterEvaluation {
    * @param inst the training instances (with class)
    * @exception Exception if matrix can't be generated
    */
-  private String toMatrixString(int [][] counts, int [] clusterTotals,
-				Instances inst) 
-    throws Exception {
+  public String toMatrixString(int [][] counts,int [] clusterTotals)throws Exception{
+	  return toMatrixString(counts,clusterTotals,m_trainInstances);
+  }
+  public String toMatrixString(int [][] counts,int [] clusterTotals,Instances inst)throws Exception{
     StringBuffer ms = new StringBuffer();
 
     int maxval = 0;
