@@ -7,7 +7,7 @@ import  weka.clusterers.*;
 
 public class RandomInitializer extends Initializer{
     public Instances initialize() throws Exception{
-        Instances instances=clusterer.getInstances();
+        Instances instances=clusterer.instances;
         Instances centroids=new Instances(instances,0);
 		Random random=new Random();
 		boolean [] selected=new boolean[instances.numInstances()];

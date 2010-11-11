@@ -12,8 +12,8 @@ public class FurthestInitializer extends Initializer{
     boolean [] selected;
     public void setClusterer(Clusterer clusterer) throws Exception{
         super.setClusterer(clusterer);
-        instances=clusterer.getInstances();
-        metric=clusterer.fetchMetric();
+        instances=clusterer.instances;
+        metric=clusterer.metric;
 		selected=new boolean[instances.numInstances()];
     }
     public Instances initialize() throws Exception{

@@ -1,6 +1,5 @@
 package weka.clusterers;
 
-import java.io.*;
 import java.util.*;
 import weka.core.*;
 import weka.core.metrics.*;
@@ -9,15 +8,8 @@ import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 import weka.clusterers.initializers.*;
 
 public class NaiveKMeans extends Clusterer implements OptionHandler{
-	private Instances instances;
-    public Metric metric=new Euclidean();
 	public boolean metricBuilt=true;
 	private ReplaceMissingValues replaceMissingValues;
-	public int K=2;
-    private ArrayList [] clusters;
-	public Instances centroids;
-    public Instances [] instanceses;
-	private int [] assignments;
     private Initializer initializer=new RandomInitializer();
 	public boolean doEvaluate=true;
 	
@@ -79,60 +71,6 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
                 }
             }
         }
-    }
-    
-	public int clusterInstance(Instance instance) throws Exception{
-		double min=Integer.MAX_VALUE;
-		int assignment=0;
-		for(int i=0;i<K;i++){
-			double d=metric.distance(instance,centroids.instance(i));
-			if(d<min){
-				min=d;
-				assignment=i;
-			}
-		}
-		return assignment;
-	}
-
-	public boolean clusterInstances()throws Exception{
-		for(int i=0;i<K;i++){
-			instanceses[i]=new Instances(instances,0);
-			clusters[i]=new ArrayList();
-		}
-		boolean done=true;
-		for(int i=0;i<instances.numInstances();i++){
-			Instance instance=instances.instance(i);
-			int assignment=clusterInstance(instance);
-			instanceses[assignment].add(instance);
-			clusters[assignment].add(new Integer(i));
-			if(assignment!=assignments[i]){
-				done=false;
-				assignments[i]=assignment;
-			}
-		}
-		return done;
-	}
-    
-    public Instances getCluster(int clusterId){
-        return instanceses[clusterId];
-    }
-	
-	public int numberOfClusters() throws Exception{
-		return K;
-	}
-
-	public double [] getAssignments(){
-		double[] array=new double[assignments.length];
-		for(int i=0;i<assignments.length;i++)array[i]=assignments[i];
-		return array;
-	}
-    
-    public Instances getInstances(){
-        return instances;
-    }
-    
-    public Metric fetchMetric(){
-        return metric;
     }
 	
 	public Enumeration listOptions(){

@@ -23,9 +23,9 @@
 package weka.clusterers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.FastVector;
 import weka.core.SerializedObject;
 import weka.core.Utils;
 import weka.core.metrics.*;
@@ -39,6 +39,13 @@ import weka.core.metrics.*;
  */
 public abstract class Clusterer implements Cloneable, Serializable {
 
+    public Instances [] instanceses;
+    public int K=2;
+    public Instances instances;
+    public ArrayList [] clusters;
+    public int [] assignments;
+    public Metric metric=new Euclidean();
+    public Instances centroids;
   // ===============
   // Public methods.
   // ===============
@@ -62,8 +69,36 @@ public abstract class Clusterer implements Cloneable, Serializable {
    * @exception Exception if instance could not be classified
    * successfully
    */
-  public abstract int clusterInstance(Instance instance) throws Exception; 
-
+  public int clusterInstance(Instance instance)throws Exception{
+      double min=Integer.MAX_VALUE;
+      int assignment=0;
+      for(int i=0;i<K;i++){
+          double d=metric.distance(instance,centroids.instance(i));
+          if(d<min){
+              min=d;
+              assignment=i;
+          }
+      }
+      return assignment;
+  }
+  public boolean clusterInstances()throws Exception{
+      for(int i=0;i<K;i++){
+          instanceses[i]=new Instances(instances,0);
+          clusters[i]=new ArrayList();
+      }
+      boolean done=true;
+      for(int i=0;i<instances.numInstances();i++){
+          Instance instance=instances.instance(i);
+          int assignment=clusterInstance(instance);
+          instanceses[assignment].add(instance);
+          clusters[assignment].add(new Integer(i));
+          if(assignment!=assignments[i]){
+              done=false;
+              assignments[i]=assignment;
+          }
+      }
+      return done;
+  }
   /**
    * Returns the number of clusters.
    *
@@ -71,9 +106,13 @@ public abstract class Clusterer implements Cloneable, Serializable {
    * @exception Exception if number of clusters could not be returned
    * successfully
    */
-  public abstract int numberOfClusters() throws Exception;
+  public int numberOfClusters() throws Exception{
+      return K;
+  }
   public double [] getAssignments(){
-	  return null;
+      double[] array=new double[assignments.length];
+      for(int i=0;i<assignments.length;i++)array[i]=assignments[i];
+      return array;
   }
 
   /**
@@ -118,28 +157,6 @@ public abstract class Clusterer implements Cloneable, Serializable {
       clusterers[i] = (Clusterer) so.getObject();
     }
     return clusterers;
-  }
-  
-  /**
-  Initializer need these methods, and these should be overwritten.
-  */
-  public Instances getInstances(){
-      return new Instances("Instances",new FastVector(),0);
-  }
-  public Metric fetchMetric(){
-      return new Euclidean();
-  }
-  public Instances getCluster(int clusterId) throws Exception{
-      Instances instances=getInstances();
-      Instances cluster=new Instances(instances,0);
-      Instance instance;
-      for(int i=0,ii=instances.numInstances();i<ii;i++){
-          instance=instances.instance(i);
-          if(clusterId==clusterInstance(instances.instance(i))){
-              cluster.add(instance);
-          }
-      }
-      return cluster;
   }
 }
 
