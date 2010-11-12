@@ -29,6 +29,7 @@ import weka.core.Instances;
 import weka.core.SerializedObject;
 import weka.core.Utils;
 import weka.core.metrics.*;
+import weka.clusterers.ClusterEvaluation;
 
 
 /** 
@@ -45,7 +46,7 @@ public abstract class Clusterer implements Cloneable, Serializable {
     public ArrayList [] clusters;
     public int [] assignments;
     public Metric metric=new Euclidean();
-    public Instances centroids;
+    public Instances centroids=new Instances("Centroids");
   // ===============
   // Public methods.
   // ===============
@@ -60,6 +61,9 @@ public abstract class Clusterer implements Cloneable, Serializable {
    */
   public abstract void buildClusterer(Instances data) throws Exception;
 
+  public void evaluate()throws Exception{
+      ClusterEvaluation.evaluateClusterer(this);
+  }
   /**
    * Classifies a given instance.
    *

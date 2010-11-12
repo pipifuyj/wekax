@@ -304,7 +304,9 @@ public class ClusterEvaluation {
       evaluateClustersWithRespectToClass(test);
     }
   }
-
+  public static String evaluateClusterer(Clusterer clusterer)throws Exception{
+      return evaluateClusterer(clusterer,clusterer.instances);
+  }
   public static String evaluateClusterer(Clusterer clusterer,Instances instances)throws Exception{
 	  ClusterEvaluation ce=new ClusterEvaluation(clusterer,instances);
 	  ce.m_numClusters=ce.m_Clusterer.numberOfClusters();
@@ -323,27 +325,28 @@ public class ClusterEvaluation {
 	  evaluateClustersWithRespectToClass(m_trainInstances);
   }
   public void evaluateClustersWithRespectToClass(Instances inst)throws Exception{
-    int numClasses = inst.classAttribute().numValues();
+    Attribute classAttribute=inst.classAttribute();
+    int numInstances=inst.numInstances();
+    int numClasses=classAttribute.numValues();
     int [][] counts = new int [m_numClusters][numClasses];
     int [] clusterTotals = new int[m_numClusters];
     int [] classTotals=new int[numClasses];
     double [] best = new double[m_numClusters+1];
     double [] current = new double[m_numClusters+1];
 
-    for (int i = 0; i < inst.numInstances(); i++) {
-      counts[(int)m_clusterAssignments[i]][(int)inst.instance(i).classValue()]++;
+    for (int i = 0; i < numInstances; i++) {
+      int classValue=(int)inst.instance(i).classValue();
+      counts[(int)m_clusterAssignments[i]][classValue]++;
       clusterTotals[(int)m_clusterAssignments[i]]++;
-      classTotals[(int)inst.instance(i).classValue()]++;
+      classTotals[classValue]++;
     }
     
     best[m_numClusters] = Double.MAX_VALUE;
     mapClasses(0, counts, clusterTotals, current, best, 0);
 
-    m_clusteringResults.append("\n\nClass attribute: "
-			+inst.classAttribute().name()
-			+"\n");
+    m_clusteringResults.append("\n\nClass attribute: "+classAttribute.name()+"\n");
     m_clusteringResults.append("Classes to Clusters:\n");
-    String matrixString = toMatrixString(counts, clusterTotals, inst);
+    String matrixString=toMatrixString(counts,clusterTotals,classAttribute);
     m_clusteringResults.append(matrixString).append("\n");
 
     int Cwidth = 1 + (int)(Math.log(m_numClusters) / Math.log(10));
@@ -357,15 +360,14 @@ public class ClusterEvaluation {
 	if (best[i] < 0) {
 	  m_clusteringResults.append("No class\n");
 	} else {
-	  m_clusteringResults.
-	    append(inst.classAttribute().value((int)best[i])).append("\n");
+	  m_clusteringResults.append(classAttribute.value((int)best[i])).append("\n");
 	}
       }
     }
     m_clusteringResults.append("\nIncorrectly clustered instances :\t"
 			       +best[m_numClusters]+"\t"
 			       +(Utils.doubleToString((best[m_numClusters] / 
-						       inst.numInstances() * 
+						       numInstances * 
 						       100.0), 8, 4))
 			       +" %\n");
     
@@ -379,7 +381,7 @@ public class ClusterEvaluation {
     double [] Fs=new double[numClasses];
     double E=0,P=0,F=0,H1=0,H2=0,NMI;
     for(int i=0;i<m_numClusters;i++){
-        p1[i]=(double)clusterTotals[i]/inst.numInstances();
+        p1[i]=(double)clusterTotals[i]/numInstances;
         for(int j=0;j<numClasses;j++){
             if(counts[i][j]==0){
                 p[i][j]=r[i][j]=0;
@@ -398,7 +400,7 @@ public class ClusterEvaluation {
         H1+=-p1[i]*Math.log(p1[i])/Math.log(2);
     }
     for(int j=0;j<numClasses;j++){
-        p2[j]=(double)classTotals[j]/inst.numInstances();
+        p2[j]=(double)classTotals[j]/numInstances;
         F+=p2[j]*Fs[j];
         H2+=-p2[j]*Math.log(p2[j])/Math.log(2);
     }
@@ -422,7 +424,10 @@ public class ClusterEvaluation {
   public String toMatrixString(int [][] counts,int [] clusterTotals)throws Exception{
 	  return toMatrixString(counts,clusterTotals,m_trainInstances);
   }
-  public String toMatrixString(int [][] counts,int [] clusterTotals,Instances inst)throws Exception{
+  public String toMatrixString(int[][] counts,int[] clusterTotals,Instances inst)throws Exception{
+      return toMatrixString(counts,clusterTotals,inst.classAttribute());
+  }
+  public String toMatrixString(int[][] counts,int[] clusterTotals,Attribute classAttribute)throws Exception{
     StringBuffer ms = new StringBuffer();
 
     int maxval = 0;
@@ -454,7 +459,7 @@ public class ClusterEvaluation {
 						     Cwidth, 0));
 	}
       }
-      ms.append(" | ").append(inst.classAttribute().value(i)).append("\n");
+      ms.append(" | ").append(classAttribute.value(i)).append("\n");
     }
 
     return ms.toString();

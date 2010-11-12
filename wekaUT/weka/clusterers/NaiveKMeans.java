@@ -40,6 +40,8 @@ public class NaiveKMeans extends Clusterer implements OptionHandler{
 	}
     
     public void evaluate() throws Exception{
+        super.evaluate();
+        if(!doEvaluate)return;
         for(int i=0,I;i<K;i++){
             System.out.println("Cluster "+i+":");
             I=instanceses[i].numInstances();
