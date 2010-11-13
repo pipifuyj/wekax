@@ -23,12 +23,12 @@
 package weka.clusterers;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.SerializedObject;
-import weka.core.Utils;
+import java.util.*;
+import weka.core.*;
 import weka.core.metrics.*;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.ReplaceMissingValues;
+import weka.clusterers.initializers.*;
 import weka.clusterers.ClusterEvaluation;
 
 
@@ -38,15 +38,17 @@ import weka.clusterers.ClusterEvaluation;
  * @author Mark Hall (mhall@cs.waikato.ac.nz)
  * @version $Revision: 1.1.1.1 $
  */
-public abstract class Clusterer implements Cloneable, Serializable {
+public abstract class Clusterer implements Cloneable, Serializable,OptionHandler{
 
     public Instances [] instanceses;
-    public int K=2;
+    public int K=0;
     public Instances instances;
     public ArrayList [] clusters;
     public int [] assignments;
     public Metric metric=new Euclidean();
     public Instances centroids=new Instances("Centroids");
+	public Initializer initializer=new RandomInitializer();
+	public Filter filter=new ReplaceMissingValues();
   // ===============
   // Public methods.
   // ===============
@@ -59,10 +61,38 @@ public abstract class Clusterer implements Cloneable, Serializable {
    * @exception Exception if the clusterer has not been 
    * generated successfully
    */
-  public abstract void buildClusterer(Instances data) throws Exception;
+  public void buildClusterer(Instances instances)throws Exception{
+	if(filter instanceof Filter){
+		filter.setInputFormat(instances);
+		instances=Filter.useFilter(instances,filter);
+	}
+	this.instances=instances;
+	metric.build(instances);
+	if(centroids.numInstances()==0){
+		initializer.setClusterer(this);
+		centroids=initializer.initialize();
+	}
+	instanceses=new Instances[K];
+	clusters=new ArrayList[K];
+	assignments=new int[instances.numInstances()];
+	int loop=0;
+	while(true){
+		System.out.println("===***=== "+loop+" ===***===");
+		if(clusterInstances(instances))break;
+		clusterCentroids();
+		for(int i=0;i<K;i++){
+			System.out.print(instanceses[i].numInstances()+"\t");
+		}
+		System.out.println();
+		loop++;
+	}
+  }
+  public void buildClusterer()throws Exception{
+	  buildClusterer(instances);
+  }
 
-  public void evaluate()throws Exception{
-      ClusterEvaluation.evaluateClusterer(this);
+  public String evaluate()throws Exception{
+      return ClusterEvaluation.evaluateClusterer(this);
   }
   /**
    * Classifies a given instance.
@@ -86,6 +116,9 @@ public abstract class Clusterer implements Cloneable, Serializable {
       return assignment;
   }
   public boolean clusterInstances()throws Exception{
+      return clusterInstances(instances);
+  }
+  public boolean clusterInstances(Instances instances)throws Exception{
       for(int i=0;i<K;i++){
           instanceses[i]=new Instances(instances,0);
           clusters[i]=new ArrayList();
@@ -102,6 +135,10 @@ public abstract class Clusterer implements Cloneable, Serializable {
           }
       }
       return done;
+  }
+  public void clusterCentroids(){
+      centroids=new Instances(instances,0);
+      for(int i=0;i<K;i++)centroids.add(instanceses[i].meanOrMode());
   }
   /**
    * Returns the number of clusters.
@@ -132,11 +169,8 @@ public abstract class Clusterer implements Cloneable, Serializable {
    * @exception Exception if the clusterer class name is invalid, or the 
    * options supplied are not acceptable to the clusterer.
    */
-  public static Clusterer forName(String clustererName,
-				  String [] options) throws Exception {
-    return (Clusterer)Utils.forName(Clusterer.class,
-				    clustererName,
-				    options);
+  public static Clusterer forName(String clustererName,String[] options)throws Exception{
+    return (Clusterer)Utils.forName(Clusterer.class,clustererName,options);
   }
 
   /**
@@ -150,17 +184,41 @@ public abstract class Clusterer implements Cloneable, Serializable {
    * @return an array of clusterers.
    * @exception Exception if an error occurs 
    */
-  public static Clusterer [] makeCopies(Clusterer model,
-					int num) throws Exception {
-     if (model == null) {
-      throw new Exception("No model clusterer set");
-    }
-    Clusterer [] clusterers = new Clusterer [num];
-    SerializedObject so = new SerializedObject(model);
-    for(int i = 0; i < clusterers.length; i++) {
-      clusterers[i] = (Clusterer) so.getObject();
+  public static Clusterer[] makeCopies(Clusterer model,int num)throws Exception{
+	if(model==null)throw new Exception("No model clusterer set");
+    Clusterer[] clusterers=new Clusterer[num];
+    SerializedObject so=new SerializedObject(model);
+    for(int i=0;i<clusterers.length;i++){
+      clusterers[i]=(Clusterer)so.getObject();
     }
     return clusterers;
+  }
+  public Enumeration listOptions(){
+	Vector vector=new Vector(3);
+	vector.addElement(new Option("\tnumber of clusters.","N",1,"-N <num>"));
+	vector.addElement(new Option("\tmetric.\tdefault=weka.core.metrics.Euclidean","M",1,"-M <metric class>"));
+	vector.addElement(new Option("\tinitializer.\tdefault=weka.clusters.initializers.RandomInitializer","I",1,"-I <initializer class>"));
+	return vector.elements();
+  }
+  public void setOptions(String [] options) throws Exception{
+	String string;
+	string=Utils.getOption('N',options);
+	if(string.length()!=0)K=Integer.parseInt(string);
+	string=Utils.getOption('M',options);
+	if(string.length()!=0)metric=(Metric)Utils.forName(Metric.class,string,options);
+	string=Utils.getOption('I',options);
+	if(string.length()!=0)initializer=(Initializer)Utils.forName(Initializer.class,string,options);
+  }
+  public String [] getOptions(){
+	String [] options=new String[6];
+	int current=0;
+	options[current++]="-N";
+	options[current++]=Integer.toString(K);
+	options[current++]="-M";
+	options[current++]=metric.getClass().getName();
+	options[current++]="-I";
+	options[current++]=initializer.getClass().getName();
+	return options;
   }
 }
 

@@ -832,7 +832,7 @@ public class Instance implements Copyable, Serializable {
     return m_AttValues[attIndex];
   }
   public double valueSparse(int indexOfIndex) {
-	  return value(indexOfIndex);
+	return m_AttValues[indexOfIndex];
   }
   public double value(Attribute att) {
     return value(att.index());

@@ -75,6 +75,9 @@ public abstract class Metric implements Cloneable, Serializable {
    * @param data instances that the metric will be used on
    */
   public abstract void buildMetric(Instances data) throws Exception;
+  public void build(Instances data)throws Exception{
+	  buildMetric(data);
+  }
     
   /**
    * Specifies a list of attributes which will be used by the metric

@@ -681,6 +681,14 @@ public class Instances implements Serializable {
       return classAttribute().numValues();
     }
   }
+  public final String[] classes(){
+      return classAttribute().values();
+  }
+  public final double[] allClasses(){
+    double[] classes=new double[numInstances()];
+    for(int i=0;i<classes.length;i++)classes[i]=instance(i).classValue();
+    return classes;
+  }
 
   /**
    * Returns the number of distinct values of a given attribute.

@@ -7,10 +7,7 @@ import weka.core.*;
 public class DotP extends Metric{  
    public void buildMetric(int numAttributes) throws Exception{
        m_numAttributes=numAttributes;
-       m_attrIdxs=new int[numAttributes];
-       for(int i = 0;i< numAttributes;i++){
-           m_attrIdxs[i]=i;
-       }
+       System.out.println("About to build metric with "+m_numAttributes+" attributes");
    }
    
    public void buildMetric(int numAttributes, String[] options) throws Exception{
@@ -21,7 +18,6 @@ public class DotP extends Metric{
        m_numAttributes=data.numAttributes();
        m_classIndex=data.classIndex();
        if(m_classIndex!=-1)m_numAttributes--;
-       System.out.println("About to build metric with " +m_numAttributes+ " attributes");
        buildMetric(m_numAttributes);
    }
   

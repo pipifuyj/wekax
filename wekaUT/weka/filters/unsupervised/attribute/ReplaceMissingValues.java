@@ -24,8 +24,6 @@
 package weka.filters.unsupervised.attribute;
 
 import weka.filters.*;
-import java.io.*;
-import java.util.*;
 import weka.core.*;
 
 /** 
@@ -35,8 +33,7 @@ import weka.core.*;
  * @author Eibe Frank (eibe@cs.waikato.ac.nz) 
  * @version $Revision: 1.1.1.1 $
  */
-public class ReplaceMissingValues extends Filter
-  implements UnsupervisedFilter {
+public class ReplaceMissingValues extends Filter implements UnsupervisedFilter{
 
   /** The modes and means */
   private double[] m_ModesAndMeans = null;
@@ -51,9 +48,7 @@ public class ReplaceMissingValues extends Filter
    * @exception Exception if the input format can't be set 
    * successfully
    */
-  public boolean setInputFormat(Instances instanceInfo) 
-       throws Exception {
-
+  public boolean setInputFormat(Instances instanceInfo)throws Exception{
     super.setInputFormat(instanceInfo);
     setOutputFormat(instanceInfo);
     m_ModesAndMeans = null;
@@ -69,8 +64,7 @@ public class ReplaceMissingValues extends Filter
    * collected with output().
    * @exception IllegalStateException if no input format has been set.
    */
-  public boolean input(Instance instance) {
-
+  public boolean input(Instance instance){
     if (getInputFormat() == null) {
       throw new IllegalStateException("No input instance format defined");
     }
@@ -95,68 +89,59 @@ public class ReplaceMissingValues extends Filter
    * @return true if there are instances pending output
    * @exception IllegalStateException if no input structure has been defined
    */
-  public boolean batchFinished() {
-
-    if (getInputFormat() == null) {
-      throw new IllegalStateException("No input instance format defined");
-    }
-
+  public boolean batchFinished(){
+    if(getInputFormat()==null)throw new IllegalStateException("No input instance format defined");
     if (m_ModesAndMeans == null) {
       // Compute modes and means
-      double sumOfWeights =  getInputFormat().sumOfWeights();
-      double[][] counts = new double[getInputFormat().numAttributes()][];
-      for (int i = 0; i < getInputFormat().numAttributes(); i++) {
-	if (getInputFormat().attribute(i).isNominal()) {
-	  counts[i] = new double[getInputFormat().attribute(i).numValues()];
-	  counts[i][0] = sumOfWeights;
+      double sumOfWeights=inputFormat.sumOfWeights();
+      int numAttributes=inputFormat.numAttributes();
+      double[][] counts = new double[numAttributes][];
+      double[] sums = new double[numAttributes];
+      for(int i=0;i<numAttributes;i++){
+	sums[i] = sumOfWeights;
+	if(inputFormat.attribute(i).isNominal()){
+	  counts[i]=new double[inputFormat.attribute(i).numValues()];
+	  counts[i][0]=sumOfWeights;
 	}
       }
-      double[] sums = new double[getInputFormat().numAttributes()];
-      for (int i = 0; i < sums.length; i++) {
-	sums[i] = sumOfWeights;
-      }
-      double[] results = new double[getInputFormat().numAttributes()];
-      for (int j = 0; j < getInputFormat().numInstances(); j++) {
-	Instance inst = getInputFormat().instance(j);
-	for (int i = 0; i < inst.numValues(); i++) {
-	  if (!inst.isMissingSparse(i)) {
-	    double value = inst.valueSparse(i);
-	    if (inst.attributeSparse(i).isNominal()) {
-	      counts[inst.index(i)][(int)value] += inst.weight();
-	      counts[inst.index(i)][0] -= inst.weight();
-	    } else if (inst.attributeSparse(i).isNumeric()) {
-	      results[inst.index(i)] += inst.weight() * inst.valueSparse(i);
+      double[] results=new double[numAttributes];
+      for(int j=0;j<inputFormat.numInstances();j++){
+	Instance inst=inputFormat.instance(j);
+	for(int i=0;i<inst.numValues();i++){
+	  if(!inst.isMissingSparse(i)){
+	    double value=inst.valueSparse(i);
+	    if(inst.attributeSparse(i).isNominal()){
+	      counts[inst.index(i)][(int)value]+=inst.weight();
+	      counts[inst.index(i)][0]-=inst.weight();
+	    }else if(inst.attributeSparse(i).isNumeric()){
+	      results[inst.index(i)]+=inst.weight()*inst.valueSparse(i);
 	    }
 	  } else {
-	    if (inst.attributeSparse(i).isNominal()) {
-	      counts[inst.index(i)][0] -= inst.weight();
-	    } else if (inst.attributeSparse(i).isNumeric()) {
-	      sums[inst.index(i)] -= inst.weight();
+	    if(inst.attributeSparse(i).isNominal()){
+	      counts[inst.index(i)][0]-=inst.weight();
+	    }else if(inst.attributeSparse(i).isNumeric()){
+	      sums[inst.index(i)]-=inst.weight();
 	    }
 	  }
 	}
       }
-      m_ModesAndMeans = new double[getInputFormat().numAttributes()];
-      for (int i = 0; i < getInputFormat().numAttributes(); i++) {
-	if (getInputFormat().attribute(i).isNominal()) {
-	  m_ModesAndMeans[i] = (double)Utils.maxIndex(counts[i]);
-	} else if (getInputFormat().attribute(i).isNumeric()) {
+      m_ModesAndMeans=new double[numAttributes];
+      for(int i=0;i<numAttributes;i++){
+	if(inputFormat.attribute(i).isNominal()) {
+	  m_ModesAndMeans[i]=(double)Utils.maxIndex(counts[i]);
+	}else if(getInputFormat().attribute(i).isNumeric()){
 	  if (Utils.gr(sums[i], 0)) {
-	    m_ModesAndMeans[i] = results[i] / sums[i];
+	    m_ModesAndMeans[i]=results[i]/sums[i];
 	  }
 	}
       }
-
-      // Convert pending input instances
-      for(int i = 0; i < getInputFormat().numInstances(); i++) {
-	convertInstance(getInputFormat().instance(i));
+      for(int i=0;i<inputFormat.numInstances();i++){
+	convertInstance(inputFormat.instance(i));
       }
-    } 
-    // Free memory
+    }
     flushInput();
-
     m_NewBatch = true;
-    return (numPendingOutput() != 0);
+    return numPendingOutput()!=0;
   }
 
   /**
@@ -165,8 +150,7 @@ public class ReplaceMissingValues extends Filter
    *
    * @param instance the instance to convert
    */
-  private void convertInstance(Instance instance) {
-  
+  private void convertInstance(Instance instance){
     Instance inst = null;
     if (instance instanceof SparseInstance) {
       double []vals = new double[instance.numValues()];

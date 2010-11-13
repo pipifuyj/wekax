@@ -15,10 +15,10 @@ public abstract class Initializer implements Cloneable,Serializable,OptionHandle
   }
   public void setClusterer(Clusterer clusterer) throws Exception{
       this.clusterer=clusterer;
-      this.numClusters=clusterer.numberOfClusters();
+      setNumClusters(clusterer.numberOfClusters());
   }
   public void setNumClusters(int numClusters) throws Exception{
-      this.numClusters=clusterer.numberOfClusters();
+      this.numClusters=numClusters;
   }
   public String [] getOptions(){
       String [] options=new String[0];

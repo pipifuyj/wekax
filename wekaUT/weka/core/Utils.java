@@ -3,8 +3,7 @@ package weka.core;
 import java.lang.Math;
 import java.util.StringTokenizer;
 import java.util.Properties;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 
 public final class Utils {
 	public static double log2 = Math.log(2);
@@ -242,7 +241,29 @@ public final class Utils {
     }
     return inString;
   }
- 
+  public static String toString(int[][] counts,String row,String col){
+    StringBuffer s=new StringBuffer();
+    int r=counts.length;
+    int c=counts[0].length;
+    int maxval=Utils.max(counts);
+    int Cwidth=1+Math.max((int)(Math.log(maxval)/Math.log(10)),(int)(Math.log(r)/Math.log(10)));
+    s.append("\n");
+    for(int i=0;i<r;i++)s.append(" ").append(Utils.toString(i,Cwidth));
+    s.append("  <- assigned to ").append(row).append("\n");
+    for(int i=0;i<c;i++){
+      for(int j=0;j<r;j++){
+        s.append(" ").append(Utils.toString((double)counts[j][i],Cwidth));
+      }
+      s.append(" | ").append(col).append(": ").append(i).append("\n");
+    }
+    return s.toString();
+  }
+  public static String toString(int Int,int width){
+      return toString((double)Int,width);
+  }
+  public static String toString(double Double,int width){
+      return doubleToString(Double,width,0);
+  }
   /**
    * Rounds a double and converts it into String.
    *
@@ -826,7 +847,19 @@ public final class Utils {
   public static double log2(double a) {
     return Math.log(a) / log2;
   }
-
+  public static int max(int[] values){
+      int max=values[0];
+      for(int i=1;i<values.length;i++)if(values[i]>max)max=values[i];
+      return max;
+  }
+  public static int max(int[][] values){
+      int max=max(values[0]);
+      for(int i=1;i<values.length;i++){
+          int m=max(values[i]);
+          if(m>max)max=m;
+      }
+      return max;
+  }
   /**
    * Returns index of maximum element in a given array of doubles. First maximum is returned.
    * @param doubles the array of doubles

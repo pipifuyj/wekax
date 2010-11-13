@@ -491,21 +491,16 @@ public class SparseInstance extends Instance {
 
   /**
    * Returns an instance's attribute value in internal format.
-   *
    * @param attIndex the attribute's index
    * @return the specified value as a double (If the corresponding
    * attribute is nominal (or a string) then it returns the value's index as a 
    * double).
    */
-  public double value(int attIndex) {
-
-    int index = locateIndex(attIndex);
-    if ((index >= 0) && (m_Indices[index] == attIndex)) {
-      return m_AttValues[index];
-    } else {
-      return 0.0;
-    }
-  }  
+  public double value(int attIndex){
+    int index=locateIndex(attIndex);
+    if((index>=0)&&(m_Indices[index]==attIndex))return m_AttValues[index];
+    return 0.0;
+  } 
 
   /**
    * Deletes an attribute at the given position (0 to 

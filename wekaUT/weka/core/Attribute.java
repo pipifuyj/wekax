@@ -511,6 +511,11 @@ public class Attribute implements Copyable, Serializable {
       return (String) val;
     }
   }
+  public final String[] values(){
+     String[] s=new String[numValues()];
+     for(int i=0;i<s.length;i++)s[i]=value(i);
+     return s;
+  }
   public final int index(String value){
 	  return m_Values.indexOf(value);
   }

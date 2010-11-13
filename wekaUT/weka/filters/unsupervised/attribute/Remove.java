@@ -140,34 +140,25 @@ public class Remove extends Filter
    * @return true if the outputFormat may be collected immediately
    * @exception Exception if the format couldn't be set successfully
    */
-  public boolean setInputFormat(Instances instanceInfo) throws Exception {
-
+  public boolean setInputFormat(Instances instanceInfo)throws Exception{
     super.setInputFormat(instanceInfo);
-    
     m_SelectCols.setUpper(instanceInfo.numAttributes() - 1);
-
-    // Create the output buffer
-    FastVector attributes = new FastVector();
-    int outputClass = -1;
-    m_SelectedAttributes = m_SelectCols.getSelection();
-    int inStrKeepLen = 0;
-    int [] inStrKeep = new int[m_SelectedAttributes.length];
-    for (int i = 0; i < m_SelectedAttributes.length; i++) {
+    FastVector attributes=new FastVector();
+	int inputClass=instanceInfo.classIndex(),outputClass=-1;
+    m_SelectedAttributes=m_SelectCols.getSelection();
+    int inStrKeepLen=0;
+    int[] inStrKeep=new int[m_SelectedAttributes.length];
+    for(int i=0;i<m_SelectedAttributes.length;i++){
       int current = m_SelectedAttributes[i];
-      if (instanceInfo.classIndex() == current) {
-	outputClass = attributes.size();
-      }
-      Attribute keep = (Attribute)instanceInfo.attribute(current).copy();
-      if (keep.type() == Attribute.STRING) {
-        inStrKeep[inStrKeepLen++] = current;
-      }
+      if(inputClass==current)outputClass=attributes.size();
+      Attribute keep=(Attribute)instanceInfo.attribute(current).copy();
+      if(keep.type()==Attribute.STRING)inStrKeep[inStrKeepLen++] = current;
       attributes.addElement(keep);
     }
-    m_InputStringIndex = new int [inStrKeepLen];
-    System.arraycopy(inStrKeep, 0, m_InputStringIndex, 0, inStrKeepLen);
-    Instances outputFormat = new Instances(instanceInfo.relationName(),
-					   attributes, 0); 
-    outputFormat.setClassIndex(outputClass);
+    m_InputStringIndex = new int[inStrKeepLen];
+    System.arraycopy(inStrKeep,0,m_InputStringIndex,0,inStrKeepLen);
+    Instances outputFormat=new Instances(instanceInfo.relationName(),attributes,0);
+    if(outputClass!=-1)outputFormat.setClassIndex(outputClass);
     setOutputFormat(outputFormat);
     return true;
   }
