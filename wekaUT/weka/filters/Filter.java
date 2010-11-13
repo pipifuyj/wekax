@@ -98,7 +98,7 @@ public abstract class Filter implements Serializable {
   private int [] m_InputStringAtts = null;
 
   /** The input format for instances */
-  private Instances m_InputFormat = null;
+  public Instances inputFormat = null;
 
   /** Record whether the filter is at the start of a batch */
   protected boolean m_NewBatch = true;
@@ -140,7 +140,7 @@ public abstract class Filter implements Serializable {
    */
   protected Instances getInputFormat() {
 
-    return m_InputFormat;
+    return inputFormat;
   }
 
   /**
@@ -188,9 +188,9 @@ public abstract class Filter implements Serializable {
   protected void bufferInput(Instance instance) {
 
     if (instance != null) {
-      copyStringValues(instance, m_InputFormat, m_InputStringAtts);
-      instance.setDataset(m_InputFormat);
-      m_InputFormat.add(instance);
+      copyStringValues(instance, inputFormat, m_InputStringAtts);
+      instance.setDataset(inputFormat);
+      inputFormat.add(instance);
     }
   }
 
@@ -325,10 +325,10 @@ public abstract class Filter implements Serializable {
   protected void flushInput() {
 
     if (m_InputStringAtts.length > 0) {
-      m_InputFormat = m_InputFormat.stringFreeStructure();
+      inputFormat = inputFormat.stringFreeStructure();
     } else {
-      // This more efficient than new Instances(m_InputFormat, 0);
-      m_InputFormat.delete();
+      // This more efficient than new Instances(inputFormat, 0);
+      inputFormat.delete();
     }
   }
 
@@ -347,7 +347,7 @@ public abstract class Filter implements Serializable {
    */
   public boolean setInputFormat(Instances instanceInfo) throws Exception {
 
-    m_InputFormat = instanceInfo.stringFreeStructure();
+    inputFormat = instanceInfo.stringFreeStructure();
     m_InputStringAtts = getStringIndices(instanceInfo);
     m_OutputFormat = null;
     m_OutputQueue = new Queue();
@@ -393,7 +393,7 @@ public abstract class Filter implements Serializable {
    */
   public boolean input(Instance instance) throws Exception {
 
-    if (m_InputFormat == null) {
+    if (inputFormat == null) {
       throw new NullPointerException("No input instance format defined");
     }
     if (m_NewBatch) {
@@ -420,7 +420,7 @@ public abstract class Filter implements Serializable {
    */
   public boolean batchFinished() throws Exception {
 
-    if (m_InputFormat == null) {
+    if (inputFormat == null) {
       throw new NullPointerException("No input instance format defined");
     }
     flushInput();
