@@ -21,11 +21,11 @@ class Clusterer(object):
 		for k in range(self.K):self.clusters[k]=instances[0:0]
 		for i in range(len(instances)):
 			instance=instances[i]
-			print "About to compute distances for instance %d ..."%i
 			distances=[instance-centroid for centroid in self.centroids]
 			k=distances.index(min(distances))
 			self.clusters[k].append(instance)
 			if k!=self.assignments[i]:
+				print "Assign instance %d to cluster %d"%(i,k)
 				done=False
 				self.assignments[i]=k
 		return done

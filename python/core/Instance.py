@@ -20,3 +20,12 @@ class Instance(object):
 		return self.__class__([self[i]*m for i in range(len(self))])
 	def __div__(self,d):
 		return self*(1.0/d)
+	@classmethod
+	def sum(self,instances):
+		if not instances:return self()
+		length=len(instances[0])
+		data=[0]*length
+		for instance in instances:
+			i=0
+			while i<length:data[i]+=instance[i]
+		return self(data)

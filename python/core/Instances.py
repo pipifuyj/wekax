@@ -7,8 +7,10 @@ class Instances(list):
 		self.type=type
 	def __getslice__(self,i,j):
 		return Instances(super(Instances,self).__getslice__(i,j),self.type)
+	def sum(self):
+		return self.type.sum(self)
 	def mean(self):
-		if self:return sum(self)/len(self)
+		if self:return self.sum()/len(self)
 		return self.type()
 	def sample(self,n):
 		return Instances(sample(self,n),self.type)

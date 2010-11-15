@@ -1,12 +1,12 @@
 # Copyright (C) 2010 Chuanren Liu
-from math import sqrt
-class DotP(object):
+from Metric import Metric
+class DotP(Metric):
 	def __sub__(self,other):
-		aa=bb=ab=0
-		for i in range(len(self)):
-			aa+=self[i]**2
-			bb+=other[i]**2
-			ab+=self[i]*other[i];
-		if aa==0 or bb==0:return 1
-		ab/=sqrt(aa)*sqrt(bb)
+		a=abs(self)
+		if a==0:return 1
+		b=abs(other)
+		if b==0:return 1
+		ab=0
+		for i in range(len(self)):ab+=self[i]*other[i]
+		ab/=a*b
 		return 1/(1+ab)
