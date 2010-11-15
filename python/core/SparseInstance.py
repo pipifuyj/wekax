@@ -40,6 +40,8 @@ class SparseInstance(Instance):
 		index+=list(otherIndex)
 		data+=[other.data[other.__index__(i)] for i in otherIndex]
 		return self.__class__(data,index,self.length)
+	def __mul__(self,m):
+		return self.__class__([d*m for d in self.data],self.index[:],self.length)
 	def __unicode__(self):
 		return ' '.join(["%d %f"%(self.index[i],self.data[i]) for i in range(len(self.index))])
 	@classmethod
