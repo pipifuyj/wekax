@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+from sys import argv
+from math import log
+if len(argv)==1:exit('Usage mat2idf mat')
+file=open(argv[1])
+m,n,c=map(int,file.readline().split())
+index=[]
+data=[]
+for line in file:
+	line=line.split()
+	ii=len(line)
+	index.append([int(line[i])-1 for i in range(0,ii,2)])
+	data.append([float(line[i]) for i in range(1,ii,2)])
+idf=[0]*n
+for j in range(n):
+	for i in range(m):
+		if j in index[i]:idf[j]+=1
+	idf[j]=log(m/idf[j],2)
+print m,n,c
+for i in range(m):
+	for j in range(len(index[i])):
+		print index[i][j]+1,data[i][j]*idf[index[i][j]],
+	print
