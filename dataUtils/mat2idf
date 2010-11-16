@@ -15,7 +15,7 @@ idf=[0]*n
 for j in range(n):
 	for i in range(m):
 		if j in index[i]:idf[j]+=1
-	idf[j]=log(m/idf[j],2)
+	idf[j]=log(float(m)/idf[j],2)
 print m,n,c
 for i in range(m):
 	for j in range(len(index[i])):
