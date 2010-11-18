@@ -2,7 +2,7 @@
 <?php
 $usage="Usage: sumline result[ rclass]";
 ($result=@file($argv[1],FILE_IGNORE_NEW_LINES))||exit(__line__."$usage\n");
-if(!$argv[2]){
+if(!isset($argv[2])){
 	$argv[2]=explode(".",$argv[1]);
 	$argv[2]="{$argv[2][0]}.mat.rclass";
 }
@@ -28,13 +28,12 @@ $classN=count($classes);
 for($i=0;$i<$clusteringN;$i++){
 	$cid=$clusterings[$i];
 	$rs=array_keys($result,$cid);
-	$count=array();
+	$count=array_fill_keys($classes,0);
 	while(list($k,$r)=each($rs)){
 		$count[$rclass[$r]]++;
 	}
 	for($j=0;$j<$classN;$j++){
 		$class=$classes[$j];
-		if(!$count[$class])$count[$class]=0;
 		echo $count[$class],"\t";
 	}
 	echo "\n";

@@ -10,15 +10,15 @@ class Utils(object):
 	def evaluate(self,assignments,classes):
 		N=min(len(assignments),len(classes))
 		ms,ns=set(assignments),set(classes)
-		m,n=len(ms),len(ns)
+		m,n=max(ms)+1,max(ns)+1
 		M=self.matrix(m,n)
 		for i in range(N):M[assignments[i]][classes[i]]+=1
 		M1=[sum(M[i]) for i in range(m)]
 		M2=[sum([M[i][j] for i in range(m)]) for j in range(n)]
 		p1=[float(i)/N for i in M1]
 		p2=[float(j)/N for j in M2]
-		p=[[M[i][j]/float(M1[i]) for j in range(n)] for i in range(m)]
-		r=[[M[i][j]/float(M2[j]) for j in range(n)] for i in range(m)]
+		p=[[M1[i] and M[i][j]/float(M1[i]) for j in range(n)] for i in range(m)]
+		r=[[M2[j] and M[i][j]/float(M2[j]) for j in range(n)] for i in range(m)]
 		f=[[M[i][j] and 2*p[i][j]*r[i][j]/(p[i][j]+r[i][j]) for j in range(n)] for i in range(m)]
 		Es=[sum([-p[i][j]*log(p[i][j],2) for j in range(n) if p[i][j]]) for i in range(m)]
 		Ps=[max(p[i]) for i in range(m)]
