@@ -2,14 +2,17 @@
 class Clusterer(object):
 	K=None
 	assignments=None
+	distances=None
 	centroids=None
 	clusters=None
 	def __init__(self,K=2):
 		self.K=K
 	def build(self,instances,centroids):
+		numInstances=len(instances)
 		self.centroids=centroids
 		self.clusters=[None]*self.K
-		self.assignments=[None]*len(instances)
+		self.assignments=[None]*numInstances
+		self.distances=[None]*numInstances
 		i=0
 		while True:
 			print "Clusterer building loop %d ..."%i
@@ -24,11 +27,13 @@ class Clusterer(object):
 		for i in range(len(instances)):
 			instance=instances[i]
 			distances=[instance-centroid for centroid in self.centroids]
-			k=distances.index(min(distances))
+			distance=min(distances)
+			k=distances.index(distance)
 			self.clusters[k].append(instance)
 			if k!=self.assignments[i]:
 				c+=1
 				self.assignments[i]=k
+			self.distances[i]=distance
 		return c
 	def evaluate(self,c=0):
 		if c==0:
@@ -36,6 +41,7 @@ class Clusterer(object):
 			print "\n".join(self.assignments)
 			return
 		print "Moved %d instances"%c
+		print "Fitness is %f"%sum(self.distances)
 		c=[0]*self.K
 		for k in self.assignments:c[k]+=1
 		print c

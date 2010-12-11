@@ -9,6 +9,7 @@ class Organism(object):
 		return self.chromosome[self.fitness.index(max(self.fitness))].clone()
 	def selection(self):
 		l,s=len(self.chromosome),sum(self.fitness)
+		if not s:return
 		p=l/s
 		proportion=map(lambda x:int(round(x*p)),self.fitness)
 		s=sum(proportion)
