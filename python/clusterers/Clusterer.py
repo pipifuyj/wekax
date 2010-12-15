@@ -17,10 +17,12 @@ class Clusterer(object):
 		while i!=loop:
 			print "Clusterer building loop %d ..."%i
 			c=self.cluster(instances)
-			self.evaluate(c)
+			self.observe(c)
 			if c==0:break
 			self.centroids=[cluster.mean() for cluster in self.clusters]
 			i+=1
+		print "Converged!"
+		self.evaluate();
 	def cluster(self,instances):
 		c=0
 		for k in range(self.K):self.clusters[k]=instances[0:0]
@@ -35,13 +37,11 @@ class Clusterer(object):
 				self.assignments[i]=k
 			self.distances[i]=distance
 		return c
-	def evaluate(self,c=0):
-		if c==0:
-			print "Converged!"
-			print "\n".join(self.assignments)
-			return
+	def observe(self,c):
 		print "Moved %d instances"%c
 		print "Fitness is %f"%sum(self.distances)
 		c=[0]*self.K
 		for k in self.assignments:c[k]+=1
 		print c
+	def evaluate(self):
+		print "\n".join(self.assignments)
