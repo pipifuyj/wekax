@@ -17,11 +17,12 @@ class Clusterer(object):
 		while i!=loop:
 			print "Clusterer building loop %d ..."%i
 			c=self.cluster(instances)
+			if c==0:
+				print "Converged!"
+				break
 			self.observe(c)
-			if c==0:break
 			self.centroids=[cluster.mean() for cluster in self.clusters]
 			i+=1
-		print "Converged!"
 		self.evaluate();
 	def cluster(self,instances):
 		c=0
