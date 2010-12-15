@@ -7,14 +7,14 @@ class Clusterer(object):
 	clusters=None
 	def __init__(self,K=2):
 		self.K=K
-	def build(self,instances,centroids):
+		self.clusters=[None]*self.K
+	def build(self,instances,centroids,loop=-1):
 		numInstances=len(instances)
 		self.centroids=centroids
-		self.clusters=[None]*self.K
 		self.assignments=[None]*numInstances
 		self.distances=[None]*numInstances
 		i=0
-		while True:
+		while i!=loop:
 			print "Clusterer building loop %d ..."%i
 			c=self.cluster(instances)
 			self.evaluate(c)
