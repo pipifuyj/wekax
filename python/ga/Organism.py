@@ -3,12 +3,10 @@ from random import random,shuffle
 class Organism(object):
 	chromosome=None
 	fitness=None
+	best=None
+	worst=None
 	def __init__(self,chromosome=[]):
 		self.chromosome=chromosome
-	def best(self):
-		return self.fitness.index(max(self.fitness))
-	def worst(self):
-		return self.fitness.index(min(self.fitness))
 	def selection(self):
 		l,s=len(self.chromosome),sum(self.fitness)
 		if not s:return
@@ -39,11 +37,12 @@ class Organism(object):
 			if random()<probability:
 				self.chromosome[i].mutation()
 	def elitism(self,chromosome):
-		i=self.worst()
-		self.chromosome[i],self.fitness[i]=chromosome,chromosome.fitness()
+		self.chromosome[self.worst],self.fitness[self.worst]=chromosome,chromosome.fitness()
 	def optimize(self):
 		for chromosome in self.chromosome:chromosome.optimize()
 		self.fitness=[chromosome.fitness() for chromosome in self.chromosome]
+		self.best=self.fitness.index(max(self.fitness))
+		self.worst=self.fitness.index(min(self.fitness))
 	def generate(self):
 		self.selection()
 		self.crossover()

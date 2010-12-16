@@ -23,6 +23,8 @@ class Clusterer(object):
 			self.observe(c)
 			self.centroids=[cluster.mean() for cluster in self.clusters]
 			i+=1
+		else:
+			self.distances=[instances[i]-self.centroids[self.assignments[i]] for i in range(numInstances)]
 		self.evaluate();
 	def cluster(self,instances):
 		c=0
@@ -45,4 +47,4 @@ class Clusterer(object):
 		for k in self.assignments:c[k]+=1
 		print c
 	def evaluate(self):
-		print "\n".join(self.assignments)
+		print "Fitness is %f"%sum(self.distances)
