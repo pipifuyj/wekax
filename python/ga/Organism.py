@@ -37,10 +37,11 @@ class Organism(object):
 			if random()<probability:
 				self.chromosome[i].mutation()
 	def elitism(self,chromosome):
-		self.chromosome[self.worst],self.fitness[self.worst]=chromosome,chromosome.fitness()
+		self.chromosome[self.worst]=chromosome
+		self.fitness[self.worst]=chromosome.fitness
 	def optimize(self):
 		for chromosome in self.chromosome:chromosome.optimize()
-		self.fitness=[chromosome.fitness() for chromosome in self.chromosome]
+		self.fitness=[chromosome.fitness for chromosome in self.chromosome]
 		self.best=self.fitness.index(max(self.fitness))
 		self.worst=self.fitness.index(min(self.fitness))
 	def generate(self):
