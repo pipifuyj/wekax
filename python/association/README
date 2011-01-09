@@ -1,0 +1,27 @@
+Introduction to Apriori
+
+first, suppose we have a test.dat file under your wekax directory. The content should be:
+A,B,C,D
+B,C,E
+A,B,C,E
+B,D,E
+A,B,C,D
+
+second, suppose we have a test.py file under your wekax directory. The content should be:
+from wekax.core import Transactions,Transaction
+from wekax.association import Apriori
+
+class mytrans(Transaction):
+    split=","
+trans=Transactions(type=mytrans)
+trans.load(file("test.dat"))
+for i in trans:
+    for j in i:
+        print j
+assoc=Apriori(trans,2)
+print assoc.split
+assoc.buildAssociation()
+
+then:
+# cd [your wekax dir]
+# python test.py
