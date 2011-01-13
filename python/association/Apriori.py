@@ -1,5 +1,6 @@
-# -*- coding: UTF8 -*-
-class Apriori(object):
+#encoding:utf8
+from Associator import *
+class Apriori(Associator):
     globalfreq={}#全局频繁项收集
     maxfreq={}#全局最大频繁项收集
     currfreq={}#遍历过程临时局部频繁项收集
