@@ -2277,7 +2277,7 @@ public class MPCKMeans extends Clusterer implements OptionHandler,SemiSupCluster
 	      if (first < second) {
 		pair = new InstancePair(first, second, InstancePair.MUST_LINK);
 	      } else {
-		pair = new InstancePair(second, first, InstancePair.CANNOT_LINK);
+		pair = new InstancePair(second, first, InstancePair.MUST_LINK);
 	      }
 	      //	      System.out.println("MUST_LINK");
 	    }
